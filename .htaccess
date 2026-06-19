@@ -1,0 +1,21 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l
+
+RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
+
+ErrorDocument 403 https://www.google.co.ao
+
+Options -Indexes
+
+# Charset UTF-8 para ficheiros JSON e HTML
+AddCharset utf-8 .json .html .php
+
+# Headers para API docs
+<FilesMatch "\.(json)$">
+  Header set Content-Type "application/json; charset=utf-8"
+  Header set Access-Control-Allow-Origin "*"
+</FilesMatch>
+

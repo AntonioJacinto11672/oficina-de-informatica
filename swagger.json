@@ -1,0 +1,703 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Sistema de Gestão de Assistência Técnica Informática",
+    "description": "Sistema completo de gestão para assistência técnica informática. Controla técnicos, clientes, equipamentos, orçamentos, serviços, estoque, vendas, compras e relatórios.\n\n## Autenticação\nO sistema usa sessões PHP. Para aceder a rotas restritas, realize o login primeiro.\n\n## Navegação\nAs páginas são acedidas via o parâmetro `?url=<rota>` ou directamente pela URL amigável `/<rota>` (via mod_rewrite).",
+    "version": "3.0.0",
+    "contact": {
+      "name": "António Jacinto",
+      "email": "antjacinto11672@gmail.com"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost/oficina-de-equipamentos-informatico",
+      "description": "Servidor local (XAMPP/WAMP)"
+    }
+  ],
+  "tags": [
+    { "name": "Sistema", "description": "Endpoints de sistema e monitorização" },
+    { "name": "Autenticação", "description": "Login e logout" },
+    { "name": "Pessoas", "description": "Técnicos, recepcionistas, fornecedores e clientes" },
+    { "name": "Equipamentos", "description": "Gestão de equipamentos informáticos e entrada na oficina" },
+    { "name": "Produtos & Estoque", "description": "Produtos, categorias e controlo de estoque" },
+    { "name": "Orçamentos & Serviços", "description": "Orçamentos, serviços e tipos de serviço" },
+    { "name": "Financeiro", "description": "Vendas, compras, contas a pagar e a receber" },
+    { "name": "Relatórios & Dashboard", "description": "Dashboard, gráficos e relatórios" },
+    { "name": "Comunicação", "description": "Chat interno" }
+  ],
+  "paths": {
+    "/health.php": {
+      "get": {
+        "tags": ["Sistema"],
+        "summary": "Health Check",
+        "description": "Verifica o estado de saúde da aplicação: conexão com base de dados, dependências e extensões PHP.",
+        "operationId": "healthCheck",
+        "responses": {
+          "200": {
+            "description": "Aplicação saudável",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HealthResponse" },
+                "example": {
+                  "status": "ok",
+                  "app": "Sistema de Gestão de Assistência Técnica Informática",
+                  "version": "3.0.0",
+                  "php": "8.2.0",
+                  "timestamp": "2026-06-17 10:00:00",
+                  "checks": {
+                    "config": { "status": "ok", "message": "Ficheiro .env encontrado" },
+                    "dependencies": { "status": "ok", "message": "Dependências instaladas" },
+                    "database": { "status": "ok", "message": "Conexão com MySQL estabelecida", "database": "mecanica", "host": "localhost" },
+                    "php_extensions": { "status": "ok", "message": "Todas as extensões necessárias estão activas" }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Serviço indisponível (base de dados ou dependências com erro)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HealthResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "get": {
+        "tags": ["Autenticação"],
+        "summary": "Página de Login",
+        "description": "Exibe o formulário de autenticação.",
+        "operationId": "loginPage",
+        "responses": {
+          "200": { "description": "Página HTML do formulário de login" }
+        }
+      },
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Realizar Login",
+        "description": "Autentica o utilizador com email e senha. Em caso de sucesso, redireciona para o dashboard.",
+        "operationId": "loginAction",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": ["emailLogin", "senhaLogin"],
+                "properties": {
+                  "emailLogin": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "admin@assistencia.ao"
+                  },
+                  "senhaLogin": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "senha123"
+                  },
+                  "btnLogin": {
+                    "type": "string",
+                    "description": "Botão de submissão"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redirecciona para o dashboard em caso de sucesso ou de volta ao login em caso de erro" }
+        }
+      }
+    },
+    "/sair": {
+      "get": {
+        "tags": ["Autenticação"],
+        "summary": "Logout",
+        "description": "Termina a sessão do utilizador e redireciona para a página de login.",
+        "operationId": "logout",
+        "responses": {
+          "302": { "description": "Redireciona para /login" }
+        }
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "tags": ["Relatórios & Dashboard"],
+        "summary": "Dashboard Principal",
+        "description": "Painel com resumo de serviços, orçamentos, movimentações, compras, vendas e contas. **Requer autenticação.**",
+        "operationId": "dashboard",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML do dashboard" },
+          "302": { "description": "Redireciona para /login se não autenticado" }
+        }
+      }
+    },
+    "/graficos": {
+      "get": {
+        "tags": ["Relatórios & Dashboard"],
+        "summary": "Gráficos e Estatísticas",
+        "description": "Visualização gráfica de dados do sistema (Chart.js). **Requer autenticação.**",
+        "operationId": "graficos",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com gráficos" }
+        }
+      }
+    },
+    "/relatorio": {
+      "get": {
+        "tags": ["Relatórios & Dashboard"],
+        "summary": "Relatórios Gerais",
+        "description": "Geração de relatórios em PDF (mPDF). **Requer autenticação.**",
+        "operationId": "relatorio",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML de relatórios ou download de PDF" }
+        }
+      }
+    },
+    "/relatorioTecnico": {
+      "get": {
+        "tags": ["Relatórios & Dashboard"],
+        "summary": "Relatórios de Assistência Técnica",
+        "description": "Relatórios específicos de serviços e técnicos. **Requer autenticação.**",
+        "operationId": "relatorioTecnico",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML de relatórios de assistência técnica" }
+        }
+      }
+    },
+    "/tecnico": {
+      "get": {
+        "tags": ["Pessoas"],
+        "summary": "Listagem de Técnicos",
+        "description": "Lista todos os técnicos cadastrados. **Requer autenticação.**",
+        "operationId": "listTecnicos",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com tabela de técnicos" }
+        }
+      },
+      "post": {
+        "tags": ["Pessoas"],
+        "summary": "Criar / Editar / Eliminar Técnico",
+        "description": "Opera sobre técnicos conforme o botão submetido. **Requer autenticação.**",
+        "operationId": "tecnicoCrud",
+        "security": [{ "sessionAuth": [] }],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nbi": { "type": "string", "example": "012345678LA042" },
+                  "nif": { "type": "string", "example": "5417891234" },
+                  "nome": { "type": "string", "example": "João" },
+                  "sobrenome": { "type": "string", "example": "Silva" },
+                  "email": { "type": "string", "format": "email" },
+                  "telefone": { "type": "string", "example": "+244 923 456 789" },
+                  "morada": { "type": "string", "example": "Luanda, Ingombota" },
+                  "foto": { "type": "string", "format": "binary" },
+                  "btnCdsTecnico": { "type": "string", "description": "Submeter para cadastrar" },
+                  "btnEditTecnico": { "type": "string", "description": "Submeter para editar" },
+                  "btnDeleteTecnico": { "type": "string", "description": "Submeter para eliminar" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redireciona para /tecnico após a operação" }
+        }
+      }
+    },
+    "/recepcionista": {
+      "get": {
+        "tags": ["Pessoas"],
+        "summary": "Listagem de Recepcionistas",
+        "description": "Lista todas as recepcionistas. **Requer autenticação.**",
+        "operationId": "listRecepcionistas",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com tabela de recepcionistas" }
+        }
+      },
+      "post": {
+        "tags": ["Pessoas"],
+        "summary": "Criar / Editar / Eliminar Recepcionista",
+        "operationId": "recepcionistaCrud",
+        "security": [{ "sessionAuth": [] }],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nbi": { "type": "string" },
+                  "nif": { "type": "string" },
+                  "nome": { "type": "string" },
+                  "sobrenome": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "telefone": { "type": "string" },
+                  "morada": { "type": "string" },
+                  "foto": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redireciona para /recepcionista após a operação" }
+        }
+      }
+    },
+    "/fornecedor": {
+      "get": {
+        "tags": ["Pessoas"],
+        "summary": "Listagem de Fornecedores",
+        "description": "Lista todos os fornecedores. **Requer autenticação.**",
+        "operationId": "listFornecedores",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com tabela de fornecedores" }
+        }
+      },
+      "post": {
+        "tags": ["Pessoas"],
+        "summary": "Criar / Editar / Eliminar Fornecedor",
+        "operationId": "fornecedorCrud",
+        "security": [{ "sessionAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nbi": { "type": "string" },
+                  "nif": { "type": "string" },
+                  "nome": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "telefone": { "type": "string" },
+                  "morada": { "type": "string" },
+                  "tipo_pessoa": { "type": "string", "enum": ["Singular", "Colectiva"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redireciona para /fornecedor após a operação" }
+        }
+      }
+    },
+    "/cliente": {
+      "get": {
+        "tags": ["Pessoas"],
+        "summary": "Listagem de Clientes",
+        "description": "Lista todos os clientes. **Requer autenticação.**",
+        "operationId": "listClientes",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com tabela de clientes" }
+        }
+      },
+      "post": {
+        "tags": ["Pessoas"],
+        "summary": "Criar / Editar / Eliminar Cliente",
+        "operationId": "clienteCrud",
+        "security": [{ "sessionAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nbi": { "type": "string" },
+                  "nif": { "type": "string" },
+                  "nome": { "type": "string" },
+                  "sobrenome": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "telefone": { "type": "string" },
+                  "morada": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redireciona para /cliente após a operação" }
+        }
+      }
+    },
+    "/equipamento": {
+      "get": {
+        "tags": ["Equipamentos"],
+        "summary": "Listagem de Equipamentos",
+        "description": "Lista todos os equipamentos informáticos registados. **Requer autenticação.**",
+        "operationId": "listEquipamentos",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com tabela de equipamentos" }
+        }
+      },
+      "post": {
+        "tags": ["Equipamentos"],
+        "summary": "Criar / Editar / Eliminar Equipamento",
+        "operationId": "equipamentoCrud",
+        "security": [{ "sessionAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "numero_serie": { "type": "string", "example": "SN-2024-001" },
+                  "imei": { "type": "string", "example": "352099001761481" },
+                  "tipo_equipamento": {
+                    "type": "string",
+                    "enum": ["Computador", "Portátil", "Impressora", "Servidor", "Equipamento de Rede", "Telemóvel", "Tablet", "Monitor", "Outro"],
+                    "example": "Portátil"
+                  },
+                  "marca": { "type": "string", "example": "Dell" },
+                  "modelo": { "type": "string", "example": "Inspiron 15" },
+                  "estado": {
+                    "type": "string",
+                    "enum": ["Recebido", "Em Diagnóstico", "Aguardando Peças", "Em Reparação", "Concluído", "Entregue"],
+                    "example": "Recebido"
+                  },
+                  "defeito_reportado": { "type": "string", "example": "Não liga" },
+                  "cliente_id": { "type": "integer" },
+                  "btnCdsEquipamento": { "type": "string", "description": "Submeter para cadastrar" },
+                  "btnEditEquipamento": { "type": "string", "description": "Submeter para editar" },
+                  "btnDeleteEquipamento": { "type": "string", "description": "Submeter para eliminar" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redireciona para /equipamento após a operação" }
+        }
+      }
+    },
+    "/entradaEquipamento": {
+      "get": {
+        "tags": ["Equipamentos"],
+        "summary": "Entrada de Equipamentos",
+        "description": "Regista a entrada de equipamentos para serviço. **Requer autenticação.**",
+        "operationId": "entradaEquipamento",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML de registo de entrada" }
+        }
+      }
+    },
+    "/produto": {
+      "get": {
+        "tags": ["Produtos & Estoque"],
+        "summary": "Listagem de Produtos",
+        "description": "Lista todos os produtos em estoque. **Requer autenticação.**",
+        "operationId": "listProdutos",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com tabela de produtos" }
+        }
+      },
+      "post": {
+        "tags": ["Produtos & Estoque"],
+        "summary": "Criar / Editar / Eliminar Produto",
+        "operationId": "produtoCrud",
+        "security": [{ "sessionAuth": [] }],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": { "type": "string", "example": "Memória RAM DDR4 8GB" },
+                  "estoque": { "type": "integer", "example": 50 },
+                  "valor_compra": { "type": "number", "format": "float", "example": 8000.00 },
+                  "valor_venda": { "type": "number", "format": "float", "example": 12000.00 },
+                  "category_id": { "type": "integer" },
+                  "fornecedor_id": { "type": "integer" },
+                  "foto": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redireciona para /produto após a operação" }
+        }
+      }
+    },
+    "/categoria": {
+      "get": {
+        "tags": ["Produtos & Estoque"],
+        "summary": "Categorias de Produtos",
+        "description": "Lista e gere as categorias de produtos. **Requer autenticação.**",
+        "operationId": "categoria",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com categorias" }
+        }
+      }
+    },
+    "/estoque": {
+      "get": {
+        "tags": ["Produtos & Estoque"],
+        "summary": "Consulta de Estoque",
+        "description": "Visualiza o estado actual do estoque com alertas de stock mínimo. **Requer autenticação.**",
+        "operationId": "estoque",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com estado do estoque" }
+        }
+      }
+    },
+    "/orcamento": {
+      "get": {
+        "tags": ["Orçamentos & Serviços"],
+        "summary": "Listagem de Orçamentos",
+        "description": "Lista todos os orçamentos (abertos, aprovados, cancelados). **Requer autenticação.**",
+        "operationId": "listOrcamentos",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com tabela de orçamentos" }
+        }
+      },
+      "post": {
+        "tags": ["Orçamentos & Serviços"],
+        "summary": "Criar / Editar / Aprovar / Cancelar Orçamento",
+        "operationId": "orcamentoCrud",
+        "security": [{ "sessionAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cliente_id": { "type": "integer" },
+                  "equipamento_id": { "type": "integer" },
+                  "descricao": { "type": "string" },
+                  "valor": { "type": "number", "format": "float" },
+                  "status": { "type": "string", "enum": ["Aberto", "Aprovado", "Cancelado"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "302": { "description": "Redireciona para /orcamento após a operação" }
+        }
+      }
+    },
+    "/addProdutoOrcamento": {
+      "get": {
+        "tags": ["Orçamentos & Serviços"],
+        "summary": "Adicionar Produto a Orçamento",
+        "description": "Interface para associar produtos a um orçamento específico. **Requer autenticação.**",
+        "operationId": "addProdutoOrcamento",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML para adicionar produtos" }
+        }
+      }
+    },
+    "/orcamentoRecepcao": {
+      "get": {
+        "tags": ["Orçamentos & Serviços"],
+        "summary": "Recepção de Orçamentos",
+        "description": "Vista de orçamentos para a recepção aprovar ou cancelar. **Requer autenticação.**",
+        "operationId": "orcamentoRecepcao",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML de recepção de orçamentos" }
+        }
+      }
+    },
+    "/servico": {
+      "get": {
+        "tags": ["Orçamentos & Serviços"],
+        "summary": "Listagem de Serviços",
+        "description": "Lista todos os serviços executados. **Requer autenticação.**",
+        "operationId": "listServicos",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com tabela de serviços" }
+        }
+      }
+    },
+    "/tipoServico": {
+      "get": {
+        "tags": ["Orçamentos & Serviços"],
+        "summary": "Tipos de Serviço",
+        "description": "Gere os tipos de serviço disponíveis na assistência técnica. **Requer autenticação.**",
+        "operationId": "tipoServico",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com tipos de serviço" }
+        }
+      }
+    },
+    "/vendas": {
+      "get": {
+        "tags": ["Financeiro"],
+        "summary": "Listagem de Vendas",
+        "description": "Histórico de todas as vendas realizadas. **Requer autenticação.**",
+        "operationId": "listVendas",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com tabela de vendas" }
+        }
+      }
+    },
+    "/compras": {
+      "get": {
+        "tags": ["Financeiro"],
+        "summary": "Listagem de Compras",
+        "description": "Histórico de compras a fornecedores. **Requer autenticação.**",
+        "operationId": "listCompras",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com tabela de compras" }
+        }
+      }
+    },
+    "/contasPagar": {
+      "get": {
+        "tags": ["Financeiro"],
+        "summary": "Contas a Pagar",
+        "description": "Gestão de contas a pagar com alertas de vencimento. **Requer autenticação.**",
+        "operationId": "contasPagar",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com contas a pagar" }
+        }
+      }
+    },
+    "/contaReceber": {
+      "get": {
+        "tags": ["Financeiro"],
+        "summary": "Contas a Receber",
+        "description": "Gestão de contas a receber de clientes. **Requer autenticação.**",
+        "operationId": "contaReceber",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com contas a receber" }
+        }
+      }
+    },
+    "/movimentacao": {
+      "get": {
+        "tags": ["Financeiro"],
+        "summary": "Movimentação Financeira",
+        "description": "Registo de todas as entradas e saídas financeiras. **Requer autenticação.**",
+        "operationId": "movimentacao",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com movimentações" }
+        }
+      }
+    },
+    "/comissoes": {
+      "get": {
+        "tags": ["Financeiro"],
+        "summary": "Comissões dos Técnicos",
+        "description": "Calcula e exibe as comissões dos técnicos baseadas nos serviços realizados. **Requer autenticação.**",
+        "operationId": "comissoes",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML com comissões" }
+        }
+      }
+    },
+    "/consultas": {
+      "get": {
+        "tags": ["Relatórios & Dashboard"],
+        "summary": "Consultas",
+        "description": "Consultas avançadas ao sistema. **Requer autenticação.**",
+        "operationId": "consultas",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML de consultas" }
+        }
+      }
+    },
+    "/chat": {
+      "get": {
+        "tags": ["Comunicação"],
+        "summary": "Chat Interno",
+        "description": "Sistema de mensagens entre utilizadores da assistência técnica. **Requer autenticação.**",
+        "operationId": "chat",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML do chat" }
+        }
+      }
+    },
+    "/perfil": {
+      "get": {
+        "tags": ["Autenticação"],
+        "summary": "Perfil do Utilizador",
+        "description": "Edição do perfil do utilizador autenticado. **Requer autenticação.**",
+        "operationId": "perfil",
+        "security": [{ "sessionAuth": [] }],
+        "responses": {
+          "200": { "description": "Página HTML do perfil" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["ok", "degraded", "error"],
+            "description": "Estado geral da aplicação"
+          },
+          "app": { "type": "string", "example": "Sistema de Gestão de Assistência Técnica Informática" },
+          "version": { "type": "string", "example": "3.0.0" },
+          "php": { "type": "string", "example": "8.2.0" },
+          "timestamp": { "type": "string", "format": "date-time", "example": "2026-06-17 10:00:00" },
+          "checks": {
+            "type": "object",
+            "properties": {
+              "config": { "$ref": "#/components/schemas/HealthCheck" },
+              "dependencies": { "$ref": "#/components/schemas/HealthCheck" },
+              "database": { "$ref": "#/components/schemas/HealthCheck" },
+              "php_extensions": { "$ref": "#/components/schemas/HealthCheck" }
+            }
+          }
+        }
+      },
+      "HealthCheck": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "enum": ["ok", "warning", "error"] },
+          "message": { "type": "string" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "sessionAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "PHPSESSID",
+        "description": "Autenticação via sessão PHP. Realizar login em /login para obter o cookie de sessão."
+      }
+    }
+  }
+}

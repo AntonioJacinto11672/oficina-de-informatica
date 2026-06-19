@@ -1,0 +1,392 @@
+# Oficina Mecânica — Sistema de Gestão
+
+Sistema web completo para gestão de oficinas mecânicas, desenvolvido em PHP com arquitectura MVC. Controla mecânicos, clientes, veículos, orçamentos, serviços, estoque, finanças e gera relatórios em PDF.
+
+---
+
+## Funcionalidades
+
+| Módulo | Descrição |
+|--------|-----------|
+| **Autenticação** | Login com controlo de sessão e níveis de acesso |
+| **Recuperação de Senha** | Envio de código de 6 dígitos por email com validade de 30 min |
+| **Mecânicos** | Cadastro, edição e gestão com foto |
+| **Recepcionistas** | Gestão da equipa de recepção |
+| **Clientes** | Ficha completa do cliente |
+| **Veículos** | Registo e histórico por cliente |
+| **Entrada de Veículos** | Registo de entrada na oficina com alerta de retorno (180 dias) |
+| **Fornecedores** | Pessoas singulares e colectivas |
+| **Produtos & Estoque** | Controlo de stock com alertas de nível mínimo |
+| **Categorias** | Organização de produtos |
+| **Orçamentos** | Criação, aprovação e cancelamento com desconto configurável |
+| **Serviços** | Registo de serviços executados por mecânico |
+| **Tipos de Serviço** | Catálogo de serviços disponíveis |
+| **Vendas** | Histórico de vendas |
+| **Compras** | Compras a fornecedores |
+| **Contas a Pagar** | Controlo de vencimentos |
+| **Contas a Receber** | Controlo de recebimentos de clientes |
+| **Movimentação** | Fluxo de caixa (entradas e saídas) |
+| **Comissões** | Cálculo automático de comissões dos mecânicos |
+| **Relatórios** | Exportação para PDF (serviços, vendas, compras, contas) |
+| **Gráficos** | Dashboard visual com Chart.js |
+| **Chat** | Comunicação interna entre utilizadores |
+
+---
+
+## Stack Tecnológica
+
+| Componente | Versão | Função |
+|-----------|--------|--------|
+| PHP | 8.0+ | Backend / Lógica de negócio |
+| MySQL | 8.0+ | Base de dados relacional |
+| Apache | 2.4+ | Servidor web (com mod_rewrite) |
+| Composer | 2.x | Gestão de dependências PHP |
+| Bootstrap | 4.6.2 | Framework CSS responsivo |
+| Font Awesome | 5.15.4 | Ícones |
+| DataTables | 1.13.7 | Tabelas interactivas com pesquisa e paginação |
+| Chart.js | — | Gráficos e dashboards visuais |
+| PHPMailer | 6.x | Envio de emails |
+| mPDF | 8.x | Geração de relatórios em PDF |
+
+---
+
+## Pré-requisitos
+
+Antes de começar, certifique-se de que tem instalado:
+
+- **PHP 8.0 ou superior** com as extensões: `pdo`, `pdo_mysql`, `mbstring`, `gd`, `fileinfo`
+- **MySQL 8.0 ou superior**
+- **Apache 2.4+** com `mod_rewrite` activado
+- **Composer 2.x** — [getcomposer.org](https://getcomposer.org)
+
+> **Recomendado no Windows:** [XAMPP](https://www.apachefriends.org) ou [Laragon](https://laragon.org) incluem PHP, MySQL e Apache numa única instalação.
+
+---
+
+## Instalação Passo a Passo
+
+### 1. Clonar o repositório
+
+```bash
+git clone https://github.com/seu-usuario/oficina-mecanica.git
+cd oficina-mecanica
+```
+
+Ou copiar a pasta do projecto para o directório do servidor:
+
+```
+# XAMPP
+C:\xampp\htdocs\oficinamecanica.co.ao\
+
+# Laragon
+C:\laragon\www\oficinamecanica.co.ao\
+
+# WAMP
+C:\wamp64\www\oficinamecanica.co.ao\
+```
+
+---
+
+### 2. Instalar as dependências PHP
+
+```bash
+composer install
+```
+
+Isto instalará:
+- `phpmailer/phpmailer` — para envio de emails
+- `mpdf/mpdf` — para geração de PDFs
+
+---
+
+### 3. Configurar as variáveis de ambiente
+
+Copiar o ficheiro de exemplo:
+
+```bash
+# Linux / macOS / Git Bash
+cp .env.example .env
+
+# Windows PowerShell
+Copy-Item .env.example .env
+```
+
+Editar o ficheiro `.env` com os seus dados:
+
+```ini
+# === BASE DE DADOS ===
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=mecanica
+DB_USER=root
+DB_PASS=
+
+# === APLICAÇÃO ===
+APP_URL=http://localhost/oficinamecanica.co.ao/
+APP_NAME=OFICINA DO BAIRRO
+
+# === DADOS DA OFICINA ===
+OFFICE_ADDRESS=Luanda Rua da CTT, Rangel
+OFFICE_EMAIL=antjacinto11672@gmail.com
+OFFICE_PHONE=+244 931 950 857
+
+# === NEGÓCIO ===
+STOCK_LEVEL=5           # Nível mínimo de stock (alerta)
+DISCOUNT_ORC=SIM        # Activar desconto em orçamentos (SIM/NAO)
+DISCOUNT_VALUE=0.05     # 5% de desconto
+VALIDATE_QUOTE_DAYS=5   # Dias de validade de orçamento
+DELETE_QUOTE_DAYS=15    # Dias para eliminar orçamentos abertos
+MECHANIC_COMMISSION=SIM # Activar comissões (SIM/NAO)
+COMMISSION_VALUE=0.30   # 30% de comissão
+
+# === DEBUG ===
+DEBUG=false
+
+# === SMTP — Recuperação de Senha (Mailtrap em desenvolvimento) ===
+SMTP_HOST=smtp.mailtrap.io
+SMTP_PORT=587
+SMTP_SECURE=tls
+SMTP_USER=c85e426e1ec5a1
+SMTP_PASS=7cf202962d5c0e
+```
+
+---
+
+### 4. Criar a base de dados
+
+Aceder ao phpMyAdmin (`http://localhost/phpmyadmin`) ou usar o terminal MySQL:
+
+```sql
+CREATE DATABASE mecanica CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+Importar o schema da base de dados:
+
+```bash
+# Linux / macOS / Git Bash
+mysql -u root mecanica < database/schema.sql
+
+# Windows PowerShell (via Get-Content)
+Get-Content "database\schema.sql" | & "C:\xampp\mysql\bin\mysql.exe" -u root mecanica
+```
+
+O schema cria automaticamente todas as 19 tabelas, 4 views e o utilizador administrador padrão.
+
+---
+
+### 5. Activar o mod_rewrite no Apache
+
+**XAMPP — Windows:**
+
+1. Abrir `C:\xampp\apache\conf\httpd.conf`
+2. Localizar `#LoadModule rewrite_module` e remover o `#`
+3. Localizar `AllowOverride None` (dentro do bloco `<Directory "...htdocs">`) e alterar para `AllowOverride All`
+4. Reiniciar o Apache no XAMPP Control Panel
+
+**Laragon:** mod_rewrite já está activo por defeito.
+
+---
+
+### 6. Configurar Virtual Host (opcional, recomendado)
+
+Adicionar ao ficheiro de hosts do sistema:
+
+```
+# Windows: C:\Windows\System32\drivers\etc\hosts
+# Linux/macOS: /etc/hosts
+127.0.0.1   oficinamecanica.co.ao
+```
+
+Adicionar virtual host no Apache (`httpd-vhosts.conf`):
+
+```apache
+<VirtualHost *:80>
+    ServerName oficinamecanica.co.ao
+    DocumentRoot "C:/xampp/htdocs/oficinamecanica.co.ao"
+    <Directory "C:/xampp/htdocs/oficinamecanica.co.ao">
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+```
+
+Reiniciar o Apache após as alterações.
+
+---
+
+### 7. Verificar a instalação
+
+Aceder ao health check para confirmar que tudo está a funcionar:
+
+```
+http://localhost/oficinamecanica.co.ao/health.php
+```
+
+Resposta esperada:
+
+```json
+{
+  "status": "ok",
+  "app": "Oficina Mecânica - Sistema de Gestão",
+  "version": "1.0.0",
+  "php": "8.x.x",
+  "timestamp": "2026-06-14 10:00:00",
+  "checks": {
+    "config": { "status": "ok", "message": "Ficheiro .env encontrado" },
+    "dependencies": { "status": "ok", "message": "Dependências instaladas" },
+    "database": { "status": "ok", "message": "Conexão com MySQL estabelecida" },
+    "php_extensions": { "status": "ok", "message": "Todas as extensões necessárias estão activas" }
+  }
+}
+```
+
+---
+
+### 8. Iniciar a aplicação
+
+Aceder no browser:
+
+```
+http://localhost/oficinamecanica.co.ao/
+```
+
+O sistema redireccionará automaticamente para a página de login.
+
+---
+
+## Credenciais Padrão
+
+| Campo | Valor |
+|-------|-------|
+| Email | Definido na primeira configuração |
+| Senha | `12345` (MD5: `827ccb0eea8a706c4c34a16891f84e7b`) |
+| Nível | `adimin` |
+
+> Altere a senha após o primeiro acesso no menu **Perfil**.
+
+---
+
+## Health Check
+
+O endpoint `/health.php` verifica o estado da aplicação em tempo real:
+
+| Check | O que verifica |
+|-------|---------------|
+| `config` | Existência do ficheiro `.env` |
+| `dependencies` | Pasta `vendor/` e `autoload.php` presentes |
+| `database` | Conexão PDO com MySQL |
+| `php_extensions` | Extensões `pdo`, `pdo_mysql`, `mbstring`, `gd`, `fileinfo` |
+
+**Códigos de resposta HTTP:**
+
+| Código | Significado |
+|--------|-------------|
+| `200` | Tudo operacional (`status: "ok"`) |
+| `200` | Degradado mas funcional (`status: "degraded"`) |
+| `503` | Erro crítico — base de dados ou dependências em falta (`status: "error"`) |
+
+---
+
+## Documentação Interactiva (Swagger)
+
+Aceder à documentação Swagger UI:
+
+```
+http://localhost/oficinamecanica.co.ao/docs.php
+```
+
+O ficheiro OpenAPI 3.0 está disponível em:
+
+```
+http://localhost/oficinamecanica.co.ao/swagger.json
+```
+
+---
+
+## Estrutura do Projecto
+
+```
+oficina-mecanica/
+├── app/
+│   └── adms/
+│       ├── Controllers/     # 32 controladores (um por módulo)
+│       ├── Models/          # 8 modelos com lógica de negócio
+│       └── Views/           # Templates HTML por módulo
+├── core/
+│   ├── Config.php           # Carrega variáveis do .env
+│   ├── ConfigController.php # Router principal + constantes globais
+│   ├── ConfigView.php       # Renderização de layouts
+│   └── Permissao.php        # Controlo de acesso por sessão
+├── database/
+│   └── schema.sql           # Schema completo (tabelas, views, dados iniciais)
+├── vendor/                  # Dependências Composer (gerado)
+├── .env                     # Configuração local (não commitado)
+├── .env.example             # Exemplo de configuração
+├── .htaccess                # Rewrite rules Apache
+├── composer.json            # Dependências PHP
+├── docs.php                 # Swagger UI
+├── health.php               # Health check endpoint
+├── index.php                # Entry point da aplicação
+└── swagger.json             # Especificação OpenAPI 3.0
+```
+
+---
+
+## Fluxo da Aplicação
+
+```
+Browser → Apache (.htaccess) → index.php
+                                    │
+                            Core\ConfigController
+                                    │
+                          ┌─────────┴─────────┐
+                    Core\Config          Core\Permissao
+                    (carrega .env)       (valida sessão)
+                                    │
+                          App\adms\Controllers\{Url}
+                                    │
+                          App\adms\Models\{Model}
+                                    │
+                          App\adms\Views\{view}.php
+```
+
+---
+
+## Configurações de Negócio
+
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `STOCK_LEVEL` | `5` | Quantidade mínima para alerta de stock baixo |
+| `DISCOUNT_ORC` | `SIM` | Activar desconto automático em orçamentos |
+| `DISCOUNT_VALUE` | `0.05` | Percentagem de desconto (5%) |
+| `VALIDATE_QUOTE_DAYS` | `5` | Dias de validade de um orçamento |
+| `DELETE_QUOTE_DAYS` | `15` | Dias para eliminar orçamentos abertos automaticamente |
+| `MECHANIC_COMMISSION` | `SIM` | Activar sistema de comissões |
+| `COMMISSION_VALUE` | `0.30` | Percentagem de comissão dos mecânicos (30%) |
+
+---
+
+## Resolução de Problemas
+
+| Problema | Solução |
+|----------|---------|
+| `Erro: Arquivo .env não encontrado` | Execute `cp .env.example .env` e configure |
+| `SQLSTATE[HY000] [1049] Unknown database` | Crie a base de dados: `CREATE DATABASE mecanica` |
+| `Class not found` | Execute `composer install` |
+| Página em branco / erro 500 | Active `DEBUG=true` no `.env` para ver erros |
+| Redirecciona sempre para login | Verifique se `mod_rewrite` está activo |
+| PDFs não geram | Verifique se a extensão `gd` e `mbstring` estão activas |
+| Email de recuperação não enviado | Verifique as credenciais Mailtrap em `SMTP_USER` e `SMTP_PASS` no `.env` |
+
+---
+
+## Autor
+
+**António Jacinto**
+- Email: antjacinto11672@gmail.com
+
+---
+
+## Licença
+
+Este projecto é de uso privado. Todos os direitos reservados.

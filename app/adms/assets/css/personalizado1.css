@@ -1,0 +1,27 @@
+.td-double:hover .edit{
+    display: block;
+
+}
+
+.edit {
+    display: none;
+}
+.descr-chamada{
+    background-image: url("../imagem/chamada_acao.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    padding-top: 80px;
+    padding-bottom: 80px;
+    color: #fff;
+    margin-bottom: 0rem !important;
+    border-radius: 0rem;
+}
+
+.contato{
+    background-color: #fff;
+    padding-top: 80px;
+    padding-bottom: 80px;
+    margin-bottom: 0rem !important;
+    border-radius: 0rem;    
+}

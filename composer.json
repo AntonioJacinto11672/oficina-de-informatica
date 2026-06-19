@@ -1,0 +1,19 @@
+{
+    "description": "Sistema de Gestão de Assistência Técnica Informática",
+    "authors": [
+        {
+            "name": "António Jacinto",
+            "email": "antjacinto11672@gmail.com"
+        }
+    ],
+    "autoload":{
+    "psr-4":{
+            "App\\": "app",
+            "Core\\": "core"
+        }
+    },
+    "require":{
+        "phpmailer/phpmailer": "^6.2",
+        "mpdf/mpdf": "^8.0"
+    }
+}
