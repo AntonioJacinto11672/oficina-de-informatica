@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Sistema de Gestão de Assistência Técnica Informática",
-    "description": "Sistema completo de gestão para assistência técnica informática. Controla técnicos, clientes, equipamentos, orçamentos, serviços, estoque, vendas, compras e relatórios.\n\n## Autenticação\nO sistema usa sessões PHP. Para aceder a rotas restritas, realize o login primeiro.\n\n## Navegação\nAs páginas são acedidas via o parâmetro `?url=<rota>` ou directamente pela URL amigável `/<rota>` (via mod_rewrite).",
-    "version": "3.0.0",
+    "description": "Sistema completo de gestão para assistência técnica informática. Controla técnicos, clientes, equipamentos, orçamentos, serviços, estoque, vendas, compras e relatórios.\n\n## Autenticação\nO sistema usa sessões PHP. Para aceder a rotas restritas, realize o login primeiro.\n\n## Navegação\nAs páginas são acedidas via o parâmetro `?url=<rota>` ou directamente pela URL amigável `/<rota>` (via mod_rewrite).\n\n## Base de Dados\nNome da BD: `manutencao`",
+    "version": "3.0.1",
     "contact": {
       "name": "António Jacinto",
       "email": "antjacinto11672@gmail.com"
@@ -51,7 +51,7 @@
                   "checks": {
                     "config": { "status": "ok", "message": "Ficheiro .env encontrado" },
                     "dependencies": { "status": "ok", "message": "Dependências instaladas" },
-                    "database": { "status": "ok", "message": "Conexão com MySQL estabelecida", "database": "mecanica", "host": "localhost" },
+                    "database": { "status": "ok", "message": "Conexão com MySQL estabelecida", "database": "manutencao", "host": "localhost" },
                     "php_extensions": { "status": "ok", "message": "Todas as extensões necessárias estão activas" }
                   }
                 }

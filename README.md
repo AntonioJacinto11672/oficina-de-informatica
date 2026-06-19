@@ -1,6 +1,6 @@
-# Oficina Mecânica — Sistema de Gestão
+# Assistência Técnica Informática — Sistema de Gestão
 
-Sistema web completo para gestão de oficinas mecânicas, desenvolvido em PHP com arquitectura MVC. Controla mecânicos, clientes, veículos, orçamentos, serviços, estoque, finanças e gera relatórios em PDF.
+Sistema web completo para gestão de assistências técnicas de equipamentos informáticos, desenvolvido em PHP com arquitectura MVC. Controla técnicos, clientes, equipamentos, orçamentos, serviços, estoque, finanças e gera relatórios em PDF.
 
 ---
 
@@ -10,23 +10,23 @@ Sistema web completo para gestão de oficinas mecânicas, desenvolvido em PHP co
 |--------|-----------|
 | **Autenticação** | Login com controlo de sessão e níveis de acesso |
 | **Recuperação de Senha** | Envio de código de 6 dígitos por email com validade de 30 min |
-| **Mecânicos** | Cadastro, edição e gestão com foto |
+| **Técnicos** | Cadastro, edição e gestão com foto |
 | **Recepcionistas** | Gestão da equipa de recepção |
 | **Clientes** | Ficha completa do cliente |
-| **Veículos** | Registo e histórico por cliente |
-| **Entrada de Veículos** | Registo de entrada na oficina com alerta de retorno (180 dias) |
+| **Equipamentos** | Registo e histórico de equipamentos informáticos por cliente |
+| **Entrada de Equipamentos** | Registo de entrada na oficina com alerta de retorno (180 dias) |
 | **Fornecedores** | Pessoas singulares e colectivas |
 | **Produtos & Estoque** | Controlo de stock com alertas de nível mínimo |
 | **Categorias** | Organização de produtos |
 | **Orçamentos** | Criação, aprovação e cancelamento com desconto configurável |
-| **Serviços** | Registo de serviços executados por mecânico |
+| **Serviços** | Registo de serviços executados por técnico |
 | **Tipos de Serviço** | Catálogo de serviços disponíveis |
 | **Vendas** | Histórico de vendas |
 | **Compras** | Compras a fornecedores |
 | **Contas a Pagar** | Controlo de vencimentos |
 | **Contas a Receber** | Controlo de recebimentos de clientes |
 | **Movimentação** | Fluxo de caixa (entradas e saídas) |
-| **Comissões** | Cálculo automático de comissões dos mecânicos |
+| **Comissões** | Cálculo automático de comissões dos técnicos |
 | **Relatórios** | Exportação para PDF (serviços, vendas, compras, contas) |
 | **Gráficos** | Dashboard visual com Chart.js |
 | **Chat** | Comunicação interna entre utilizadores |
@@ -37,7 +37,7 @@ Sistema web completo para gestão de oficinas mecânicas, desenvolvido em PHP co
 
 | Componente | Versão | Função |
 |-----------|--------|--------|
-| PHP | 8.0+ | Backend / Lógica de negócio |
+| PHP | 8.2+ | Backend / Lógica de negócio |
 | MySQL | 8.0+ | Base de dados relacional |
 | Apache | 2.4+ | Servidor web (com mod_rewrite) |
 | Composer | 2.x | Gestão de dependências PHP |
@@ -54,12 +54,12 @@ Sistema web completo para gestão de oficinas mecânicas, desenvolvido em PHP co
 
 Antes de começar, certifique-se de que tem instalado:
 
-- **PHP 8.0 ou superior** com as extensões: `pdo`, `pdo_mysql`, `mbstring`, `gd`, `fileinfo`
+- **PHP 8.2 ou superior** com as extensões: `pdo`, `pdo_mysql`, `mbstring`, `gd`, `fileinfo`
 - **MySQL 8.0 ou superior**
 - **Apache 2.4+** com `mod_rewrite` activado
 - **Composer 2.x** — [getcomposer.org](https://getcomposer.org)
 
-> **Recomendado no Windows:** [XAMPP](https://www.apachefriends.org) ou [Laragon](https://laragon.org) incluem PHP, MySQL e Apache numa única instalação.
+> **Recomendado no Windows:** [XAMPP](https://www.apachefriends.org) inclui PHP, MySQL e Apache numa única instalação.
 
 ---
 
@@ -68,21 +68,15 @@ Antes de começar, certifique-se de que tem instalado:
 ### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/oficina-mecanica.git
-cd oficina-mecanica
+git clone https://github.com/AntonioJacinto11672/oficina-de-informatica.git
+cd oficina-de-informatica
 ```
 
 Ou copiar a pasta do projecto para o directório do servidor:
 
 ```
 # XAMPP
-C:\xampp\htdocs\oficinamecanica.co.ao\
-
-# Laragon
-C:\laragon\www\oficinamecanica.co.ao\
-
-# WAMP
-C:\wamp64\www\oficinamecanica.co.ao\
+C:\xampp\htdocs\oficina-de-equipamentos-informatico\
 ```
 
 ---
@@ -117,13 +111,13 @@ Editar o ficheiro `.env` com os seus dados:
 # === BASE DE DADOS ===
 DB_HOST=localhost
 DB_PORT=3306
-DB_NAME=mecanica
+DB_NAME=manutencao
 DB_USER=root
 DB_PASS=
 
 # === APLICAÇÃO ===
-APP_URL=http://localhost/oficinamecanica.co.ao/
-APP_NAME=OFICINA DO BAIRRO
+APP_URL=http://localhost/oficina-de-equipamentos-informatico/
+APP_NAME=ASSISTÊNCIA TÉCNICA INFORMÁTICA
 
 # === DADOS DA OFICINA ===
 OFFICE_ADDRESS=Luanda Rua da CTT, Rangel
@@ -131,13 +125,13 @@ OFFICE_EMAIL=antjacinto11672@gmail.com
 OFFICE_PHONE=+244 931 950 857
 
 # === NEGÓCIO ===
-STOCK_LEVEL=5           # Nível mínimo de stock (alerta)
-DISCOUNT_ORC=SIM        # Activar desconto em orçamentos (SIM/NAO)
-DISCOUNT_VALUE=0.05     # 5% de desconto
-VALIDATE_QUOTE_DAYS=5   # Dias de validade de orçamento
-DELETE_QUOTE_DAYS=15    # Dias para eliminar orçamentos abertos
-MECHANIC_COMMISSION=SIM # Activar comissões (SIM/NAO)
-COMMISSION_VALUE=0.30   # 30% de comissão
+STOCK_LEVEL=5                  # Nível mínimo de stock (alerta)
+DISCOUNT_ORC=SIM               # Activar desconto em orçamentos (SIM/NAO)
+DISCOUNT_VALUE=0.05            # 5% de desconto
+VALIDATE_QUOTE_DAYS=5          # Dias de validade de orçamento
+DELETE_QUOTE_DAYS=15           # Dias para eliminar orçamentos abertos
+TECHNICIAN_COMMISSION=SIM      # Activar comissões (SIM/NAO)
+COMMISSION_VALUE=0.30          # 30% de comissão
 
 # === DEBUG ===
 DEBUG=false
@@ -157,20 +151,20 @@ SMTP_PASS=7cf202962d5c0e
 Aceder ao phpMyAdmin (`http://localhost/phpmyadmin`) ou usar o terminal MySQL:
 
 ```sql
-CREATE DATABASE mecanica CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE manutencao CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 Importar o schema da base de dados:
 
 ```bash
-# Linux / macOS / Git Bash
-mysql -u root mecanica < database/schema.sql
+# Git Bash / Linux / macOS
+mysql -u root manutencao < database/schema.sql
 
 # Windows PowerShell (via Get-Content)
-Get-Content "database\schema.sql" | & "C:\xampp\mysql\bin\mysql.exe" -u root mecanica
+Get-Content "database\schema.sql" | & "C:\xampp\mysql\bin\mysql.exe" -u root manutencao
 ```
 
-O schema cria automaticamente todas as 19 tabelas, 4 views e o utilizador administrador padrão.
+O schema cria automaticamente todas as tabelas, 6 views e o utilizador administrador padrão.
 
 ---
 
@@ -183,34 +177,28 @@ O schema cria automaticamente todas as 19 tabelas, 4 views e o utilizador admini
 3. Localizar `AllowOverride None` (dentro do bloco `<Directory "...htdocs">`) e alterar para `AllowOverride All`
 4. Reiniciar o Apache no XAMPP Control Panel
 
-**Laragon:** mod_rewrite já está activo por defeito.
-
 ---
 
 ### 6. Configurar Virtual Host (opcional, recomendado)
-
-Adicionar ao ficheiro de hosts do sistema:
-
-```
-# Windows: C:\Windows\System32\drivers\etc\hosts
-# Linux/macOS: /etc/hosts
-127.0.0.1   oficinamecanica.co.ao
-```
 
 Adicionar virtual host no Apache (`httpd-vhosts.conf`):
 
 ```apache
 <VirtualHost *:80>
-    ServerName oficinamecanica.co.ao
-    DocumentRoot "C:/xampp/htdocs/oficinamecanica.co.ao"
-    <Directory "C:/xampp/htdocs/oficinamecanica.co.ao">
+    ServerName oficina-de-equipamentos-informatico.local
+    DocumentRoot "C:/xampp/htdocs/oficina-de-equipamentos-informatico"
+    <Directory "C:/xampp/htdocs/oficina-de-equipamentos-informatico">
         AllowOverride All
         Require all granted
     </Directory>
 </VirtualHost>
 ```
 
-Reiniciar o Apache após as alterações.
+Adicionar ao ficheiro de hosts (`C:\Windows\System32\drivers\etc\hosts`):
+
+```
+127.0.0.1   oficina-de-equipamentos-informatico.local
+```
 
 ---
 
@@ -219,7 +207,7 @@ Reiniciar o Apache após as alterações.
 Aceder ao health check para confirmar que tudo está a funcionar:
 
 ```
-http://localhost/oficinamecanica.co.ao/health.php
+http://localhost/oficina-de-equipamentos-informatico/health.php
 ```
 
 Resposta esperada:
@@ -227,10 +215,10 @@ Resposta esperada:
 ```json
 {
   "status": "ok",
-  "app": "Oficina Mecânica - Sistema de Gestão",
-  "version": "1.0.0",
-  "php": "8.x.x",
-  "timestamp": "2026-06-14 10:00:00",
+  "app": "Sistema de Gestão de Assistência Técnica Informática",
+  "version": "3.0.1",
+  "php": "8.2.x",
+  "timestamp": "2026-06-19 10:00:00",
   "checks": {
     "config": { "status": "ok", "message": "Ficheiro .env encontrado" },
     "dependencies": { "status": "ok", "message": "Dependências instaladas" },
@@ -247,7 +235,7 @@ Resposta esperada:
 Aceder no browser:
 
 ```
-http://localhost/oficinamecanica.co.ao/
+http://localhost/oficina-de-equipamentos-informatico/
 ```
 
 O sistema redireccionará automaticamente para a página de login.
@@ -258,11 +246,21 @@ O sistema redireccionará automaticamente para a página de login.
 
 | Campo | Valor |
 |-------|-------|
-| Email | Definido na primeira configuração |
+| Email | `antjacinto11672@gmail.com` |
 | Senha | `12345` (MD5: `827ccb0eea8a706c4c34a16891f84e7b`) |
 | Nível | `adimin` |
 
 > Altere a senha após o primeiro acesso no menu **Perfil**.
+
+---
+
+## Níveis de Acesso
+
+| Nível | Descrição | Acesso |
+|-------|-----------|--------|
+| `adimin` | Administrador / Gerente | Acesso total ao sistema |
+| `tecnico` | Técnico de Informática | Orçamentos, serviços, comissões |
+| `recep` | Recepcionista | Clientes, equipamentos, contas, orçamentos |
 
 ---
 
@@ -292,13 +290,13 @@ O endpoint `/health.php` verifica o estado da aplicação em tempo real:
 Aceder à documentação Swagger UI:
 
 ```
-http://localhost/oficinamecanica.co.ao/docs.php
+http://localhost/oficina-de-equipamentos-informatico/docs.php
 ```
 
 O ficheiro OpenAPI 3.0 está disponível em:
 
 ```
-http://localhost/oficinamecanica.co.ao/swagger.json
+http://localhost/oficina-de-equipamentos-informatico/swagger.json
 ```
 
 ---
@@ -306,11 +304,11 @@ http://localhost/oficinamecanica.co.ao/swagger.json
 ## Estrutura do Projecto
 
 ```
-oficina-mecanica/
+oficina-de-equipamentos-informatico/
 ├── app/
 │   └── adms/
 │       ├── Controllers/     # 32 controladores (um por módulo)
-│       ├── Models/          # 8 modelos com lógica de negócio
+│       ├── Models/          # Modelos com lógica de negócio
 │       └── Views/           # Templates HTML por módulo
 ├── core/
 │   ├── Config.php           # Carrega variáveis do .env
@@ -318,7 +316,8 @@ oficina-mecanica/
 │   ├── ConfigView.php       # Renderização de layouts
 │   └── Permissao.php        # Controlo de acesso por sessão
 ├── database/
-│   └── schema.sql           # Schema completo (tabelas, views, dados iniciais)
+│   ├── schema.sql           # Schema completo (tabelas, views, dados iniciais)
+│   └── migrate_to_informatica.sql  # Migração de BD existente (mecanica → manutencao)
 ├── vendor/                  # Dependências Composer (gerado)
 ├── .env                     # Configuração local (não commitado)
 ├── .env.example             # Exemplo de configuração
@@ -361,8 +360,8 @@ Browser → Apache (.htaccess) → index.php
 | `DISCOUNT_VALUE` | `0.05` | Percentagem de desconto (5%) |
 | `VALIDATE_QUOTE_DAYS` | `5` | Dias de validade de um orçamento |
 | `DELETE_QUOTE_DAYS` | `15` | Dias para eliminar orçamentos abertos automaticamente |
-| `MECHANIC_COMMISSION` | `SIM` | Activar sistema de comissões |
-| `COMMISSION_VALUE` | `0.30` | Percentagem de comissão dos mecânicos (30%) |
+| `TECHNICIAN_COMMISSION` | `SIM` | Activar sistema de comissões dos técnicos |
+| `COMMISSION_VALUE` | `0.30` | Percentagem de comissão dos técnicos (30%) |
 
 ---
 
@@ -371,7 +370,7 @@ Browser → Apache (.htaccess) → index.php
 | Problema | Solução |
 |----------|---------|
 | `Erro: Arquivo .env não encontrado` | Execute `cp .env.example .env` e configure |
-| `SQLSTATE[HY000] [1049] Unknown database` | Crie a base de dados: `CREATE DATABASE mecanica` |
+| `SQLSTATE[HY000] [1049] Unknown database` | Crie a base de dados: `CREATE DATABASE manutencao` |
 | `Class not found` | Execute `composer install` |
 | Página em branco / erro 500 | Active `DEBUG=true` no `.env` para ver erros |
 | Redirecciona sempre para login | Verifique se `mod_rewrite` está activo |
@@ -384,6 +383,7 @@ Browser → Apache (.htaccess) → index.php
 
 **António Jacinto**
 - Email: antjacinto11672@gmail.com
+- GitHub: [AntonioJacinto11672](https://github.com/AntonioJacinto11672)
 
 ---
 

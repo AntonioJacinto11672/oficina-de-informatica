@@ -1,221 +1,162 @@
-# 🚀 GUIA DE EXECUÇÃO - Oficina Mecânica
+# Guia de Execução — Assistência Técnica Informática
 
-## 1️⃣ CONFIGURAÇÃO INICIAL
+## 1. Configuração Inicial
 
-### Copiar arquivo de exemplo
+### Copiar ficheiro de exemplo
 ```bash
-# O arquivo .env já foi criado, mas se precisar resetar:
-copy .env.example .env
+# Linux / macOS / Git Bash
+cp .env.example .env
+
+# Windows PowerShell
+Copy-Item .env.example .env
 ```
 
-### Editar configurações (se necessário)
-```bash
-# Abra o arquivo .env e altere conforme seu ambiente:
-# DB_HOST, DB_NAME, DB_USER, DB_PASS, APP_URL, etc.
+### Editar configurações
+Abra o ficheiro `.env` e ajuste conforme o seu ambiente:
+
+```ini
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=manutencao
+DB_USER=root
+DB_PASS=
+
+APP_URL=http://localhost/oficina-de-equipamentos-informatico/
+APP_NAME=ASSISTÊNCIA TÉCNICA INFORMÁTICA
 ```
 
 ---
 
-## 2️⃣ INSTALAR DEPENDÊNCIAS (Já Feito ✓)
+## 2. Instalar Dependências
 
 ```bash
-# Já instaladas! Se precisar atualizar:
+composer install
+```
+
+Se a extensão `gd` não estiver activa:
+```bash
 composer install --ignore-platform-req=ext-gd
-
-# Ou para atualizar para últimas versões:
-composer update --ignore-platform-req=ext-gd
 ```
 
 ---
 
-## 3️⃣ VALIDAR CONFIGURAÇÃO
+## 3. Criar e Popular a Base de Dados
 
 ```bash
-# Execute o script de teste:
+# Criar a base de dados
+mysql -u root -e "CREATE DATABASE manutencao CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
+# Aplicar o schema (Git Bash / Linux / macOS)
+mysql -u root manutencao < database/schema.sql
+
+# Windows PowerShell
+Get-Content "database\schema.sql" | & "C:\xampp\mysql\bin\mysql.exe" -u root manutencao
+```
+
+---
+
+## 4. Validar Configuração
+
+```bash
 php test-config.php
 ```
 
-**Resultado esperado:**
+Resultado esperado:
 ```
 === TESTE DE CONFIGURAÇÃO DO PROJETO ===
-
 1. CARREGANDO CONFIGURAÇÕES:
    ✓ Arquivo .env carregado com sucesso
-
 2. VERIFICANDO DEPENDÊNCIAS:
    ✓ Composer autoloader encontrado
    - PHPMailer: ✓
    - mPDF: ✓
-
 3. TESTANDO CONEXÃO COM BANCO DE DADOS:
    ✓ Conexão com MySQL bem-sucedida
-
-[... resto do output ...]
-
 === FIM DO TESTE ===
-Se todos os testes passaram, o projeto está pronto para usar!
 ```
 
 ---
 
-## 4️⃣ INICIAR O SERVIDOR LOCAL
+## 5. Acessar a Aplicação
 
-### Opção A: Usar PHP Built-in Server
+| URL | Descrição |
+|-----|-----------|
+| `http://localhost/oficina-de-equipamentos-informatico/` | Aplicação principal |
+| `http://localhost/oficina-de-equipamentos-informatico/health.php` | Estado do sistema |
+| `http://localhost/oficina-de-equipamentos-informatico/docs.php` | Documentação Swagger UI |
+
+**Credenciais padrão:**
+
+| Campo | Valor |
+|-------|-------|
+| Email | `antjacinto11672@gmail.com` |
+| Senha | `12345` |
+
+---
+
+## 6. Verificar Erros
+
 ```bash
-# Na raiz do projeto:
-php -S localhost:8000
-```
-
-Acesse: http://localhost:8000
-
-### Opção B: Usar Apache/Nginx
-Certifique-se de que o document root aponta para a raiz do projeto.
-
----
-
-## 5️⃣ ACESSAR A APLICAÇÃO
-
-1. **URL Padrão:** http://localhost/oficinamecanica.co.ao/
-2. **Ou conforme .env:** O valor definido em `APP_URL`
-3. **Login:** Verifique com o administrador as credenciais
-
----
-
-## 6️⃣ VERIFICAR ERROS
-
-### Ver erros em tempo real
-```bash
-# Abra o arquivo error_log (se existir):
-tail -f error.log
-
-# Ou veja em php.ini:
-error_log=./php_errors.log
-display_errors=On (apenas desenvolvimento!)
-```
-
-### Modo Debug
-```env
-# Para ver debug adicional, edite .env:
+# Activar modo debug no .env:
 DEBUG=true
+
+# Ver log de erros PHP (XAMPP)
+tail -f C:\xampp\php\logs\php_error_log
 ```
 
 ---
 
-## 7️⃣ PROBLEMAS COMUNS E SOLUÇÕES
+## 7. Problemas Comuns
 
-### Erro: "Arquivo .env não encontrado"
-```bash
-# O arquivo foi criado, certifique-se de estar na raiz:
-ls -la .env  # ou: dir .env (Windows)
-```
-
-### Erro: "Não conseguiu conectar ao MySQL"
-```bash
-# Verifique as credenciais no .env:
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=mecanica
-DB_USER=root
-DB_PASS=
-
-# Teste a conexão:
-mysql -h localhost -u root -p mecanica
-```
-
-### Erro: "Classe não encontrada"
-```bash
-# Regenere o autoloader:
-composer dump-autoload
-```
-
-### Erro: "Extensão GD não ativada"
-```bash
-# Em php.ini, descomente:
-# extension=gd
-
-# Reinicie o servidor Apache/PHP-FPM
-```
-
-### Email de recuperação de senha não enviado
-
-O sistema usa **Mailtrap** (as mesmas credenciais já configuradas no projeto). Confirme que o `.env` contém:
-
-```ini
-SMTP_HOST=smtp.mailtrap.io
-SMTP_PORT=587
-SMTP_SECURE=tls
-SMTP_USER=c85e426e1ec5a1
-SMTP_PASS=7cf202962d5c0e
-```
-
-Os emails enviados aparecem na caixa de entrada do Mailtrap em https://mailtrap.io.
+| Problema | Solução |
+|----------|---------|
+| `Arquivo .env não encontrado` | `cp .env.example .env` |
+| `Unknown database 'manutencao'` | `CREATE DATABASE manutencao` |
+| `Class not found` | `composer install` |
+| Página em branco | Activar `DEBUG=true` no `.env` |
+| Redirecciona para login | Verificar `mod_rewrite` Apache |
+| PDFs não geram | Activar extensão `gd` no `php.ini` |
+| Email não enviado | Verificar `SMTP_*` no `.env` |
 
 ---
 
-## 8️⃣ VERIFICAÇÃO RÁPIDA DE SAÚDE
-
-```bash
-# Execute esta sequência para verificar tudo:
-echo "=== Verificação Rápida ==="
-php -v
-composer --version
-php test-config.php
-```
-
----
-
-## 9️⃣ ESTRUTURA DO PROJETO
+## 8. Estrutura do Projecto
 
 ```
-oficina-mecanica/
-├── index.php              (Entrada principal)
-├── .env                   (Configurações locais - NÃO ENVIAR PARA GIT)
-├── .env.example           (Exemplo de configuração)
-├── composer.json          (Dependências)
-├── composer.lock          (Lock das dependências)
-├── test-config.php        (Script de validação)
-│
+oficina-de-equipamentos-informatico/
+├── index.php                  (Entry point)
+├── .env                       (Configurações locais — NÃO commitado)
+├── .env.example               (Exemplo de configuração)
+├── composer.json
+├── health.php                 (Health check)
+├── docs.php                   (Swagger UI)
+├── swagger.json               (OpenAPI 3.0 spec)
 ├── core/
-│   ├── Config.php        (✨ Novo - Gerenciar .env)
-│   ├── ConfigController.php
-│   ├── ConfigView.php
-│   └── Permissao.php
-│
-├── app/
-│   └── adms/
-│       ├── Controllers/
-│       ├── Models/
-│       └── Views/
-│
-└── vendor/                (Dependências do Composer)
+│   ├── Config.php             (Carrega .env)
+│   ├── ConfigController.php   (Router + constantes)
+│   ├── ConfigView.php         (Renderização de views)
+│   └── Permissao.php          (Controlo de acesso)
+├── app/adms/
+│   ├── Controllers/           (32 controllers)
+│   ├── Models/                (Lógica de negócio)
+│   └── Views/                 (Templates HTML)
+├── database/
+│   ├── schema.sql             (Schema completo)
+│   └── migrate_to_informatica.sql
+└── vendor/                    (Composer)
 ```
 
 ---
 
-## 🔟 DICAS IMPORTANTES
+## 9. Verificação Rápida
 
-✅ **Sempre execute `php test-config.php` após alterações**
-
-✅ **Mantenha `.env` fora do repositório Git**
-
-✅ **Use `.env.example` como referência**
-
-✅ **Em produção, configure variáveis no servidor**
-
-✅ **Faça backup regular do banco de dados**
+```bash
+php -v                          # PHP 8.2+
+composer --version              # Composer 2.x
+php test-config.php             # Valida configuração
+php validate-project.php        # Validação completa
+```
 
 ---
 
-## 📞 SUPORTE
-
-Erro persistente? Verifique:
-1. ✓ Arquivo `.env` existe e tem permissões de leitura
-2. ✓ MySQL está rodando (`mysql -u root`)
-3. ✓ Composer está instalado (`composer --version`)
-4. ✓ PHP versão está correta (`php -v`)
-
-Execute `php test-config.php` para diagnóstico completo!
-
----
-
-*Versão: 1.1 | Atualizado: 15 de Junho de 2026*
+*Versão: 3.0.1 | Atualizado: 19 de Junho de 2026*
