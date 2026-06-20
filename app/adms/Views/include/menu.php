@@ -27,7 +27,7 @@ if (!defined('R4F5CC')) {
                 <h1 class="text-light"><a class="navbar-brand bg-light btn btn-outline-secondary acessar" href=""><span>Sistema de Gestão de Assistência Técnica Informática</span></a></h1>
                 <!-- Uncomment below if you prefer to use an image logo -->
                 <!-- <a href="index.ht
-                ml"><img src="Views/Administrador/assets/img/logo.png" alt="" class="img-fluid"></a>-->
+                ml"><img src="Views/Administrador/assets/img/logo_novo.png" alt="" class="img-fluid"></a>-->
             </div>
             <button class="navbar-toggler position-absolute d-md-none collapsed float-center" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

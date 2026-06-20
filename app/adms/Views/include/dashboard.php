@@ -675,7 +675,7 @@
                 </button>
 
                 <!-- Topbar Search -->
-                <img src="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo.png" width="150" height="55"/>
+                <img src="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo_novo.png" width="150" height="55"/>
 
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">

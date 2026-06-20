@@ -49,8 +49,10 @@ mysql -u root -e "CREATE DATABASE manutencao CHARACTER SET utf8mb4 COLLATE utf8m
 # Aplicar o schema (Git Bash / Linux / macOS)
 mysql -u root manutencao < database/schema.sql
 
-# Windows PowerShell
-Get-Content "database\schema.sql" | & "C:\xampp\mysql\bin\mysql.exe" -u root manutencao
+# Windows CMD / PowerShell
+"C:\xampp\mysql\bin\mysql.exe" -u root manutencao < database\schema.sql
+
+> Em ambiente Windows, evite `Get-Content | mysql.exe` quando existir erro do plugin `caching_sha2_password.dll`. Use o redirecionamento direto para garantir que o cliente MySQL usa os ficheiros de plugin corretos.
 ```
 
 ---

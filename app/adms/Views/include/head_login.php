@@ -15,7 +15,7 @@ if (!defined('R4F5CC')) {
         <meta content="Oficina,Mecânica,Carros,Motas, Reparação" name="keywords">
 
         <!-- Favicons -->
-        <link href="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo.png" rel="icon">
+        <link href="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo_novo.png" rel="icon">
 
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,700,700i&display=swap" rel="stylesheet">

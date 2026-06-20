@@ -18,7 +18,7 @@ if (!defined('R4F5CC')) {
 
 
 <form class="form-signin shadow needs-validation" novalidate method="POST" action="">
-    <img class="mb-4" src="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo.png" alt="" width="75%" height="75">
+    <img class="mb-4" src="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo_novo.png" alt="" width="75%" height="75">
     <!--<h1 class="h3 mb-3 font-weight-normal">Login</h1>-->
     <?php
     if (isset($_SESSION['msg'])) {

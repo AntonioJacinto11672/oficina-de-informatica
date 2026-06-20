@@ -9,7 +9,7 @@ if (!defined('R4F5CC')) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link href="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo.png" rel="icon">
+        <link href="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo_novo.png" rel="icon">
         <title>Sistema de gestão de Assistência técnica</title>
 
         <!-- Bootstrap 4 -->

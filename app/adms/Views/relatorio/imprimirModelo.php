@@ -17,7 +17,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <h4>
-                                        <img src="app/adms/assets/imagens/login/logo.png" width="100px" height="60px"/>
+                                        <img src="app/adms/assets/imagens/login/logo_novo.png" width="100px" height="60px"/>
                                         <span class=""><?php echo NOME_OFICINA; ?></span><br>
                                         <small class="badge badge-primary text-wrap" style="width: 24rem;"><?php echo ENDERECO_OFICINA; ?><br><?php echo "Tel: " . TELEFONE . "  " . "Email:" . EMAIL_OFICINA; ?></small>
                                         <small class="float-right">Data: <?php echo date("d/M/Y"); ?></small>

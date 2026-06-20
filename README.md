@@ -192,9 +192,11 @@ Importar o schema da base de dados:
 # Git Bash / Linux / macOS
 mysql -u root manutencao < database/schema.sql
 
-# Windows PowerShell (via Get-Content)
-Get-Content "database\schema.sql" | & "C:\xampp\mysql\bin\mysql.exe" -u root manutencao
+# Windows CMD / PowerShell
+"C:\xampp\mysql\bin\mysql.exe" -u root manutencao < database\schema.sql
 ```
+
+> Se o PowerShell continuar a gerar erro de plugin como `caching_sha2_password.dll`, use o mesmo `mysql.exe` da instalação XAMPP em CMD ou Git Bash para garantir que o cliente e o servidor estão a usar o mesmo binário.
 
 O schema cria automaticamente todas as tabelas, 6 views e o utilizador administrador padrão.
 

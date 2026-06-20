@@ -6,7 +6,7 @@ if (!defined('R4F5CC')) {
 ?>
 
 <form class="form-signin shadow needs-validation" novalidate method="POST" action="">
-    <img class="mb-4" src="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo.png" alt="" width="75%" height="75">
+    <img class="mb-4" src="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo_novo.png" alt="" width="75%" height="75">
 
     <h5 class="mb-2 font-weight-bold text-center" style="color:#1e4356;">Nova Senha</h5>
     <p class="text-muted text-center mb-4" style="font-size:14px;">

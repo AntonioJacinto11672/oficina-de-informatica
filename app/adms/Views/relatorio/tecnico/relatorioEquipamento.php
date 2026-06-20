@@ -24,7 +24,7 @@ if (!defined('R4F5CC')) {
                             <div class="row">
                                 <div class="col-12">
                                     <h4 class="text-center">
-                                        <img src="app/adms/assets/imagens/login/logo.png" width="100px" height="60px"/>
+                                        <img src="app/adms/assets/imagens/login/logo_novo.png" width="100px" height="60px"/>
                                         <span class="text-muted"><?php echo NOME_OFICINA; ?></span>
                                     </h4>
                                     <div class="row justify-content-center">
