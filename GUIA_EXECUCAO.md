@@ -53,6 +53,8 @@ mysql -u root manutencao < database/schema.sql
 "C:\xampp\mysql\bin\mysql.exe" -u root manutencao < database\schema.sql
 
 > Em ambiente Windows, evite `Get-Content | mysql.exe` quando existir erro do plugin `caching_sha2_password.dll`. Use o redirecionamento direto para garantir que o cliente MySQL usa os ficheiros de plugin corretos.
+>
+> Se ainda vir `ERROR 1045 (28000): Plugin caching_sha2_password could not be loaded`, é sinal de incompatibilidade entre o cliente e o servidor MySQL/MariaDB. Use um cliente MySQL 8 compatível ou altere o método de autenticação do servidor para `mysql_native_password`.
 ```
 
 ---

@@ -190,13 +190,29 @@ Importar o schema da base de dados:
 
 ```bash
 # Git Bash / Linux / macOS
-mysql -u root manutencao < database/schema.sql
+mysql -u root -P 3308 manutencao < database/schema.sql
 
-# Windows CMD / PowerShell
-"C:\xampp\mysql\bin\mysql.exe" -u root manutencao < database\schema.sql
+# Windows CMD
+"C:\xampp\mysql\bin\mysql.exe" -u root -P 3308 manutencao < database\schema.sql
 ```
 
-> Se o PowerShell continuar a gerar erro de plugin como `caching_sha2_password.dll`, use o mesmo `mysql.exe` da instalação XAMPP em CMD ou Git Bash para garantir que o cliente e o servidor estão a usar o mesmo binário.
+> Se aparecer `ERROR 1045 (28000): Plugin caching_sha2_password could not be loaded`, isso indica que o cliente MySQL não suporta o método de autenticação do servidor. Nesse caso:
+>
+> - Use um cliente MySQL 8 oficial em vez do cliente MariaDB do XAMPP
+> - Ou altere o utilizador root para `mysql_native_password` no servidor MySQL
+> - Uma alternativa é usar o comando `mysql --default-auth=mysql_native_password -u root -p manutencao < database/schema.sql` se o servidor suportar essa opção.
+
+Importar a migração da base legada (opcional):
+
+```bash
+# Git Bash / Linux / macOS
+mysql -u root -P 3308 manutencao < database/migrate_to_informatica.sql
+
+# Windows CMD
+"C:\xampp\mysql\bin\mysql.exe" -u root -P 3308 manutencao < database\migrate_to_informatica.sql
+```
+
+> A migração `database/migrate_to_informatica.sql` deve ser executada apenas numa base `manutencao` que contenha o esquema legadoo de `mecanicos`, `veiculo` e `entrada_veiculo`. Se essas tabelas já foram removidas ou a base já estiver atualizada, o comando falhará com um erro do tipo `Table 'manutencao.mecanicos' doesn't exist`.
 
 O schema cria automaticamente todas as tabelas, 6 views e o utilizador administrador padrão.
 
