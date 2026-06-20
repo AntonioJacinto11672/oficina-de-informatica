@@ -77,7 +77,7 @@ if (isset($_SESSION['idlogado'])) {
                                         ?> KZ
                                     </td>
                                     <td><?php
-                                        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+                                        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
                                         $query = "SELECT * FROM usuario WHERE nif='{$valorForm['tecnico']}' LIMIT 1";
                                         $result = mysqli_query($newConn, $query);
                                         $mecanico = mysqli_fetch_assoc($result);
@@ -86,7 +86,7 @@ if (isset($_SESSION['idlogado'])) {
                                         ?>
                                         <?php echo @$mecanico; ?></td>
                                     <td><?php
-                                        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+                                        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
                                         $query = "SELECT * FROM clientes WHERE nif='{$valorForm['cliente']}' LIMIT 1";
                                         $result = mysqli_query($newConn, $query);
                                         $mecanico = mysqli_fetch_assoc($result);

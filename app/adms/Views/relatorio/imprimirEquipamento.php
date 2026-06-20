@@ -70,7 +70,7 @@ if (!defined('R4F5CC')) {
                                                         <td><?php echo $valorForm['matricula']; ?></td>
                                                         <td>
                                                             <?php
-                                                            $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+                                                            $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
                                                             $query = "SELECT * FROM clientes WHERE nif='{$valorForm['cliente']}' LIMIT 1";
                                                             $result = mysqli_query($newConn, $query);
                                                             $mecanico = mysqli_fetch_assoc($result);
@@ -80,7 +80,7 @@ if (!defined('R4F5CC')) {
                                                             <?php echo @$mecanico; ?></td>
                                                         </td>
                                                         <td><?php
-                                                            $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+                                                            $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
                                                             $query = "SELECT * FROM usuario WHERE nif='{$valorForm['niftecnico']}' LIMIT 1";
                                                             $result = mysqli_query($newConn, $query);
                                                             $mecanico = mysqli_fetch_assoc($result);

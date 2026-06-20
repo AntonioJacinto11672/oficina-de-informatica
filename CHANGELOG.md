@@ -81,7 +81,7 @@ O nome da base de dados foi alterado de `mecanica` para `manutencao`. Todos os f
 
 **Data:** 2026-06-17
 **Autor:** António Jacinto
-**Descrição:** Transformação completa do sistema de gestão de oficina mecânica para sistema de gestão de assistência técnica informática. Toda a nomenclatura do projeto — classes, ficheiros, métodos, colunas de base de dados e rotas — foi atualizada para refletir o novo domínio.
+**Descrição:** Transformação completa do Sistema de gestão de Assistência técnica para sistema de gestão de assistência técnica informática. Toda a nomenclatura do projeto — classes, ficheiros, métodos, colunas de base de dados e rotas — foi atualizada para refletir o novo domínio.
 
 ---
 

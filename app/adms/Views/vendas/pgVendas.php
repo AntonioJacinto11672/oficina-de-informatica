@@ -61,7 +61,7 @@ if (isset($_SESSION['idlogado'])) {
                                         echo $valorForm['valor_novo'];
                                         ?>KZ</td>
                                      <td><?php
-                                        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+                                        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
                                         $query = "SELECT * FROM usuario WHERE nif='{$valorForm['funcionario']}' LIMIT 1";
                                         $result = mysqli_query($newConn, $query);
                                         $funcionario = mysqli_fetch_assoc($result);

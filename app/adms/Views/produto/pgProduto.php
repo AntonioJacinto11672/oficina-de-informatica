@@ -405,7 +405,14 @@ if (isset($_SESSION['idlogado'])) {
                                                 <div class="col-md-8">
                                                     <div class="card-body">
                                                         <p class="" style="font-size: 20px;"><?php echo $valorForm['descricao']; ?></p>
-                                                        <p class="" style="font-size: 20px;"><small class="text-muted">Ultima Atualização: <?php echo $valorForm['modified']; ?></small></p>
+                                                        <p class="" style="font-size: 20px;"><small class="text-muted">Ultima Atualização: <?php
+                                                            $__prod_modified = $valorForm['modified'] ?? $valorForm['created'] ?? null;
+                                                            if (!empty($__prod_modified)) {
+                                                                echo date('d/m/Y H:i', strtotime($__prod_modified));
+                                                            } else {
+                                                                echo '-';
+                                                            }
+                                                            ?></small></p>
                                                     </div>
                                                 </div>
                                             </div>

@@ -87,30 +87,19 @@ if (!defined('R4F5CC')) {
                                         Nº de Série: <?php echo $value['matricula']; ?><br>
                                         Marca: <?php echo $value['marca']; ?><br>
                                         Modelo: <?php echo $value['modelo']; ?><br>
-                                        Cor: <?php echo $value['cor']; ?>
+                                        Cor: <?php echo $value['cor']; ?><br>
                                     </address>
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-sm-4 invoice-col">
                                     <address>
                                         <strong></strong><br>
-                                        Nº Motor: <?php echo $value['nmotor']; ?><br>
-                                        Nº Quadro: <?php echo $value['nquadro']; ?><br>
-                                        Peso Bruto: <?php echo $value['pesobruto']; ?><br>
-                                        Medidas do Pneu: <?php echo $value['medidapeneu']; ?><br>
-                                        Cilidrade: <?php echo $value['cilindrada']; ?><br>
-
                                     </address>
                                 </div>
                                 <!-- /.col -->
                                 <div class="col-sm-4 invoice-col">
                                     <address>
                                         <strong></strong><br>
-                                        Nº de Cilidros: <?php echo $value['ncilindros']; ?><br>
-                                        Tipo Caixa: <?php echo $value['tipocaixa']; ?><br>
-                                        Combustivel: <?php echo $value['combustivel']; ?><br>
-                                        Distancia entre Eixos: <?php echo $value['distanciaeixo']; ?><br>
-                                        Lotação: <?php echo $value['lotacao']; ?><br>
                                     </address>
                                 </div>
                                 <!-- /.col -->
@@ -215,7 +204,7 @@ if (!defined('R4F5CC')) {
                                             <tr>
                                                 <th>Técnico:</th>
                                                 <td><?php
-                                                    $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+                                                    $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
                                                     $query = "SELECT * FROM usuario WHERE nif='{$value['tecnico']}' LIMIT 1";
                                                     $result = mysqli_query($newConn, $query);
                                                     $mecanico = mysqli_fetch_assoc($result);

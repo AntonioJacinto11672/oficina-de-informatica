@@ -11,7 +11,7 @@ if (!defined('R4F5CC')) {
 <footer class="sticky-footer bg-white">
     <div class="container my-auto">
         <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Itel 2020</span>
+            <span>Copyright &copy; ULA 2026</span>
         </div>
     </div>
 </footer>

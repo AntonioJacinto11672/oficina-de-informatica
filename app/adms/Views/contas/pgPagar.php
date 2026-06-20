@@ -53,7 +53,7 @@ if (isset($_SESSION['idlogado'])) {
                             for ($index = 0; $index < count($this->dados); $index++) {
                                 $valorForm = $this->dados[$index];
                                 if (!is_array($valorForm) || !isset($valorForm['idcontas_apagar'])) continue;
-                                $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+                                $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
                                 $query = "SELECT * FROM usuario WHERE nif='{$valorForm['funcionario']}' LIMIT 1";
                                 $result = mysqli_query($newConn, $query);
                                 $mecRow = ($result !== false) ? mysqli_fetch_assoc($result) : [];
@@ -109,7 +109,7 @@ if (isset($_SESSION['idlogado'])) {
         for ($index = 0; $index < count($this->dados); $index++) {
             $valorForm = $this->dados[$index];
             if (!is_array($valorForm) || !isset($valorForm['idcontas_apagar'])) continue;
-            $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+            $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
             $query = "SELECT * FROM usuario WHERE nif='{$valorForm['funcionario']}' LIMIT 1";
             $result = mysqli_query($newConn, $query);
             $mecRow = ($result !== false) ? mysqli_fetch_assoc($result) : [];
@@ -274,7 +274,7 @@ if (isset($_SESSION['idlogado'])) {
                             <ul class="list-unstyled">
                                 <li class="media my-4">
                                     <?php
-                                    $connProd = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+                                    $connProd = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
                                     $qProd = "SELECT * FROM compras_contaspagar_dadosproduto WHERE idcontas_apagar='{$valorForm['idcontas_apagar']}' LIMIT 1";
                                     $rProd = mysqli_query($connProd, $qProd);
                                     $teste = ($rProd !== false) ? mysqli_fetch_assoc($rProd) : null;

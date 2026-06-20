@@ -26,7 +26,7 @@ class AdmsPerfil extends Conn {
     }
 
     protected function limparInput($input) {
-        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
         $var = mysqli_real_escape_string($newConn, $input);
         $var = htmlspecialchars($var);
         return $var;

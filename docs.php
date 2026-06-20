@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Oficina Mecânica - Documentação da API</title>
-  <meta name="description" content="Documentação interactiva do Sistema de Gestão de Oficina Mecânica">
+  <meta name="description" content="Documentação interactiva do Sistema de gestão de Assistência técnica">
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }

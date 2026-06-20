@@ -212,7 +212,7 @@ if (isset($_SESSION['idlogado'])) {
                                         <td><?php echo $valorForm['tipo_servico']; ?></td>
                                         <td><?php echo date("d/m/Y", strtotime($valorForm['data_orcamento'])); ?></td>
                                         <td><?php
-                                            $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+                                            $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
                                             $query = "SELECT * FROM usuario WHERE nif='{$valorForm['tecnico']}' LIMIT 1";
                                             $result = mysqli_query($newConn, $query);
                                             $mecanico = mysqli_fetch_assoc($result);

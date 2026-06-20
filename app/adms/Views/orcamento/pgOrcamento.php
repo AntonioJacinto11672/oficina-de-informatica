@@ -69,7 +69,7 @@ if (isset($_SESSION['idlogado'])) {
                                 placeholder="Digete o Nif  do Cliente" required>
                             <datalist id="browsers">
                                 <?php
-                                $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+                                $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
                                 $query = "SELECT nif FROM clientes LIMIT 3";
                                 $result = mysqli_query($newConn, $query);
                                 while ($mecanico = mysqli_fetch_assoc($result)) {
@@ -246,7 +246,7 @@ if (isset($_SESSION['idlogado'])) {
                                     ;
                                     ?></td>
                                     <td><?php
-                                    $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+                                    $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
                                     $query = "SELECT * FROM usuario WHERE nif='{$valorForm['tecnico']}' LIMIT 1";
                                     $result = mysqli_query($newConn, $query);
                                     $mecanico = mysqli_fetch_assoc($result);

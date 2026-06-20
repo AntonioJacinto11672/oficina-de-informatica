@@ -33,9 +33,16 @@ class AdmsTecnico extends Conn {
     //Limpar Os campos contra O sqlInjection e Caracter especial
 
     protected function limparInput($input) {
-        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
+        if (!$newConn) {
+            if (DEBUG_MODE) {
+                die('Erro de conexão ao banco de dados: ' . mysqli_connect_error());
+            }
+            die('Erro: não foi possível conectar ao banco de dados. Verifique as credenciais em .env.');
+        }
         $var = mysqli_real_escape_string($newConn, $input);
         $var = htmlspecialchars($var);
+        mysqli_close($newConn);
         return $var;
     }
 
@@ -177,9 +184,9 @@ class AdmsTecnico extends Conn {
                                                         <div class="row invoice-info">                   
                                                             <div class="col-sm-4 invoice-col">
                                                                     <address>
-                                                                        <strong>Veículo.</strong><br>
-                                                                        Matricula:  ' . $this->dados['matricula'] . '<br>
-                                                                        Marca ' . $this->dados['marca'] . '<br>
+                                                                        <strong>Equipamento.</strong><br>
+                                                                        Nº de Série:  ' . $this->dados['matricula'] . '<br>
+                                                                        Marca: ' . $this->dados['marca'] . '<br>
                                                                         Modelo:   ' . $this->dados['modelo'] . '<br>
                                                                         Cor:   ' . $this->dados['cor'] . '<br> 
                                                                     </address>
@@ -189,11 +196,6 @@ class AdmsTecnico extends Conn {
                                                                 <div class="col-sm-4 invoice-col">
                                                                      <address>
                                                                          <strong></strong><br>
-                                                                         Nº Motor: ' . $this->dados['nmotor'] . ' <br>
-                                                                         Nº Quadro: ' . $this->dados['nquadro'] . '<br>
-                                                                         Peso Bruto:  ' . $this->dados['pesobruto'] . ' <br>
-                                                                         Medidas do Pneu: ' . $this->dados['medidapeneu'] . '<br>
-                                                                         Cilidrade:  ' . $this->dados['cilindrada'] . '; <br>
                                                                      </address>
                                                                  </div>                        
                                                       ';
@@ -201,11 +203,6 @@ class AdmsTecnico extends Conn {
                                                                  <div class="col-sm-4 invoice-col">
                                                                      <address>
                                                                          <strong></strong><br>
-                                                                         Nº de Cilidros: ' . $this->dados['nmotor'] . ' <br>
-                                                                         Tipo Caixa: ' . $this->dados['nquadro'] . '<br>
-                                                                         Combustivel:  ' . $this->dados['pesobruto'] . ' <br>
-                                                                         Distancia entre Eixos: ' . $this->dados['medidapeneu'] . '<br>
-                                                                         Lotação:  ' . $this->dados['cilindrada'] . '; <br>
                                                                      </address>
                                                                  </div>
                                                              </div>
@@ -419,9 +416,9 @@ class AdmsTecnico extends Conn {
                                                         <div class="row invoice-info">                   
                                                             <div class="col-sm-4 invoice-col">
                                                                     <address>
-                                                                        <strong>Veículo.</strong><br>
-                                                                        Matricula:  ' . $this->dados['matricula'] . '<br>
-                                                                        Marca ' . $this->dados['marca'] . '<br>
+                                                                        <strong>Equipamento.</strong><br>
+                                                                        Nº de Série:  ' . $this->dados['matricula'] . '<br>
+                                                                        Marca: ' . $this->dados['marca'] . '<br>
                                                                         Modelo:   ' . $this->dados['modelo'] . '<br>
                                                                         Cor:   ' . $this->dados['cor'] . '<br> 
                                                                     </address>
@@ -431,11 +428,6 @@ class AdmsTecnico extends Conn {
                                                                 <div class="col-sm-4 invoice-col">
                                                                      <address>
                                                                          <strong></strong><br>
-                                                                         Nº Motor: ' . $this->dados['nmotor'] . ' <br>
-                                                                         Nº Quadro: ' . $this->dados['nquadro'] . '<br>
-                                                                         Peso Bruto:  ' . $this->dados['pesobruto'] . ' <br>
-                                                                         Medidas do Pneu: ' . $this->dados['medidapeneu'] . '<br>
-                                                                         Cilidrade:  ' . $this->dados['cilindrada'] . '; <br>
                                                                      </address>
                                                                  </div>                        
                                                       ';
@@ -443,11 +435,6 @@ class AdmsTecnico extends Conn {
                                                                  <div class="col-sm-4 invoice-col">
                                                                      <address>
                                                                          <strong></strong><br>
-                                                                         Nº de Cilidros: ' . $this->dados['nmotor'] . ' <br>
-                                                                         Tipo Caixa: ' . $this->dados['nquadro'] . '<br>
-                                                                         Combustivel:  ' . $this->dados['pesobruto'] . ' <br>
-                                                                         Distancia entre Eixos: ' . $this->dados['medidapeneu'] . '<br>
-                                                                         Lotação:  ' . $this->dados['cilindrada'] . '; <br>
                                                                      </address>
                                                                  </div>
                                                              </div>
@@ -688,9 +675,9 @@ class AdmsTecnico extends Conn {
                                                         <div class="row invoice-info">                   
                                                             <div class="col-sm-4 invoice-col">
                                                                     <address>
-                                                                        <strong>Veículo.</strong><br>
-                                                                        Matricula:  ' . $this->dados['matricula'] . '<br>
-                                                                        Marca ' . $this->dados['marca'] . '<br>
+                                                                        <strong>Equipamento.</strong><br>
+                                                                        Nº de Série:  ' . $this->dados['matricula'] . '<br>
+                                                                        Marca: ' . $this->dados['marca'] . '<br>
                                                                         Modelo:   ' . $this->dados['modelo'] . '<br>
                                                                         Cor:   ' . $this->dados['cor'] . '<br> 
                                                                     </address>
@@ -700,11 +687,6 @@ class AdmsTecnico extends Conn {
                                                                 <div class="col-sm-4 invoice-col">
                                                                      <address>
                                                                          <strong></strong><br>
-                                                                         Nº Motor: ' . $this->dados['nmotor'] . ' <br>
-                                                                         Nº Quadro: ' . $this->dados['nquadro'] . '<br>
-                                                                         Peso Bruto:  ' . $this->dados['pesobruto'] . ' <br>
-                                                                         Medidas do Pneu: ' . $this->dados['medidapeneu'] . '<br>
-                                                                         Cilidrade:  ' . $this->dados['cilindrada'] . '; <br>
                                                                      </address>
                                                                  </div>                        
                                                       ';
@@ -712,11 +694,6 @@ class AdmsTecnico extends Conn {
                                                                  <div class="col-sm-4 invoice-col">
                                                                      <address>
                                                                          <strong></strong><br>
-                                                                         Nº de Cilidros: ' . $this->dados['nmotor'] . ' <br>
-                                                                         Tipo Caixa: ' . $this->dados['nquadro'] . '<br>
-                                                                         Combustivel:  ' . $this->dados['pesobruto'] . ' <br>
-                                                                         Distancia entre Eixos: ' . $this->dados['medidapeneu'] . '<br>
-                                                                         Lotação:  ' . $this->dados['cilindrada'] . '; <br>
                                                                      </address>
                                                                  </div>
                                                              </div>

@@ -37,6 +37,9 @@ SELECT `idmecanicos`, `nbi`, `nif`, `nome`, `sobrenome`, `email`, `telefone`, `m
 FROM `mecanicos`
 WHERE (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='manutencao' AND table_name='mecanicos') > 0;
 
+-- Remover tabela legada mecanicos após migração de dados
+DROP TABLE IF EXISTS `mecanicos`;
+
 -- =============================================================================
 -- PARTE 2: Renomear coluna orcamentos.mecanico → orcamentos.tecnico
 -- =============================================================================
@@ -51,8 +54,10 @@ ALTER TABLE `orcamentos`
 
 UPDATE `orcamentos` SET `tecnico` = `mecanico` WHERE `tecnico` IS NULL AND `mecanico` IS NOT NULL;
 
--- Nota: a coluna `mecanico` é mantida como legado para compatibilidade.
--- Para removê-la após confirmar estabilidade: ALTER TABLE orcamentos DROP COLUMN mecanico;
+-- Remover coluna legada após transferência de dados
+ALTER TABLE `orcamentos` DROP COLUMN IF EXISTS `mecanico`;
+
+-- Nota: a coluna `mecanico` só é removida após a migração.
 
 -- =============================================================================
 -- PARTE 3: Renomear coluna conntas_areceber.mecanico → .tecnico
@@ -62,6 +67,8 @@ ALTER TABLE `conntas_areceber`
     ADD COLUMN IF NOT EXISTS `tecnico` VARCHAR(100) DEFAULT NULL AFTER `adiantameto`;
 
 UPDATE `conntas_areceber` SET `tecnico` = `mecanico` WHERE `tecnico` IS NULL AND `mecanico` IS NOT NULL;
+
+ALTER TABLE `conntas_areceber` DROP COLUMN IF EXISTS `mecanico`;
 
 -- =============================================================================
 -- PARTE 4: Renomear nifmecanico → niftecnico nas tabelas de entrada e comissão
@@ -73,6 +80,8 @@ ALTER TABLE `comissao`
 
 UPDATE `comissao` SET `niftecnico` = `nifmecanico` WHERE `niftecnico` IS NULL AND `nifmecanico` IS NOT NULL;
 
+ALTER TABLE `comissao` DROP COLUMN IF EXISTS `nifmecanico`;
+
 -- entrada_equipamento (criada na PARTE 7 — já inclui niftecnico, nada a fazer aqui)
 
 -- entrada_veiculo (legado)
@@ -80,6 +89,8 @@ ALTER TABLE `entrada_veiculo`
     ADD COLUMN IF NOT EXISTS `niftecnico` VARCHAR(30) DEFAULT NULL;
 
 UPDATE `entrada_veiculo` SET `niftecnico` = `nifmecanico` WHERE `niftecnico` IS NULL AND `nifmecanico` IS NOT NULL;
+
+ALTER TABLE `entrada_veiculo` DROP COLUMN IF EXISTS `nifmecanico`;
 
 -- =============================================================================
 -- PARTE 5: Atualizar nivel='mecanico' → 'tecnico' na tabela usuario

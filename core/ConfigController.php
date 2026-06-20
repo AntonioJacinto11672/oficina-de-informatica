@@ -52,7 +52,7 @@ class ConfigController {
         define('DEBUG_MODE', $config['DEBUG'] === 'true' ? true : false);
 
         define('DBHOST', $config['DB_HOST'] ?? 'localhost');
-        define('DBPORT', $config['DB_PORT'] ?? '3306');
+        define('DBPORT', $config['DB_PORT'] ?? '3308');
         define('DBNAME', $config['DB_NAME'] ?? 'manutencao');
         define('DBUSER', $config['DB_USER'] ?? 'root');
         define('DBPASS', $config['DB_PASS'] ?? '');
@@ -64,12 +64,19 @@ class ConfigController {
 
 
 
-        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME);
+        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
+        if (!$newConn) {
+            if (DEBUG_MODE) {
+                die('Erro de conexão ao banco de dados: ' . mysqli_connect_error());
+            }
+            die('Erro: não foi possível conectar ao banco de dados. Verifique as credenciais em .env.');
+        }
+
         $query = "SELECT * FROM usuario WHERE nivel='adimin'";
         $result = mysqli_query($newConn, $query);
-        if (mysqli_num_rows($result) == 0) {
-            $query = "INSERT INTO usuario (nbi,nif,nome,sobrenome,email,telefone,senha,nivel,st_conta,foto,created,modified) VALUES ('ALDADL1222334','ALDADL1222334','Antonio','Jacinto','Jacinto ','937585960','827ccb0eea8a706c4c34a16891f84e7b','Ativada')";
-            $result = mysqli_query($newConn, $query);
+        if ($result && mysqli_num_rows($result) == 0) {
+            $query = "INSERT INTO usuario (nbi,nif,nome,sobrenome,email,telefone,senha,nivel,st_conta) VALUES ('ALDADL1222334','ALDADL1222334','Antonio','Jacinto','antjacinto11672@gmail.com','937585960','827ccb0eea8a706c4c34a16891f84e7b','adimin','Ativada')";
+            mysqli_query($newConn, $query);
         }
     }
 

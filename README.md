@@ -60,6 +60,8 @@ Antes de começar, certifique-se de que tem instalado:
 - **Composer 2.x** — [getcomposer.org](https://getcomposer.org)
 
 > **Recomendado no Windows:** [XAMPP](https://www.apachefriends.org) inclui PHP, MySQL e Apache numa única instalação.
+>
+> **Nota:** se aparecer um erro como `mpdf/mpdf requires ext-gd` ao executar `composer install`, habilite a extensão `gd` no ficheiro `php.ini` do PHP CLI e do servidor web.
 
 ---
 
@@ -82,6 +84,36 @@ C:\xampp\htdocs\oficina-de-equipamentos-informatico\
 ---
 
 ### 2. Instalar as dependências PHP
+
+```bash
+composer install
+```
+
+Se receber este erro:
+
+```text
+mpdf/mpdf v8.3.1 requires ext-gd * -> it is missing from your system.
+```
+
+No Windows com XAMPP, o `php.ini` do PHP CLI e do Apache deve carregar a extensão `gd`.
+
+1. Execute `php --ini` para ver o ficheiro de configuração carregado pelo PHP CLI.
+2. Abra `C:\xampp\php\php.ini` e localize a linha:
+
+```ini
+;extension=gd
+```
+
+3. Remova o `;` para ativar a extensão:
+
+```ini
+extension=gd
+```
+
+4. Reinicie o Apache pelo XAMPP Control Panel.
+5. Feche o terminal atual e abra um novo para garantir que o PHP CLI recarrega as definições.
+
+Depois, execute novamente:
 
 ```bash
 composer install
@@ -375,6 +407,7 @@ Browser → Apache (.htaccess) → index.php
 | Página em branco / erro 500 | Active `DEBUG=true` no `.env` para ver erros |
 | Redirecciona sempre para login | Verifique se `mod_rewrite` está activo |
 | PDFs não geram | Verifique se a extensão `gd` e `mbstring` estão activas |
+| `composer install` falha com `mpdf/mpdf requires ext-gd` | Habilite `extension=gd` no `php.ini` do PHP CLI e do Apache, e reinicie o servidor web |
 | Email de recuperação não enviado | Verifique as credenciais Mailtrap em `SMTP_USER` e `SMTP_PASS` no `.env` |
 
 ---

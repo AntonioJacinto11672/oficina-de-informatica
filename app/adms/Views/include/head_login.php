@@ -10,8 +10,8 @@ if (!defined('R4F5CC')) {
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title>Sistema de gestão de Oficina Mecânica</title>
-        <meta content="#Sistema de gestão de Oficina Mecânica" name="description">
+        <title>Sistema de gestão de Assistência técnica</title>
+        <meta content="#Sistema de gestão de Assistência técnica" name="description">
         <meta content="Oficina,Mecânica,Carros,Motas, Reparação" name="keywords">
 
         <!-- Favicons -->
