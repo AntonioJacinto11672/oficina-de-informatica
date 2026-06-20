@@ -21,7 +21,7 @@ DB_NAME=manutencao
 DB_USER=root
 DB_PASS=
 
-APP_URL=http://localhost/oficina-de-equipamentos-informatico/
+APP_URL=http://localhost/oficina-de-informatica/
 APP_NAME=ASSISTÊNCIA TÉCNICA INFORMÁTICA
 ```
 
@@ -85,9 +85,9 @@ Resultado esperado:
 
 | URL | Descrição |
 |-----|-----------|
-| `http://localhost/oficina-de-equipamentos-informatico/` | Aplicação principal |
-| `http://localhost/oficina-de-equipamentos-informatico/health.php` | Estado do sistema |
-| `http://localhost/oficina-de-equipamentos-informatico/docs.php` | Documentação Swagger UI |
+| `http://localhost/oficina-de-informatica/` | Aplicação principal |
+| `http://localhost/oficina-de-informatica/health.php` | Estado do sistema |
+| `http://localhost/oficina-de-informatica/docs.php` | Documentação Swagger UI |
 
 **Credenciais padrão:**
 
@@ -127,7 +127,7 @@ tail -f C:\xampp\php\logs\php_error_log
 ## 8. Estrutura do Projecto
 
 ```
-oficina-de-equipamentos-informatico/
+oficina-de-informatica/
 ├── index.php                  (Entry point)
 ├── .env                       (Configurações locais — NÃO commitado)
 ├── .env.example               (Exemplo de configuração)

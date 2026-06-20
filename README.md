@@ -78,7 +78,7 @@ Ou copiar a pasta do projecto para o directório do servidor:
 
 ```
 # XAMPP
-C:\xampp\htdocs\oficina-de-equipamentos-informatico\
+C:\xampp\htdocs\oficina-de-informatica\
 ```
 
 ---
@@ -148,7 +148,7 @@ DB_USER=root
 DB_PASS=
 
 # === APLICAÇÃO ===
-APP_URL=http://localhost/oficina-de-equipamentos-informatico/
+APP_URL=http://localhost/oficina-de-informatica/
 APP_NAME=ASSISTÊNCIA TÉCNICA INFORMÁTICA
 
 # === DADOS DA OFICINA ===
@@ -235,9 +235,9 @@ Adicionar virtual host no Apache (`httpd-vhosts.conf`):
 
 ```apache
 <VirtualHost *:80>
-    ServerName oficina-de-equipamentos-informatico.local
-    DocumentRoot "C:/xampp/htdocs/oficina-de-equipamentos-informatico"
-    <Directory "C:/xampp/htdocs/oficina-de-equipamentos-informatico">
+    ServerName oficina-de-informatica.local
+    DocumentRoot "C:/xampp/htdocs/oficina-de-informatica"
+    <Directory "C:/xampp/htdocs/oficina-de-informatica">
         AllowOverride All
         Require all granted
     </Directory>
@@ -247,7 +247,7 @@ Adicionar virtual host no Apache (`httpd-vhosts.conf`):
 Adicionar ao ficheiro de hosts (`C:\Windows\System32\drivers\etc\hosts`):
 
 ```
-127.0.0.1   oficina-de-equipamentos-informatico.local
+127.0.0.1   oficina-de-informatica.local
 ```
 
 ---
@@ -257,7 +257,7 @@ Adicionar ao ficheiro de hosts (`C:\Windows\System32\drivers\etc\hosts`):
 Aceder ao health check para confirmar que tudo está a funcionar:
 
 ```
-http://localhost/oficina-de-equipamentos-informatico/health.php
+http://localhost/oficina-de-informatica/health.php
 ```
 
 Resposta esperada:
@@ -285,7 +285,7 @@ Resposta esperada:
 Aceder no browser:
 
 ```
-http://localhost/oficina-de-equipamentos-informatico/
+http://localhost/oficina-de-informatica/
 ```
 
 O sistema redireccionará automaticamente para a página de login.
@@ -340,13 +340,13 @@ O endpoint `/health.php` verifica o estado da aplicação em tempo real:
 Aceder à documentação Swagger UI:
 
 ```
-http://localhost/oficina-de-equipamentos-informatico/docs.php
+http://localhost/oficina-de-informatica/docs.php
 ```
 
 O ficheiro OpenAPI 3.0 está disponível em:
 
 ```
-http://localhost/oficina-de-equipamentos-informatico/swagger.json
+http://localhost/oficina-de-informatica/swagger.json
 ```
 
 ---
@@ -354,7 +354,7 @@ http://localhost/oficina-de-equipamentos-informatico/swagger.json
 ## Estrutura do Projecto
 
 ```
-oficina-de-equipamentos-informatico/
+oficina-de-informatica/
 ├── app/
 │   └── adms/
 │       ├── Controllers/     # 32 controladores (um por módulo)

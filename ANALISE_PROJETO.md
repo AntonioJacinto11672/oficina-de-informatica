@@ -33,7 +33,7 @@ DB_USER=root
 DB_PASS=
 
 # Aplicação
-APP_URL=http://localhost/oficina-de-equipamentos-informatico/
+APP_URL=http://localhost/oficina-de-informatica/
 APP_NAME=ASSISTÊNCIA TÉCNICA INFORMÁTICA
 
 # Dados da Oficina
@@ -146,7 +146,7 @@ $email = \Core\Config::get('OFFICE_EMAIL', 'padrao@exemplo.com');
 ### Desenvolvimento
 1. Configure `.env` com as suas credenciais
 2. Execute `php test-config.php` para validar
-3. Aceda a `http://localhost/oficina-de-equipamentos-informatico/`
+3. Aceda a `http://localhost/oficina-de-informatica/`
 
 ### Produção
 1. `DEBUG=false`
