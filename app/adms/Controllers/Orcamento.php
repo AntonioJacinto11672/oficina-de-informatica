@@ -44,6 +44,10 @@ class Orcamento {
                 }
 
                 //var_dump($this->dadosForm);
+            } elseif (isset($this->dadosForm['btnAprovar'])) {
+                $cdsProduto = new \App\adms\Models\AdmsTecnico();
+                $this->dadosForm['status'] = "Aprovado";
+                $cdsProduto->aprovarOrcamento($this->dadosForm);
             } elseif (isset($this->dadosForm['btnEnviar'])) {
                 $dados = new \App\adms\Models\AdmsTecnico();
                 //var_dump($this->dadosForm);

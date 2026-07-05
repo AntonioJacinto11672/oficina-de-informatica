@@ -3,7 +3,9 @@ if (!defined('R4F5CC')) {
     header("Location: /");
     die("Erro: Página não encontrada!");
 }
-if (isset($this->dados['form'])) {
+// Garantir que $valorForm é um array para evitar acessar offsets de uma string
+$valorForm = [];
+if (isset($this->dados['form']) && is_array($this->dados['form'])) {
     $valorForm = $this->dados['form'];
 }
 ?>
@@ -185,8 +187,12 @@ if (isset($this->dados['form'])) {
                     </tfoot>
                     <tbody>
                         <?php
-                        if (isset($this->dados)) {
+                        if (!empty($this->dados) && is_array($this->dados)) {
                             foreach ($this->dados as $valorForm) {
+                                if (!is_array($valorForm)) {
+                                    // ignorar entradas inesperadas que não sejam arrays
+                                    continue;
+                                }
                                 $id = $valorForm['idequipamento'] ?? $valorForm['idveiculo'] ?? 0;
                                 $estadoBadge = [
                                     'Recebido'       => 'secondary',

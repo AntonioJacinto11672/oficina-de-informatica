@@ -37,19 +37,22 @@ class AdmsRecepcionista extends Conn {
             $defaultNome = 'Universidade Lusiadas de Angola';
             $defaultSobrenome = '';
             $defaultMorada = 'Luanda, Mutamba Largo do Lumeji, nº 11/12';
-
+            $defaultEmail = 'geral@ula.co.ao';
+            $defaultTelefone = '+244 930-038-044';
             $query = "SELECT idclientes FROM clientes WHERE nif = :nif LIMIT 1";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':nif', $defaultNif);
             $stmt->execute();
             if (!$stmt->rowCount()) {
                 $insert = "INSERT INTO clientes (nbi, nif, nome, sobrenome, email, telefone, morada, created)
-                           VALUES (:nbi, :nif, :nome, :sobrenome, '', '', :morada, NOW())";
+                           VALUES (:nbi, :nif, :nome, :sobrenome, :email, :telefone, :morada, NOW())";
                 $ins = $this->conn->prepare($insert);
                 $ins->bindParam(':nbi', $defaultNbi);
                 $ins->bindParam(':nif', $defaultNif);
                 $ins->bindParam(':nome', $defaultNome);
                 $ins->bindParam(':sobrenome', $defaultSobrenome);
+                $ins->bindParam(':email', $defaultEmail);
+                $ins->bindParam(':telefone', $defaultTelefone);
                 $ins->bindParam(':morada', $defaultMorada);
                 $ins->execute();
             }

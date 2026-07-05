@@ -2,7 +2,7 @@
 <!--  Modal Deletar-->
 <!--  Modal Deletar-->
 <div class="modal fade" id="orcamentodash" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="<?php echo URLADM; ?>dashboard" method="get" class="needs-validation" enctype="multipart/form-data" novalidate>
@@ -51,7 +51,7 @@
 <!--  Modal Deletar-->
 <!--  Modal Deletar-->
 <div class="modal fade" id="servicodash" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="<?php echo URLADM; ?>dashboard" method="get" class="needs-validation" enctype="multipart/form-data" novalidate>
@@ -97,7 +97,7 @@
 </div>
 <!--  Modal Deletar-->
 <div class="modal fade" id="movimentacao" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="<?php echo URLADM; ?>dashboard" method="get" class="needs-validation" enctype="multipart/form-data" novalidate>
@@ -123,7 +123,7 @@
                             <select class="custom-select" id="validationCustom04" name="status" required>
                                 <option>Todos</option>
                                 <option>Entrada</option>
-                                <option>Saída</option>                                
+                                <option>Saída</option>
                             </select>
                             <div class="invalid-feedback">
                                 Please select a valid status.
@@ -142,7 +142,7 @@
 </div>
 <!--  Modal Deletar-->
 <div class="modal fade" id="compras" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="<?php echo URLADM; ?>dashboard" method="get" class="needs-validation" enctype="multipart/form-data" novalidate>
@@ -178,7 +178,7 @@
 
 <!--  Modal Deletar-->
 <div class="modal fade" id="vendasr" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="<?php echo URLADM; ?>dashboard" method="get" class="needs-validation" enctype="multipart/form-data" novalidate>
@@ -213,7 +213,7 @@
 
 <!--  Modal Deletar-->
 <div class="modal fade" id="conta_receber" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="<?php echo URLADM; ?>dashboard" method="get" class="needs-validation" enctype="multipart/form-data" novalidate>
@@ -247,7 +247,7 @@
 </div>
 <!--  Modal Deletar-->
 <div class="modal fade" id="conta_pagar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="<?php echo URLADM; ?>dashboard" method="get" class="needs-validation" enctype="multipart/form-data" novalidate>
@@ -282,7 +282,7 @@
 
 <!--  Modal Deletar-->
 <div class="modal fade" id="comissao" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="<?php echo URLADM; ?>dashboard" method="get" class="needs-validation" enctype="multipart/form-data" novalidate>
@@ -348,9 +348,9 @@
                 <span>Home</span></a>
         </li>
         <?php
-//var_dump($_SESSION);
+        //var_dump($_SESSION);
         if ($_SESSION['usuario'] == 'adimin') {
-            ?>
+        ?>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -363,7 +363,7 @@
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                   aria-expanded="true" aria-controls="collapseTwo">
+                    aria-expanded="true" aria-controls="collapseTwo">
                     <i class="icon icofont-users"></i>
                     <span>Pessoas</span>
                 </a>
@@ -380,16 +380,37 @@
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                   aria-expanded="true" aria-controls="collapseUtilities">
+                    aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="icon icofont-plus"></i>
                     <span>Produtos</span>
                 </a>
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                     data-parent="#accordionSidebar">
+                    data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Produtos</h6>
                         <a class="collapse-item" href="<?php echo URLADM; ?>categoria">Categorias</a>
                         <a class="collapse-item" href="<?php echo URLADM; ?>produto">Produtos</a>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>equipamento">Equipamentos</a>
+                    </div>
+                </div>
+            </li>
+
+              <!-- Heading -->
+            <div class="sidebar-heading">
+                Contas
+            </div>
+            <!-- COnta á pagar a receber menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwoContas"
+                    aria-expanded="true" aria-controls="collapseTwoContas">
+                    <i class="icon icofont-users"></i>
+                    <span>Pagar e Receber</span>
+                </a>
+                <div id="collapseTwoContas" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Pessoas</h6>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>contasPagar">Contas à Pagar</a>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>contaReceber">Conta à Receber</a>
                     </div>
                 </div>
             </li>
@@ -435,7 +456,7 @@
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#consultas"
-                   aria-expanded="true" aria-controls="collapsePages">
+                    aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-search"></i>
                     <span>Consultas</span>
                 </a>
@@ -453,7 +474,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                   aria-expanded="true" aria-controls="collapsePages">
+                    aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Relatório</span>
                 </a>
@@ -475,7 +496,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#estatistica"
-                   aria-expanded="true" aria-controls="collapsePages">
+                    aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-chart-area text-warning"></i>
                     <span>Estatística</span>
                 </a>
@@ -489,7 +510,7 @@
                 </div>
             </li>
         <?php } elseif ($_SESSION['usuario'] == 'recep') {
-            ?>
+        ?>
             <!-- Heading -->
             <div class="sidebar-heading">
                 Contas
@@ -498,7 +519,7 @@
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                   aria-expanded="true" aria-controls="collapseTwo">
+                    aria-expanded="true" aria-controls="collapseTwo">
                     <i class="icon icofont-users"></i>
                     <span>Pagar e Receber</span>
                 </a>
@@ -514,12 +535,12 @@
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                   aria-expanded="true" aria-controls="collapseUtilities">
+                    aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="icon icofont-plus"></i>
                     <span>Cadastro</span>
                 </a>
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                     data-parent="#accordionSidebar">
+                    data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Cadastro</h6>
                         <a class="collapse-item" href="<?php echo URLADM; ?>cliente">Clientes</a>
@@ -548,17 +569,13 @@
                     <i class="fas fa-fw fa-table"></i>
                     <span>Compras</span></a>
             </li>
-
-
-
-
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#consultas"
-                   aria-expanded="true" aria-controls="collapsePages">
+                    aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-search"></i>
                     <span>Consultas</span>
                 </a>
@@ -576,7 +593,7 @@
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                   aria-expanded="true" aria-controls="collapsePages">
+                    aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Relatório</span>
                 </a>
@@ -598,7 +615,7 @@
             </li>
 
         <?php } elseif ($_SESSION['usuario'] == 'tecnico') {
-            ?>
+        ?>
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -638,7 +655,7 @@
                     <span>Relatório Comissão</span></a>
             </li>
 
-            <?php
+        <?php
         } else {
             $_SESSION['msg'] = '
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -675,7 +692,7 @@
                 </button>
 
                 <!-- Topbar Search -->
-                <img src="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo_novo.png" width="150" height="55"/>
+                <img src="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo_novo.png" width="150" height="55" />
 
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
@@ -690,24 +707,24 @@
                     <!-- Nav Item - User Information -->
                     <li class="nav-item dropdown no-arrow p-4">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="mr-2 d-none d-lg-inline text-gray-600 small" style="font-size: 16px;"><?php
-                                if (isset($_SESSION['nome']) && isset($_SESSION['sobrenome'])) {
-                                    echo $_SESSION['nome'] . " " . $_SESSION['sobrenome'];
-                                }
-                                ?></span>
+                                                                                                                if (isset($_SESSION['nome']) && isset($_SESSION['sobrenome'])) {
+                                                                                                                    echo $_SESSION['nome'] . " " . $_SESSION['sobrenome'];
+                                                                                                                }
+                                                                                                                ?></span>
                             <img class="img-profile rounded-circle"
-                                 src="<?php echo URLADM; ?>app/adms/assets/foto/<?php
-                                 if (isset($_SESSION['foto'])) {
-                                     echo $_SESSION['foto'];
-                                 } else {
-                                     echo "img_avatar3.png";
-                                 }
-                                 ?>">
+                                src="<?php echo URLADM; ?>app/adms/assets/foto/<?php
+                                                                                if (isset($_SESSION['foto'])) {
+                                                                                    echo $_SESSION['foto'];
+                                                                                } else {
+                                                                                    echo "img_avatar3.png";
+                                                                                }
+                                                                                ?>">
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                             aria-labelledby="userDropdown">
+                            aria-labelledby="userDropdown">
                             <!--<a class="dropdown-item" href="#" data-toggle="modal" data-target="#editperfil<?php echo $_SESSION['idlogado']; ?>">
                                 <i class="fas fa-eye fa-sm fa-fw mr-2 text-gray-400" style="color: blue!important" ></i>
                                 Ver Perfil
@@ -717,7 +734,7 @@
                                 Editar Perfil
                             </a>-->
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editperfil<?php echo $_SESSION['idlogado']; ?>">
-                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400" style="color: blue!important" ></i>
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400" style="color: blue!important"></i>
                                 Editar Foto de Perfil
                             </a>
                             <div class="dropdown-divider"></div>
@@ -732,7 +749,3 @@
 
             </nav>
             <!-- End of Topbar -->
-
-
-
-

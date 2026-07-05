@@ -269,6 +269,9 @@ if (isset($_SESSION['idlogado'])) {
                                                 title="Imprimir Relatório"><i
                                                     class="icofont icofont-file-text text-success px-1"></i></a>
                                             <a href="" data-toggle="modal"
+                                                data-target="#aprovar<?php echo $valorForm['idorcamentos']; ?>"
+                                                title="Aprovar Orcamento"><i class="icofont icofont-ui-check text-success px-2"></i></a>
+                                            <a href="" data-toggle="modal"
                                                 data-target="#enviar<?php echo $valorForm['idorcamentos']; ?>"
                                                 title="Enviar Email"><i class="icofont icofont-envelope text-success px-1"></i></a>
                                         <?php } else { ?>
@@ -328,6 +331,39 @@ if (isset($_SESSION['idlogado'])) {
                                         <button class="btn btn-primary" name="btnDeletOrcamento">Sim</button>
                                     </form>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Aprovar Orçamento Modal-->
+                    <div class="modal fade" id="aprovar<?php echo $valorForm['idorcamentos']; ?>" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content text-white">
+                                <form action="" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+                                    <div class="modal-header bg-secondary">
+                                        <h5 class="modal-title" id="exampleModalLabel">Aprovar Orcamento</h5>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="text-gray-600"> Tens Certeza Que Queres Aprovar Esse Orçamento??</p>
+                                    </div>
+                                    <div class="modal-footer bg-success text-gray-600">
+                                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                        <input type="hidden" value="<?php echo $valorForm['idorcamentos']; ?>" name="idorcamentos"/>
+                                        <input type="hidden" value="<?php echo $valorForm['matricula']; ?>" name="veiculo"/>
+                                        <input type="hidden" value="<?php echo $valorForm['idtipo_servico']; ?>" name="id_tipo_servico"/>
+                                        <input type="hidden" value="<?php echo $valorForm['valor']; ?>" name="valor_t_servico"/>
+                                        <input type="hidden" value="<?php echo $valorForm['valor']; ?>" name="valor_maodeobra"/>
+                                        <input type="hidden" value="<?php echo $valorForm['nif']; ?>" name="cliente"/>
+                                        <input type="hidden" value="<?php echo $valorForm['tipo_servico']; ?>" name="servico"/>
+                                        <input type="hidden" value="<?php echo $valorForm['matricula']; ?>" name="matricula"/>
+                                        <input type="hidden" value="<?php echo $valorForm['modelo']; ?>" name="modelo"/>
+                                        <input type="hidden" value="<?php echo $valorForm['tipo']; ?>" name="tipo"/>
+                                        <button class="btn btn-info text-white " name="btnAprovar">Aprovar</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
