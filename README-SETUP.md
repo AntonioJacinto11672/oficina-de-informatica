@@ -65,7 +65,7 @@
 php test-config.php
 
 # 2. Aceder à aplicação
-# http://localhost/oficina-de-equipamentos-informatico/
+# http://localhost/oficina-de-informatica/
 ```
 
 ### Antes de Produção
@@ -81,7 +81,7 @@ php test-config.php
 ## Estrutura do Projecto
 
 ```
-oficina-de-equipamentos-informatico/
+oficina-de-informatica/
 ├── index.php
 ├── .env                        (LOCAL — não commitado)
 ├── .env.example                (GIT)
