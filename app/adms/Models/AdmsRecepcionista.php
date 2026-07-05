@@ -26,6 +26,36 @@ class AdmsRecepcionista extends Conn {
 
     public function __construct() {
         $this->conn = $this->connect();
+        $this->ensureDefaultClient();
+    }
+
+    private function ensureDefaultClient()
+    {
+        try {
+            $defaultNif = '0.025.816/00-4';
+            $defaultNbi = '0.025.816/00-4';
+            $defaultNome = 'Universidade Lusiadas de Angola';
+            $defaultSobrenome = '';
+            $defaultMorada = 'Luanda, Mutamba Largo do Lumeji, nº 11/12';
+
+            $query = "SELECT idclientes FROM clientes WHERE nif = :nif LIMIT 1";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':nif', $defaultNif);
+            $stmt->execute();
+            if (!$stmt->rowCount()) {
+                $insert = "INSERT INTO clientes (nbi, nif, nome, sobrenome, email, telefone, morada, created)
+                           VALUES (:nbi, :nif, :nome, :sobrenome, '', '', :morada, NOW())";
+                $ins = $this->conn->prepare($insert);
+                $ins->bindParam(':nbi', $defaultNbi);
+                $ins->bindParam(':nif', $defaultNif);
+                $ins->bindParam(':nome', $defaultNome);
+                $ins->bindParam(':sobrenome', $defaultSobrenome);
+                $ins->bindParam(':morada', $defaultMorada);
+                $ins->execute();
+            }
+        } catch (\Exception $e) {
+            // não interromper execução por causa de falha na criação do cliente padrão
+        }
     }
 
     protected function limparInput($input) {

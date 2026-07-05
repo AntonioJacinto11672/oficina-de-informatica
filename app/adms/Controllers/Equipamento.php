@@ -57,6 +57,14 @@ class Equipamento {
     public function dadosCliente() {
         $dadosEquipamentos = new \App\adms\Models\AdmsRecepcionista();
         $this->dadosAlter = $dadosEquipamentos->dadosClientes();
+        // localizar cliente padrão e passar id para a view
+        $this->dados['default_client_id'] = null;
+        foreach ($this->dadosAlter as $c) {
+            if (isset($c['nif']) && trim($c['nif']) === '0.025.816/00-4') {
+                $this->dados['default_client_id'] = $c['idclientes'];
+                break;
+            }
+        }
     }
 
 }

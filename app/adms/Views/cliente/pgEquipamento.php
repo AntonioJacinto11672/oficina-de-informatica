@@ -78,16 +78,37 @@ if (isset($this->dados['form'])) {
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="idclientes">Cliente (NIF) <span class="text-danger">*</span></label>
-                            <select class="custom-select" id="idclientes" name="idclientes" required>
-                                <option selected disabled value="">Selecione o Cliente...</option>
-                                <?php
+                            <?php
+                            // Se houver um cliente padrão definido pelo controlador, passamos o id automaticamente
+                            if (isset($this->dados['default_client_id']) && $this->dados['default_client_id']) {
+                                $defaultId = $this->dados['default_client_id'];
+                                $defaultInfo = null;
+                                if (isset($this->dadosAlter)) {
+                                    foreach ($this->dadosAlter as $valor) {
+                                        if ($valor['idclientes'] == $defaultId) {
+                                            $defaultInfo = $valor;
+                                            break;
+                                        }
+                                    }
+                                }
+                                echo '<input type="hidden" id="idclientes" name="idclientes" value="' . htmlspecialchars($defaultId) . '">';
+                                if ($defaultInfo) {
+                                    echo '<input type="text" class="form-control" value="' . htmlspecialchars($defaultInfo['nif'] . ' — ' . $defaultInfo['nome'] . ' ' . $defaultInfo['sobrenome']) . '" readonly>'; 
+                                } else {
+                                    echo '<input type="text" class="form-control" value="Cliente padrão" readonly>'; 
+                                }
+                            } else {
+                                // fallback: mostrar select com todos os clientes
+                                echo '<select class="custom-select" id="idclientes" name="idclientes" required>';
+                                echo '<option selected disabled value="">Selecione o Cliente...</option>';
                                 if (isset($this->dadosAlter)) {
                                     foreach ($this->dadosAlter as $valor) {
                                         echo '<option value="' . $valor['idclientes'] . '">' . htmlspecialchars($valor['nif'] . ' — ' . $valor['nome'] . ' ' . $valor['sobrenome']) . '</option>';
                                     }
                                 }
-                                ?>
-                            </select>
+                                echo '</select>';
+                            }
+                            ?>
                             <div class="invalid-feedback">Selecione o cliente.</div>
                         </div>
                         <div class="form-group col-md-6">
