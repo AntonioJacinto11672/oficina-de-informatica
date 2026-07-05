@@ -2674,10 +2674,14 @@ class AdmsTecnico extends Conn {
     }
 
     public function dadosEntradaEquipamento() {
-        $query_dados = "SELECT * FROM entrada_equipamento ORDER BY id DESC";
+        $query_dados = "SELECT e.*, c.nome AS cliente_nome, c.sobrenome AS cliente_sobrenome, u.nome AS tecnico_nome, u.sobrenome AS tecnico_sobrenome
+                        FROM entrada_equipamento e
+                        LEFT JOIN clientes c ON c.nif = e.cliente
+                        LEFT JOIN usuario u ON u.nif = e.niftecnico
+                        ORDER BY e.id DESC";
         $result_dados = $this->conn->prepare($query_dados);
         $result_dados->execute();
-        $this->dados = $result_dados->fetchAll();
+        $this->dados = $result_dados->fetchAll(PDO::FETCH_ASSOC);
         return $this->dados;
     }
 

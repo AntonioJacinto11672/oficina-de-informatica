@@ -9,6 +9,8 @@ namespace App\adms\Controllers;
  */
 class EntradaEquipamento {
     private $dados;
+    private $dadosForm;
+
     public function index() {
         if (!empty(filter_input_array(INPUT_POST, FILTER_DEFAULT))) {
             $this->dadosForm = filter_input_array(INPUT_POST, FILTER_DEFAULT);
@@ -25,7 +27,7 @@ class EntradaEquipamento {
         }
 
         $this->dadosEntradaEquipamento();
-        $carregarView = new \Core\ConfigView("adms/Views/entradaEquipamento/pgEntradaVeiulo", $this->dados);
+        $carregarView = new \Core\ConfigView("adms/Views/entradaEquipamento/pgEntradaEquipamento", $this->dados);
         $carregarView->renderizar();
     }
     private function dadosEntradaEquipamento() {

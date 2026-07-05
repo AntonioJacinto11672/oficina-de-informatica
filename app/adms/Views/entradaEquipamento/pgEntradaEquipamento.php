@@ -49,8 +49,7 @@ if (isset($this->dados['form'])) {
                     </tfoot>
                     <tbody>
                         <?php
-                        if (isset($this->dados)) {
-                            $conn = new PDO("mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4", DBUSER, DBPASS);
+                        if (!empty($this->dados) && is_array($this->dados)) {
                             foreach ($this->dados as $valorForm) {
                                 $estadoBadge = [
                                     'Recebido'         => 'secondary',
@@ -62,22 +61,14 @@ if (isset($this->dados['form'])) {
                                 ];
                                 $badgeColor = $estadoBadge[$valorForm['estado'] ?? ''] ?? 'secondary';
 
-                                $clienteNome = '—';
-                                if (!empty($valorForm['cliente'])) {
-                                    $stm = $conn->prepare("SELECT nome, sobrenome FROM clientes WHERE nif=:nif LIMIT 1");
-                                    $stm->bindParam(':nif', $valorForm['cliente']);
-                                    $stm->execute();
-                                    $cl = $stm->fetch(PDO::FETCH_ASSOC);
-                                    if ($cl) $clienteNome = htmlspecialchars($cl['nome'] . ' ' . $cl['sobrenome']);
+                                $clienteNome = htmlspecialchars(trim(($valorForm['cliente_nome'] ?? '') . ' ' . ($valorForm['cliente_sobrenome'] ?? '')));
+                                if (empty($clienteNome)) {
+                                    $clienteNome = '—';
                                 }
 
-                                $tecnicoNome = '—';
-                                if (!empty($valorForm['niftecnico'])) {
-                                    $stm = $conn->prepare("SELECT nome, sobrenome FROM usuario WHERE nif=:nif LIMIT 1");
-                                    $stm->bindParam(':nif', $valorForm['niftecnico']);
-                                    $stm->execute();
-                                    $tec = $stm->fetch(PDO::FETCH_ASSOC);
-                                    if ($tec) $tecnicoNome = htmlspecialchars($tec['nome'] . ' ' . $tec['sobrenome']);
+                                $tecnicoNome = htmlspecialchars(trim(($valorForm['tecnico_nome'] ?? '') . ' ' . ($valorForm['tecnico_sobrenome'] ?? '')));
+                                if (empty($tecnicoNome)) {
+                                    $tecnicoNome = '—';
                                 }
 
                                 $numeroSerie = htmlspecialchars($valorForm['numero_serie'] ?? $valorForm['matricula'] ?? '—');
