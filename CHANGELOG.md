@@ -2,6 +2,22 @@
 
 ---
 
+## Versão 3.0.2 — Dados de Demonstração e Documentação de Utilização
+
+**Data:** 2026-07-06
+**Autor:** António Jacinto
+
+### Adicionado
+
+| Item | Descrição |
+|------|-----------|
+| `database/seed_dados_padrao.sql` | Script opcional e idempotente com conta de técnico de demonstração (`tecnico@gmail.com` / `tecnico123`) e dois tipos de serviço: "Manutenção Preventiva" e "Manutenção Corretiva" |
+| `MANUAL_UTILIZACAO.md` | Novo manual de utilização passo-a-passo, organizado por perfil de acesso (Administrador, Recepcionista, Técnico) |
+| `README.md` | Passo de instalação opcional para o seed de dados de demonstração; tabela de credenciais actualizada com a conta de técnico; ligação para o novo manual |
+| `GUIA_EXECUCAO.md` | Passo de seed opcional e ligação para o novo manual de utilização |
+
+---
+
 ## Versão 3.0.1 — Correcções Pós-Migração
 
 **Data:** 2026-06-19

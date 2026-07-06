@@ -117,6 +117,8 @@ oficina-de-informatica/
 
 **Credenciais padrão:** `antjacinto11672@gmail.com` / `12345`
 
+> Para o guia passo-a-passo de utilização de cada módulo, consulte **[MANUAL_UTILIZACAO.md](MANUAL_UTILIZACAO.md)**.
+
 ---
 
-*Versão: 3.0.1 | Atualizado: 19 de Junho de 2026*
+*Versão: 3.0.2 | Atualizado: 06 de Julho de 2026*

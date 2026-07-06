@@ -216,6 +216,18 @@ mysql -u root -P 3308 manutencao < database/migrate_to_informatica.sql
 
 O schema cria automaticamente todas as tabelas, 6 views e o utilizador administrador padrão.
 
+Importar dados de demonstração adicionais (opcional — técnico padrão e tipos de serviço extra):
+
+```bash
+# Git Bash / Linux / macOS
+mysql -u root manutencao < database/seed_dados_padrao.sql
+
+# Windows CMD
+"C:\xampp\mysql\bin\mysql.exe" -u root manutencao < database\seed_dados_padrao.sql
+```
+
+> Este script é seguro para executar mais do que uma vez (não duplica registos). Cria a conta de técnico `tecnico@gmail.com` e os tipos de serviço "Manutenção Preventiva" e "Manutenção Corretiva".
+
 ---
 
 ### 5. Activar o mod_rewrite no Apache
@@ -294,11 +306,10 @@ O sistema redireccionará automaticamente para a página de login.
 
 ## Credenciais Padrão
 
-| Campo | Valor |
-|-------|-------|
-| Email | `antjacinto11672@gmail.com` |
-| Senha | `12345` (MD5: `827ccb0eea8a706c4c34a16891f84e7b`) |
-| Nível | `adimin` |
+| Perfil | Email | Senha | Nível | Origem |
+|--------|-------|-------|-------|--------|
+| Administrador | `antjacinto11672@gmail.com` | `12345` (MD5: `827ccb0eea8a706c4c34a16891f84e7b`) | `adimin` | `database/schema.sql` |
+| Técnico (demonstração) | `tecnico@gmail.com` | `tecnico123` | `tecnico` | `database/seed_dados_padrao.sql` (opcional) |
 
 > Altere a senha após o primeiro acesso no menu **Perfil**.
 
@@ -367,6 +378,7 @@ oficina-de-informatica/
 │   └── Permissao.php        # Controlo de acesso por sessão
 ├── database/
 │   ├── schema.sql           # Schema completo (tabelas, views, dados iniciais)
+│   ├── seed_dados_padrao.sql # Dados de demonstração opcionais (técnico + tipos de serviço)
 │   └── migrate_to_informatica.sql  # Migração de BD existente (mecanica → manutencao)
 ├── vendor/                  # Dependências Composer (gerado)
 ├── .env                     # Configuração local (não commitado)
@@ -378,6 +390,12 @@ oficina-de-informatica/
 ├── index.php                # Entry point da aplicação
 └── swagger.json             # Especificação OpenAPI 3.0
 ```
+
+---
+
+## Como Usar o Sistema
+
+Depois de instalar e aceder à aplicação, consulte o **[Manual de Utilização](MANUAL_UTILIZACAO.md)** — um guia passo-a-passo de todos os módulos: login, gestão de técnicos e recepcionistas, clientes e equipamentos, orçamentos e serviços, produtos e estoque, fornecedores e compras, contas a pagar/receber, comissões e relatórios.
 
 ---
 
