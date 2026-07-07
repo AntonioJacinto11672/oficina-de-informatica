@@ -72,6 +72,27 @@ class ConfigController {
             die('Erro: não foi possível conectar ao banco de dados. Verifique as credenciais em .env.');
         }
 
+        $query = "CREATE TABLE IF NOT EXISTS ocorrencias (
+            idocorrencia INT(11) NOT NULL AUTO_INCREMENT,
+            id_orcamento INT(11) DEFAULT NULL,
+            id_equipamento INT(11) DEFAULT NULL,
+            id_tipo_servico INT(11) DEFAULT NULL,
+            tecnico VARCHAR(100) DEFAULT NULL,
+            tipo_manutencao VARCHAR(30) DEFAULT 'Corretiva',
+            descricao TEXT DEFAULT NULL,
+            estado VARCHAR(30) DEFAULT 'Aberta',
+            data_abertura DATE DEFAULT NULL,
+            data_prevista DATE DEFAULT NULL,
+            data_encerramento DATE DEFAULT NULL,
+            observacoes TEXT DEFAULT NULL,
+            status VARCHAR(30) DEFAULT 'Aberta',
+            created DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (idocorrencia),
+            KEY idx_ocorrencias_data_prevista (data_prevista),
+            KEY idx_ocorrencias_status (status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+        mysqli_query($newConn, $query);
+
         $query = "SELECT * FROM usuario WHERE nivel='adimin'";
         $result = mysqli_query($newConn, $query);
         if ($result && mysqli_num_rows($result) == 0) {

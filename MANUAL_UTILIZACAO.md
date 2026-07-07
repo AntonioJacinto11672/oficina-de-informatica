@@ -39,11 +39,20 @@ Este é o percurso normal de um equipamento, do momento em que entra na oficina 
 
 1. **Recepcionista** cadastra o **Cliente** (se ainda não existir).
 2. **Recepcionista** cadastra o **Equipamento** associado a esse cliente (nº de série, marca, modelo, defeito reportado).
-3. **Técnico** cria um **Orçamento** para esse equipamento, escolhendo o **Tipo de Serviço**, valor da mão-de-obra, garantia e data prevista de entrega.
-4. **Recepcionista** (ou Gerente) **aprova o Orçamento** junto do cliente — isto gera automaticamente uma **Conta a Receber**.
-5. **Técnico** regista o **Serviço** executado (diagnóstico, peças usadas) e termina o orçamento.
-6. Sistema calcula a **Comissão** do técnico automaticamente (se activado no `.env`).
-7. **Recepcionista/Gerente** regista o **pagamento** na Conta a Receber e marca o equipamento como entregue.
+3. O técnico ou a recepção cria uma **Ocorrência** para esse equipamento, definindo se a intervenção é **Corretiva** ou **Preventiva** e a **data prevista** da manutenção.
+4. A ocorrência fica associada ao **Orçamento/Serviço**, permitindo acompanhar todo o ciclo da intervenção.
+5. **Técnico** cria ou atualiza o **Orçamento** para essa ocorrência, escolhendo o **Tipo de Serviço**, valor da mão-de-obra, garantia e data prevista de entrega.
+6. **Recepcionista** (ou Gerente) **aprova o Orçamento** junto do cliente — isto gera automaticamente uma **Conta a Receber**.
+7. **Técnico** regista o **Serviço** executado (diagnóstico, peças usadas) e termina o orçamento.
+8. O sistema atualiza o estado da ocorrência para **Concluída** ou **Encerrada**.
+9. O sistema calcula a **Comissão** do técnico automaticamente (se activado no `.env`).
+10. **Recepcionista/Gerente** regista o **pagamento** na Conta a Receber e marca o equipamento como entregue.
+
+### 2.1 Como interpretar as ocorrências
+
+- **Corretiva**: usada quando há um problema já reportado pelo cliente ou identificado na oficina.
+- **Preventiva**: usada para manutenções agendadas, inspeções ou revisões programadas.
+- As ocorrências aparecem no dashboard como alertas de manutenção preventiva próxima, ajudando a planear a agenda da oficina.
 
 ---
 

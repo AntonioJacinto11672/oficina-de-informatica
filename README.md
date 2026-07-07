@@ -33,6 +33,22 @@ Sistema web completo para gestão de assistências técnicas de equipamentos inf
 
 ---
 
+## Fluxo de Manutenção por Ocorrências
+
+O sistema agora segue um fluxo de manutenção orientado a ocorrências, que liga o orçamento ao ciclo completo de atendimento do equipamento:
+
+1. O equipamento é registado e associado ao cliente.
+2. O técnico ou recepção cria uma ocorrência para esse equipamento, escolhendo o tipo de manutenção (Corretiva ou Preventiva) e a data prevista.
+3. A ocorrência é ligada ao orçamento/ordem de serviço, permitindo acompanhar o estado da intervenção.
+4. O técnico registra o diagnóstico, a descrição do trabalho e a estimativa de valor.
+5. O orçamento pode ser aprovado, gerando automaticamente a conta a receber e o registo de entrada/saída do serviço.
+6. Quando a intervenção estiver concluída, a ocorrência é encerrada e o estado é atualizado no sistema.
+7. No dashboard aparecem as manutenções preventivas próximas, facilitando a agenda de intervenções.
+
+Este modelo mantém o fluxo antigo de orçamentos, mas acrescenta uma camada de rastreio por ocorrência, o que torna o processo mais próximo do ciclo real de assistência técnica.
+
+---
+
 ## Stack Tecnológica
 
 | Componente | Versão | Função |

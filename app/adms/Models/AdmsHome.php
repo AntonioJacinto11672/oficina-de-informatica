@@ -25,6 +25,7 @@ class AdmsHome extends Conn {
         $mes = date("m");
         $ano = date("Y");
         $this->dados['data_inicialMes'] = $ano . "-" . $mes . "-01";
+        $this->dados['ocorrencias_preventivas'] = $this->dadosOcorrenciasPreventivas();
         if ($_SESSION['usuario'] == "adimin" || $_SESSION['usuario'] == "recep") {
             $this->dadosOperacaoMovimentacaoHome();
             $this->dadosHomeAdm();
@@ -195,6 +196,20 @@ class AdmsHome extends Conn {
         $result_dados->execute();
         $this->dados = $result_dados->fetchAll();
         return $this->dados;
+    }
+
+    public function dadosOcorrenciasPreventivas() {
+        $query = "SELECT o.*, e.numero_serie, e.marca, e.modelo, ts.nome AS tipo_servico
+                  FROM ocorrencias o
+                  LEFT JOIN equipamento e ON e.idequipamento = o.id_equipamento
+                  LEFT JOIN tipo_servico ts ON ts.idtipo_servico = o.id_tipo_servico
+                  WHERE o.tipo_manutencao = 'Preventiva'
+                    AND o.status NOT IN ('Concluída', 'Encerrada')
+                    AND o.data_prevista BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 MONTH)
+                  ORDER BY o.data_prevista ASC";
+        $result = $this->conn->prepare($query);
+        $result->execute();
+        return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function dadosHomeAdm() {

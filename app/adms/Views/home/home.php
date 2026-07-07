@@ -224,6 +224,36 @@ if (!defined('R4F5CC')) {
 
         </div>
 
+        <?php if (!empty($this->dados['ocorrencias_preventivas'])): ?>
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Manutenções Preventivas Próximas</h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <?php foreach ($this->dados['ocorrencias_preventivas'] as $ocorrencia): ?>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong><?php echo htmlspecialchars($ocorrencia['numero_serie'] ?? 'Sem número de série'); ?></strong>
+                                        <div class="small text-muted">
+                                            <?php echo htmlspecialchars($ocorrencia['tipo_servico'] ?? 'Serviço'); ?> ·
+                                            <?php echo htmlspecialchars($ocorrencia['tipo_manutencao'] ?? 'Corretiva'); ?>
+                                        </div>
+                                    </div>
+                                    <span class="badge badge-warning text-dark">
+                                        Prevista: <?php echo date('d/m/Y', strtotime($ocorrencia['data_prevista'])); ?>
+                                    </span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+
         <div class="row">
 
             <!-- Earnings (Annual) Card Example -->

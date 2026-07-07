@@ -56,7 +56,7 @@ if (isset($_SESSION['idlogado'])) {
         <div class="modal-content">
             <form action="" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Abrir Orcamento</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Abrir Ocorrência</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -113,6 +113,23 @@ if (isset($_SESSION['idlogado'])) {
                                 }
                                 ?>
                             </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="tipo_manutencao">Tipo de Manutenção</label>
+                            <select class="custom-select" id="tipo_manutencao" name="tipo_manutencao" required>
+                                <option value="Corretiva" selected>Corretiva</option>
+                                <option value="Preventiva">Preventiva</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="data_prevista">Data Prevista</label>
+                            <input type="date" class="form-control" id="data_prevista" name="data_prevista" value="<?php
+                            if (isset($valorForm['data_prevista'])) {
+                                echo $valorForm['data_prevista'];
+                            }
+                            ?>">
                         </div>
                     </div>
                     <div class="row">
@@ -374,7 +391,7 @@ if (isset($_SESSION['idlogado'])) {
                             <div class="modal-content">
                                 <form action="" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Abrir Orcamento</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">Editar Ocorrência</h5>
                                         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
@@ -421,6 +438,23 @@ if (isset($_SESSION['idlogado'])) {
                                                     }
                                                     ?>
                                                 </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tipo_manutencao">Tipo de Manutenção</label>
+                                                <select class="custom-select" id="tipo_manutencao" name="tipo_manutencao" required>
+                                                    <option value="Corretiva" selected>Corretiva</option>
+                                                    <option value="Preventiva">Preventiva</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="data_prevista">Data Prevista</label>
+                                                <input type="date" class="form-control" id="data_prevista" name="data_prevista" value="<?php
+                                                if (isset($valorForm['data_prevista'])) {
+                                                    echo $valorForm['data_prevista'];
+                                                }
+                                                ?>">
                                             </div>
                                         </div>
                                         <div class="row">

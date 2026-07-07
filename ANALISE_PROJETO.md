@@ -141,6 +141,18 @@ $email = \Core\Config::get('OFFICE_EMAIL', 'padrao@exemplo.com');
 
 ---
 
+### Fluxo de negócio implementado
+
+O projecto foi adaptado para funcionar com um modelo de gestão por ocorrências, mantendo o fluxo já existente de orçamentos e serviços, mas acrescentando uma camada de acompanhamento do ciclo de manutenção:
+
+- Cada intervenção começa por uma ocorrência associada ao equipamento.
+- A ocorrência guarda o tipo de manutenção, a descrição, a data prevista, o técnico responsável e o estado atual.
+- O orçamento continua a ser o ponto de entrada para a estimativa e execução do serviço, mas agora fica ligado à ocorrência correspondente.
+- Quando o orçamento é aprovado, editado ou concluído, a ocorrência é atualizada automaticamente.
+- As ocorrências preventivas podem ser visualizadas no dashboard para ajudar o planeamento das intervenções.
+
+Este modelo é mais próximo do processo real de assistência técnica e permite evoluir facilmente para rastreio mais detalhado de diagnósticos, follow-up e histórico de manutenção.
+
 ## 7. Próximos Passos
 
 ### Desenvolvimento
