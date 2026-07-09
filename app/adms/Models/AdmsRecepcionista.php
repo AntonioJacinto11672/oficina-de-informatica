@@ -361,20 +361,37 @@ class AdmsRecepcionista extends Conn {
         $this->dados['estado']            = $this->limparInput($this->dados['estado'] ?? 'Recebido');
         $this->dados['defeito_reportado'] = $this->limparInput($this->dados['defeito_reportado'] ?? '');
         $this->dados['dataregisto']       = $this->limparInput($this->dados['dataregisto']);
+        $this->dados['idcategoria_equipamento'] = !empty($this->dados['idcategoria_equipamento']) ? (int)$this->dados['idcategoria_equipamento'] : null;
+        $this->dados['codigo']            = $this->limparInput($this->dados['codigo'] ?? '') ?: null;
+        $this->dados['patrimonio']        = $this->limparInput($this->dados['patrimonio'] ?? '') ?: null;
+        $this->dados['nome']              = $this->limparInput($this->dados['nome'] ?? '') ?: null;
+        $this->dados['departamento']      = $this->limparInput($this->dados['departamento'] ?? '') ?: null;
+        $this->dados['localizacao']       = $this->limparInput($this->dados['localizacao'] ?? '') ?: null;
+        $this->dados['data_aquisicao']    = !empty($this->dados['data_aquisicao']) ? $this->limparInput($this->dados['data_aquisicao']) : null;
+        $this->dados['observacoes']       = $this->limparInput($this->dados['observacoes'] ?? '') ?: null;
+        $this->sincronizarTipoEquipamento();
 
         if ($this->valEquipamento()) {
-            $query = "INSERT INTO equipamento (idcliente, numero_serie, imei, tipo_equipamento, marca, modelo, estado, defeito_reportado, dataregisto, created)
-                      VALUES (:idcliente, :numero_serie, :imei, :tipo_equipamento, :marca, :modelo, :estado, :defeito_reportado, :dataregisto, NOW())";
+            $query = "INSERT INTO equipamento (idcliente, numero_serie, imei, tipo_equipamento, idcategoria_equipamento, marca, modelo, estado, defeito_reportado, dataregisto, codigo, patrimonio, nome, departamento, localizacao, data_aquisicao, observacoes, created)
+                      VALUES (:idcliente, :numero_serie, :imei, :tipo_equipamento, :idcategoria_equipamento, :marca, :modelo, :estado, :defeito_reportado, :dataregisto, :codigo, :patrimonio, :nome, :departamento, :localizacao, :data_aquisicao, :observacoes, NOW())";
             $result = $this->conn->prepare($query);
             $result->bindParam(":idcliente",        $this->dados['idclientes']);
             $result->bindParam(":numero_serie",     $this->dados['numero_serie']);
             $result->bindParam(":imei",             $this->dados['imei']);
             $result->bindParam(":tipo_equipamento", $this->dados['tipo_equipamento']);
+            $result->bindParam(":idcategoria_equipamento", $this->dados['idcategoria_equipamento'], PDO::PARAM_INT);
             $result->bindParam(":marca",            $this->dados['marca']);
             $result->bindParam(":modelo",           $this->dados['modelo']);
             $result->bindParam(":estado",           $this->dados['estado']);
             $result->bindParam(":defeito_reportado",$this->dados['defeito_reportado']);
             $result->bindParam(":dataregisto",      $this->dados['dataregisto']);
+            $result->bindParam(":codigo",           $this->dados['codigo']);
+            $result->bindParam(":patrimonio",       $this->dados['patrimonio']);
+            $result->bindParam(":nome",             $this->dados['nome']);
+            $result->bindParam(":departamento",     $this->dados['departamento']);
+            $result->bindParam(":localizacao",      $this->dados['localizacao']);
+            $result->bindParam(":data_aquisicao",   $this->dados['data_aquisicao']);
+            $result->bindParam(":observacoes",      $this->dados['observacoes']);
             $result->execute();
             if ($result->rowCount()) {
                 $_SESSION['msg'] = '<div class="alert alert-success text-center"> Equipamento Cadastrado Com Sucesso!</div>';
@@ -383,6 +400,21 @@ class AdmsRecepcionista extends Conn {
                 $_SESSION['msg'] = '<div class="alert alert-danger text-center"> Equipamento Cadastrado Sem Sucesso!</div>';
                 return false;
             }
+        }
+    }
+
+    // Mantém tipo_equipamento (texto livre, usado nas views legadas dadosorcamento/
+    // dadosClienteEquipamento) sincronizado com o nome da categoria escolhida.
+    private function sincronizarTipoEquipamento(): void {
+        if (empty($this->dados['idcategoria_equipamento'])) {
+            return;
+        }
+        $stmt = $this->conn->prepare("SELECT nome FROM categoria_equipamento WHERE idcategoria_equipamento=:id LIMIT 1");
+        $stmt->bindParam(':id', $this->dados['idcategoria_equipamento'], PDO::PARAM_INT);
+        $stmt->execute();
+        $categoria = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($categoria) {
+            $this->dados['tipo_equipamento'] = $categoria['nome'];
         }
     }
 
@@ -443,18 +475,30 @@ class AdmsRecepcionista extends Conn {
         $this->dados['diagnostico_tecnico'] = $this->limparInput($this->dados['diagnostico_tecnico'] ?? '');
         $this->dados['garantia_reparacao']  = $this->limparInput($this->dados['garantia_reparacao'] ?? '');
         $this->dados['dataregisto']       = $this->limparInput($this->dados['dataregisto']);
+        $this->dados['idcategoria_equipamento'] = !empty($this->dados['idcategoria_equipamento']) ? (int)$this->dados['idcategoria_equipamento'] : null;
+        $this->dados['codigo']            = $this->limparInput($this->dados['codigo'] ?? '') ?: null;
+        $this->dados['patrimonio']        = $this->limparInput($this->dados['patrimonio'] ?? '') ?: null;
+        $this->dados['nome']              = $this->limparInput($this->dados['nome'] ?? '') ?: null;
+        $this->dados['departamento']      = $this->limparInput($this->dados['departamento'] ?? '') ?: null;
+        $this->dados['localizacao']       = $this->limparInput($this->dados['localizacao'] ?? '') ?: null;
+        $this->dados['data_aquisicao']    = !empty($this->dados['data_aquisicao']) ? $this->limparInput($this->dados['data_aquisicao']) : null;
+        $this->dados['observacoes']       = $this->limparInput($this->dados['observacoes'] ?? '') ?: null;
+        $this->sincronizarTipoEquipamento();
 
         if ($this->valEditEquipamento()) {
             $query = "UPDATE equipamento SET idcliente=:idcliente, numero_serie=:numero_serie, imei=:imei,
-                        tipo_equipamento=:tipo_equipamento, marca=:marca, modelo=:modelo, estado=:estado,
+                        tipo_equipamento=:tipo_equipamento, idcategoria_equipamento=:idcategoria_equipamento, marca=:marca, modelo=:modelo, estado=:estado,
                         defeito_reportado=:defeito_reportado, diagnostico_tecnico=:diagnostico_tecnico,
-                        garantia_reparacao=:garantia_reparacao, dataregisto=:dataregisto
+                        garantia_reparacao=:garantia_reparacao, dataregisto=:dataregisto,
+                        codigo=:codigo, patrimonio=:patrimonio, nome=:nome, departamento=:departamento,
+                        localizacao=:localizacao, data_aquisicao=:data_aquisicao, observacoes=:observacoes
                       WHERE idequipamento=:idequipamento";
             $result = $this->conn->prepare($query);
             $result->bindParam(":idcliente",           $this->dados['idclientes']);
             $result->bindParam(":numero_serie",        $this->dados['numero_serie']);
             $result->bindParam(":imei",                $this->dados['imei']);
             $result->bindParam(":tipo_equipamento",    $this->dados['tipo_equipamento']);
+            $result->bindParam(":idcategoria_equipamento", $this->dados['idcategoria_equipamento'], PDO::PARAM_INT);
             $result->bindParam(":marca",               $this->dados['marca']);
             $result->bindParam(":modelo",              $this->dados['modelo']);
             $result->bindParam(":estado",              $this->dados['estado']);
@@ -462,6 +506,13 @@ class AdmsRecepcionista extends Conn {
             $result->bindParam(":diagnostico_tecnico", $this->dados['diagnostico_tecnico']);
             $result->bindParam(":garantia_reparacao",  $this->dados['garantia_reparacao']);
             $result->bindParam(":dataregisto",         $this->dados['dataregisto']);
+            $result->bindParam(":codigo",              $this->dados['codigo']);
+            $result->bindParam(":patrimonio",          $this->dados['patrimonio']);
+            $result->bindParam(":nome",                $this->dados['nome']);
+            $result->bindParam(":departamento",        $this->dados['departamento']);
+            $result->bindParam(":localizacao",         $this->dados['localizacao']);
+            $result->bindParam(":data_aquisicao",      $this->dados['data_aquisicao']);
+            $result->bindParam(":observacoes",         $this->dados['observacoes']);
             $result->bindParam(":idequipamento",       $this->dados['idequipamento']);
             $result->execute();
             if ($result->rowCount()) {
@@ -602,6 +653,10 @@ class AdmsRecepcionista extends Conn {
                     $result->bindParam(":idproduto", $this->dados['idproduto']);
                     $result->execute();
                     if ($result->rowCount()) {
+                        $qtdEstornada = (int)(@$resultado['quantidade_estoque'] ?? 0);
+                        if ($qtdEstornada > 0) {
+                            (new \App\adms\Models\AdmsMovimentoEstoque())->registar((int)$this->dados['idproduto'], 'Saida', $qtdEstornada, 'CompraCancelada', $this->dados['idcontas_apagar'], $_SESSION['idlogado'] ?? null);
+                        }
                         $this->deleteFncContaApagar();
                     } else {
                         //var_dump($this->dados);

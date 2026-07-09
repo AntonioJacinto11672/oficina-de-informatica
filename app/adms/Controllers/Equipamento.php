@@ -18,6 +18,7 @@ class Equipamento {
 
     private $dados;
     private $dadosAlter;
+    private $dadosPaginacao;
     private $dadosForm;
 
     public function index() {
@@ -45,8 +46,14 @@ class Equipamento {
 
         $this->dadosEquipamentos();
         $this->dadosCliente();
-        $carregarView = new \Core\ConfigView("adms/Views/cliente/pgEquipamento", $this->dados,$this->dadosAlter);
+        $this->dadosCategoriaEquipamento();
+        $carregarView = new \Core\ConfigView("adms/Views/cliente/pgEquipamento", $this->dados, $this->dadosAlter, $this->dadosPaginacao);
         $carregarView->renderizar();
+    }
+
+    private function dadosCategoriaEquipamento() {
+        $model = new \App\adms\Models\AdmsCategoriaEquipamento();
+        $this->dadosPaginacao = $model->dadosCategoriaEquipamento();
     }
 
     public function dadosEquipamentos() {

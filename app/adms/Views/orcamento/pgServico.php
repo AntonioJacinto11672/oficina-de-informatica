@@ -279,6 +279,7 @@ if (isset($_SESSION['idlogado'])) {
                                                 <input type="hidden" name="valor_t_servico" value="<?php echo $valorForm['valor']; ?>">
                                                 <input type="hidden" name="nome_servico" value="<?php echo $valorForm['tipo_servico']; ?>">
                                                 <input type="hidden" name="tipo" value="<?php echo $valorForm['tipo']; ?>">
+                                                <input type="hidden" name="id_tipo_servico" value="<?php echo $valorForm['idtipo_servico'] ?? ''; ?>">
                                                 <button class="btn btn-info text-white " name="btnAprovar">Sim Termina</button>
                                             </div>
                                         </form> 

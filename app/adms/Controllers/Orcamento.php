@@ -20,6 +20,8 @@ class Orcamento {
     private $dadosForm;
 
     public function index() {
+        $idOcorrencia = filter_input(INPUT_GET, 'id_ocorrencia', FILTER_VALIDATE_INT);
+
         if (!empty(filter_input_array(INPUT_POST, FILTER_DEFAULT))) {
             $this->dadosForm = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
@@ -59,6 +61,20 @@ class Orcamento {
 
         $this->dadosTipoServico();
         $this->dadosOrcamento();
+
+        // dadosOrcamento() substitui $this->dados pela lista de orçamentos — o
+        // pré-preenchimento a partir de uma Ocorrência só pode ser aplicado depois.
+        if ($idOcorrencia && empty(filter_input_array(INPUT_POST, FILTER_DEFAULT))) {
+            $ocorrenciaModel = new \App\adms\Models\AdmsOcorrencia();
+            $prefill = $ocorrenciaModel->dadosParaNovoOrcamento($idOcorrencia);
+            $this->dados['form'] = [
+                'id_ocorrencia' => $idOcorrencia,
+                'veiculo' => $prefill['numero_serie'] ?? '',
+                'clinete' => $prefill['nif'] ?? '',
+            ];
+            $this->dados['id_ocorrencia_origem'] = $idOcorrencia;
+        }
+
         $carregarView = new \Core\ConfigView("adms/Views/orcamento/pgOrcamento", $this->dados, $this->dadosAlter, $this->dadosPaginacao);
         $carregarView->renderizar();
     }

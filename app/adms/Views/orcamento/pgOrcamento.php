@@ -62,11 +62,19 @@ if (isset($_SESSION['idlogado'])) {
                     </button>
                 </div>
                 <div class="modal-body">
+                    <?php if (!empty($this->dados['id_ocorrencia_origem'])): ?>
+                        <div class="alert alert-info">A criar orçamento para a Ocorrência #<?php echo (int)$this->dados['id_ocorrencia_origem']; ?>.</div>
+                        <input type="hidden" name="id_ocorrencia" value="<?php echo (int)$this->dados['id_ocorrencia_origem']; ?>">
+                    <?php endif; ?>
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="Cliente">Nif do Cliente Pesquisa </label>
                             <input list="browsers" class="form-control" name="clinete" id="tel1"
-                                placeholder="Digete o Nif  do Cliente" required>
+                                placeholder="Digete o Nif  do Cliente" value="<?php
+                                if (isset($valorForm['clinete'])) {
+                                    echo $valorForm['clinete'];
+                                }
+                                ?>" required>
                             <datalist id="browsers">
                                 <?php
                                 $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);

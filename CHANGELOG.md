@@ -2,6 +2,113 @@
 
 ---
 
+## Versão 4.0.0 — Sistema CMMS: Ocorrências, Diagnóstico, Execução, Planeamento Preventivo, Abatimento e Comissões Configuráveis
+
+**Data:** 2026-07-09
+**Autor:** António Jacinto (com assistência de Claude)
+**Descrição:** Refactoração faseada do sistema de gestão de orçamentos de oficina para um CMMS
+(Computerized Maintenance Management System) completo, alinhado com os 17 módulos de gestão de
+manutenção preventiva e corretiva. `ocorrencias` — que existia apenas como tabela-sombra
+sincronizada a partir de `orcamentos` — foi promovida a entidade central e independente do
+sistema, com máquina de estados própria. O layout visual não foi alterado; todos os ecrãs novos
+reutilizam o mesmo template (Bootstrap 4 / SB Admin 2) dos ecrãs existentes. Entregue em 6 fases,
+cada uma testada end-to-end contra a base de dados de desenvolvimento antes de avançar.
+
+### Nova convenção de migrações
+
+Introduzido um sistema de migrações versionado, substituindo os scripts descartáveis (`migrar.php`)
+usados até à versão 3.0.2:
+
+| Ficheiro | Descrição |
+|---|---|
+| `migrate.php` | Runner permanente — aplica os ficheiros pendentes de `database/migrations/*.php` por ordem, regista cada um na tabela `schema_migrations`, nunca repete uma migração já aplicada |
+| `database/migrations/0001` a `0010` | Dez migrações desta versão (ver detalhe por fase abaixo) |
+| `database/schema.sql` | Actualizado como fonte de verdade para instalações de raiz (inclui já todas as tabelas/colunas novas) |
+
+### Fase 0 — Infra-estrutura de base
+
+| Item | Descrição |
+|---|---|
+| `core/ConfigController.php` | Removido o `CREATE TABLE IF NOT EXISTS ocorrencias` que corria em **cada pedido HTTP** — DDL deixa de correr por pedido, `schema.sql`/migrações passam a ser a única fonte de verdade |
+| `tecnicos.idusuario`, `recepcionista.idusuario` | Novas colunas com FK real para `usuario.idusuario` (antes o cruzamento entre conta de login e ficha de técnico/recepcionista era feito por NIF, sem integridade referencial) |
+| Sidebar | Rótulo "Categorias" → "Categorias de Peças" (clareza, sem alterar tabela/rota) |
+
+### Fase 1 — Ocorrências (módulo 9, o módulo central)
+
+| Item | Descrição |
+|---|---|
+| `ocorrencias` | Novas colunas `prioridade` (Baixa/Média/Alta/Urgente) e `idtecnico_responsavel` (FK `usuario`) |
+| `ocorrencia_equipamento` | Nova tabela de junção — uma ocorrência pode agora ter **vários equipamentos** associados |
+| `ocorrencia_historico` | Nova tabela de auditoria — regista cada mudança de estado, quem a fez e quando |
+| `app/adms/Models/AdmsOcorrencia.php` | Novo Model dedicado — CRUD completo, atribuição de técnico, máquina de estados (`Aberta → Em diagnóstico → Aguardando orçamento → Aguardando aprovação → Em manutenção → Concluída`, ou `Cancelada`) |
+| `app/adms/Controllers/Ocorrencia.php` + `Views/ocorrencia/` | Novo módulo — lista, criar/editar, atribuir técnico, alterar estado, histórico |
+| `AdmsTecnico::criarOcorrencia()/atualizarOcorrencia()` | Passaram a wrappers finos que delegam para `AdmsOcorrencia` — comportamento do fluxo de orçamentos antigo preservado, ~110 linhas retiradas do modelo `AdmsTecnico` |
+
+### Fase 2 — Diagnóstico Técnico (módulo 10)
+
+| Item | Descrição |
+|---|---|
+| `diagnostico` | Nova tabela — histórico de diagnósticos ligado a uma ocorrência (problema, solução proposta, peças solicitadas, encaminhado_orcamento) |
+| `app/adms/Models/AdmsDiagnostico.php` + `Controllers/Diagnostico.php` + `Views/diagnostico/` | Novo módulo — registar diagnóstico avança a ocorrência para "Em diagnóstico"; "Encaminhar para Orçamento" avança para "Aguardando orçamento" e bloqueia edição |
+
+### Fase 3 — Orçamentos e Execução sob a Ocorrência (módulos 11-12)
+
+| Item | Descrição |
+|---|---|
+| `orcamentos.id_ocorrencia` | Nova coluna (FK nullable) — liga o orçamento à ocorrência de origem, sem quebrar orçamentos legados (ficam `NULL`) |
+| `execucao_manutencao`, `execucao_peca` | Novas tabelas — Execução da Manutenção como entidade própria, em paralelo ao fluxo antigo de "Serviço" (que se manteve intacto, por ser o caminho de maior tráfego do sistema) |
+| `AdmsTecnico::abrirOrcamento()` | Passa a aceitar `id_ocorrencia` do formulário: se vier de uma Ocorrência, liga-se a ela em vez de criar uma ocorrência-sombra duplicada; se não vier, mantém o comportamento antigo (criação automática) |
+| `app/adms/Models/AdmsExecucao.php` + `Controllers/Execucao.php` + `Views/execucao/` | Novo módulo — iniciar execução, adicionar/remover peças usadas (com actualização de stock), encerrar (fecha a ocorrência e marca o equipamento como "Concluído") |
+| `Views/orcamento/pgOrcamento.php` | Pré-preenchimento do formulário "Novo Orçamento" quando aberto a partir de uma Ocorrência; corrigido um bug pré-existente em `Orcamento.php` onde `dadosOrcamento()` apagava qualquer pré-preenchimento do formulário |
+
+### Fase 4 — Categorias de Equipamento e Equipamentos Abatidos (módulos 4, 14)
+
+| Item | Descrição |
+|---|---|
+| `categoria_equipamento` | Nova tabela — substitui o texto livre `equipamento.tipo_equipamento`, seedada com 13 categorias (união dos valores já usados com os exemplos da especificação) |
+| `equipamento` | Novas colunas: `codigo`, `patrimonio`, `nome`, `departamento`, `localizacao`, `idcategoria_equipamento`, `data_aquisicao`, `observacoes` |
+| `dadosClienteEquipamento` (view) | Actualizada para expor os campos novos — `equipamento.nome` exposto como `nome_equipamento` para não colidir com `clientes.nome` |
+| `equipamentos_abatidos` | Nova tabela — workflow de abatimento com aprovação (Solicitado → Aprovado/Rejeitado); aprovação marca `equipamento.estado='Abatido'` |
+| `app/adms/Models/AdmsCategoriaEquipamento.php`, `AdmsAbatimento.php` + Controllers/Views | Dois novos módulos |
+
+### Fase 5 — Planeamento de Manutenção Preventiva (módulo 13)
+
+| Item | Descrição |
+|---|---|
+| `plano_manutencao_preventiva`, `plano_manutencao_lembrete` | Novas tabelas — periodicidade em dias por equipamento/serviço/técnico |
+| `AdmsOcorrencia::criarOcorrenciaPreventiva()` | Novo método — cria uma ocorrência "Preventiva" a partir de um plano vencido |
+| `app/adms/Models/AdmsPlaneamento.php` + `Controllers/Planeamento.php` + `Views/planeamento/` | Novo módulo — planos, botão "Gerar Ocorrências Pendentes" |
+| `cron_planeamento.php` | Novo script permanente (não descartável) — gatilho para agendamento a nível de SO (Tarefas Agendadas / cron), já que o projecto não tem job runner próprio |
+| `AdmsHome::dadosOcorrenciasPreventivas()` | Estendida (aditivamente, via `UNION ALL`) para mostrar também planos a vencer nos próximos 30 dias que ainda não geraram ocorrência |
+
+### Fase 6 — Comissões Configuráveis e Histórico de Stock (módulos 15-16, lacuna do módulo 7)
+
+| Item | Descrição |
+|---|---|
+| `comissao_config` | Nova tabela — percentagem de comissão por técnico e/ou tipo de serviço (prioridade: técnico+serviço > técnico > serviço > global > `.env VALOR_COMISSAO`), semeada com 1 linha global igual ao valor histórico |
+| `comissao.percentual_aplicado` | Nova coluna — regista a % efectivamente usada em cada comissão (não depende da configuração actual, que pode mudar) |
+| `movimento_estoque` | Nova tabela — ledger de entradas/saídas de stock, ligado aos **9 pontos** onde o código mexe em `produto.estoque` (compra, eliminar orçamento, adicionar/reduzir/remover peça de orçamento, estorno de compra cancelada, adicionar/remover peça de execução) |
+| `dadosCustoOcorrencia` (view) | Nova — custo de peças + serviço por ocorrência |
+| `app/adms/Models/AdmsComissaoConfig.php`, `AdmsMovimentoEstoque.php` + Controllers/Views | Dois novos módulos; `AdmsTecnico::aprovarOrcamento()` passou a consultar a configuração em vez da constante fixa `VALOR_COMISSAO` |
+| `Controllers/MovimentoEstoque.php` + `Views/produto/pgMovimentoEstoque.php` | Novo ecrã de histórico de movimentações por produto, acessível a partir da lista de Produtos |
+
+### Reforço de integridade referencial
+
+Todas as relações **novas** introduzidas nesta versão têm FOREIGN KEY real (`ocorrencia_equipamento`,
+`ocorrencia_historico`, `diagnostico`, `execucao_manutencao`, `execucao_peca`, `equipamentos_abatidos`,
+`plano_manutencao_preventiva`, `comissao_config`, `movimento_estoque`, etc.). As relações antigas e
+soltas (ex: `orcamentos.veiculo` como string) foram deixadas como estavam — normalizá-las é um
+trabalho maior e mais arriscado, fora do âmbito desta versão.
+
+### Documentação
+
+| Ficheiro | Alteração |
+|---|---|
+| `MANUAL_UTILIZACAO.md` | Nova secção 3 "Módulos de Manutenção" (Ocorrências, Diagnóstico, Execução, Planeamento Preventivo, Categorias de Equipamento, Abatimento, Histórico de Stock, Configuração de Comissões); fluxo típico (secção 2) reescrito à volta da Ocorrência; referência de URLs actualizada |
+| `Monografia_Assistencia_Tecnica_Informatica.docx` | Actualizada para reflectir a arquitectura CMMS (novos requisitos funcionais, diagrama ER, diagrama de classes, funcionalidades por perfil) |
+
+---
+
 ## Versão 3.0.2 — Dados de Demonstração e Documentação de Utilização
 
 **Data:** 2026-07-06

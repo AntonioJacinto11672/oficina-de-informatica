@@ -28,101 +28,16 @@ class AdmsTecnico extends Conn {
         $this->conn = $this->connect();
     }
 
+    // A lógica de escrita em `ocorrencias` vive agora em AdmsOcorrencia (módulo 9).
+    // Estes métodos ficam como wrappers finos para não alterar o comportamento de
+    // abrirOrcamento()/editOrcamento() nesta fase — a religação completa ao módulo
+    // de Ocorrências acontece na Fase 3 (orçamento passa a ser filho da ocorrência).
     private function criarOcorrencia($dados, $status = 'Aberta') {
-        if (empty($dados['veiculo']) && empty($dados['idorcamentos'])) {
-            return false;
-        }
-
-        $idOrcamento = isset($dados['idorcamentos']) ? $this->limparInput($dados['idorcamentos']) : null;
-        $numeroSerie = isset($dados['veiculo']) ? $this->limparInput($dados['veiculo']) : null;
-        $idTipoServico = isset($dados['id_tipo_servico']) ? $this->limparInput($dados['id_tipo_servico']) : null;
-        $tipoManutencao = isset($dados['tipo_manutencao']) && $dados['tipo_manutencao'] !== '' ? $this->limparInput($dados['tipo_manutencao']) : 'Corretiva';
-        $descricao = isset($dados['descricao']) ? $this->limparInput($dados['descricao']) : null;
-        $dataPrevista = isset($dados['data_prevista']) && $dados['data_prevista'] !== '' ? $this->limparInput($dados['data_prevista']) : null;
-        $tecnico = isset($dados['tecnico']) && $dados['tecnico'] !== '' ? $this->limparInput($dados['tecnico']) : ($_SESSION['nif'] ?? null);
-        $idEquipamento = null;
-
-        if (!empty($numeroSerie)) {
-            $resultEquip = $this->conn->prepare("SELECT idequipamento FROM equipamento WHERE numero_serie = :numero_serie LIMIT 1");
-            $resultEquip->bindParam(':numero_serie', $numeroSerie);
-            $resultEquip->execute();
-            $equipamento = $resultEquip->fetch(PDO::FETCH_ASSOC);
-            if ($equipamento) {
-                $idEquipamento = (int) $equipamento['idequipamento'];
-            }
-        }
-
-        $query = "INSERT INTO ocorrencias (id_orcamento, id_equipamento, id_tipo_servico, tecnico, tipo_manutencao, descricao, estado, data_abertura, data_prevista, status, created)
-                  VALUES (:id_orcamento, :id_equipamento, :id_tipo_servico, :tecnico, :tipo_manutencao, :descricao, :estado, CURDATE(), :data_prevista, :status, NOW())";
-        $result = $this->conn->prepare($query);
-        $result->bindParam(':id_orcamento', $idOrcamento);
-        $result->bindParam(':id_equipamento', $idEquipamento);
-        $result->bindParam(':id_tipo_servico', $idTipoServico);
-        $result->bindParam(':tecnico', $tecnico);
-        $result->bindParam(':tipo_manutencao', $tipoManutencao);
-        $result->bindParam(':descricao', $descricao);
-        $result->bindParam(':estado', $status);
-        $result->bindParam(':data_prevista', $dataPrevista);
-        $result->bindParam(':status', $status);
-        $result->execute();
-
-        return $result->rowCount() > 0;
+        return (new \App\adms\Models\AdmsOcorrencia())->criarOcorrenciaDeOrcamento($dados, $status);
     }
 
     private function atualizarOcorrencia($dados, $status = 'Aberta') {
-        if (empty($dados['idorcamentos'])) {
-            return false;
-        }
-
-        $idOrcamento = $this->limparInput($dados['idorcamentos']);
-        $numeroSerie = isset($dados['veiculo']) ? $this->limparInput($dados['veiculo']) : null;
-        $idTipoServico = isset($dados['id_tipo_servico']) ? $this->limparInput($dados['id_tipo_servico']) : null;
-        $tipoManutencao = isset($dados['tipo_manutencao']) && $dados['tipo_manutencao'] !== '' ? $this->limparInput($dados['tipo_manutencao']) : 'Corretiva';
-        $descricao = isset($dados['descricao']) ? $this->limparInput($dados['descricao']) : null;
-        $dataPrevista = isset($dados['data_prevista']) && $dados['data_prevista'] !== '' ? $this->limparInput($dados['data_prevista']) : null;
-        $tecnico = isset($dados['tecnico']) && $dados['tecnico'] !== '' ? $this->limparInput($dados['tecnico']) : ($_SESSION['nif'] ?? null);
-        $observacoes = isset($dados['obs']) ? $this->limparInput($dados['obs']) : null;
-        $idEquipamento = null;
-
-        if (!empty($numeroSerie)) {
-            $resultEquip = $this->conn->prepare("SELECT idequipamento FROM equipamento WHERE numero_serie = :numero_serie LIMIT 1");
-            $resultEquip->bindParam(':numero_serie', $numeroSerie);
-            $resultEquip->execute();
-            $equipamento = $resultEquip->fetch(PDO::FETCH_ASSOC);
-            if ($equipamento) {
-                $idEquipamento = (int) $equipamento['idequipamento'];
-            }
-        }
-
-        $result = $this->conn->prepare("SELECT idocorrencia FROM ocorrencias WHERE id_orcamento = :id_orcamento LIMIT 1");
-        $result->bindParam(':id_orcamento', $idOrcamento);
-        $result->execute();
-        if ($result->rowCount() == 0) {
-            return $this->criarOcorrencia($dados, $status);
-        }
-
-        $query = "UPDATE ocorrencias SET id_equipamento=:id_equipamento, id_tipo_servico=:id_tipo_servico, tecnico=:tecnico, tipo_manutencao=:tipo_manutencao, descricao=:descricao, estado=:estado, data_prevista=:data_prevista, observacoes=:observacoes, status=:status";
-        if (in_array($status, ['Concluído', 'Encerrada', 'Entregue'])) {
-            $query .= ", data_encerramento=CURDATE()";
-        } else {
-            $query .= ", data_encerramento=NULL";
-        }
-        $query .= " WHERE id_orcamento=:id_orcamento";
-
-        $result = $this->conn->prepare($query);
-        $result->bindParam(':id_equipamento', $idEquipamento);
-        $result->bindParam(':id_tipo_servico', $idTipoServico);
-        $result->bindParam(':tecnico', $tecnico);
-        $result->bindParam(':tipo_manutencao', $tipoManutencao);
-        $result->bindParam(':descricao', $descricao);
-        $result->bindParam(':estado', $status);
-        $result->bindParam(':data_prevista', $dataPrevista);
-        $result->bindParam(':observacoes', $observacoes);
-        $result->bindParam(':status', $status);
-        $result->bindParam(':id_orcamento', $idOrcamento);
-        $result->execute();
-
-        return $result->rowCount() > 0;
+        return (new \App\adms\Models\AdmsOcorrencia())->atualizarOcorrenciaDeOrcamento($dados, $status);
     }
 
     //Limpar Os campos contra O sqlInjection e Caracter especial
@@ -1937,6 +1852,7 @@ class AdmsTecnico extends Conn {
             $this->cdsContaApagar();
             $this->dados['idcontas_apagar'] = $this->conn->lastInsertId();
             $this->cdsCompras();
+            (new \App\adms\Models\AdmsMovimentoEstoque())->registar((int)$this->dados['idproduto'], 'Entrada', (int)$this->dados['quantidade_estoque'], 'Compra', $this->dados['idcontas_apagar'], $_SESSION['idlogado'] ?? null);
             $_SESSION['msg'] = '<div class="alert alert-success text-center"> Adicionado Valor no Estoque Com Sucesso!</div>';
             //$this->enviarEmail();
             return true;
@@ -2148,6 +2064,7 @@ class AdmsTecnico extends Conn {
         @$this->dados['obs'] = $this->limparInput(@$this->dados['obs']);
         @$this->dados['status'] = "Aberto";
         @$this->dados['tecnico'] = @$_SESSION['nif'];
+        $idOcorrenciaOrigem = !empty($dados['id_ocorrencia']) ? (int)$dados['id_ocorrencia'] : null;
 
 
 
@@ -2174,7 +2091,28 @@ class AdmsTecnico extends Conn {
             if ($result->rowCount()) {
                 $idOrcamento = $this->conn->lastInsertId();
                 $this->dados['idorcamentos'] = $idOrcamento;
-                $this->criarOcorrencia($this->dados, 'Aberta');
+                if ($idOcorrenciaOrigem) {
+                    // Veio de uma Ocorrência já existente: liga em vez de criar uma sombra duplicada.
+                    $ligar = $this->conn->prepare("UPDATE orcamentos SET id_ocorrencia=:id_ocorrencia WHERE idorcamentos=:idorcamentos");
+                    $ligar->bindParam(":id_ocorrencia", $idOcorrenciaOrigem, PDO::PARAM_INT);
+                    $ligar->bindParam(":idorcamentos", $idOrcamento);
+                    $ligar->execute();
+
+                    $ligarVolta = $this->conn->prepare("UPDATE ocorrencias SET id_orcamento=:idorcamentos WHERE idocorrencia=:id_ocorrencia");
+                    $ligarVolta->bindParam(":idorcamentos", $idOrcamento);
+                    $ligarVolta->bindParam(":id_ocorrencia", $idOcorrenciaOrigem, PDO::PARAM_INT);
+                    $ligarVolta->execute();
+
+                    (new \App\adms\Models\AdmsOcorrencia())->alterarEstado([
+                        'idocorrencia' => $idOcorrenciaOrigem,
+                        'estado' => 'Aguardando aprovação',
+                        'observacao' => 'Orçamento criado a partir da ocorrência.',
+                    ]);
+                } else {
+                    // Caminho legado (ainda acessível pela recepção sem passar por uma Ocorrência):
+                    // mantém a criação automática da ocorrência-sombra.
+                    $this->criarOcorrencia($this->dados, 'Aberta');
+                }
                 $_SESSION['msg'] = '<div class="alert alert-success text-center"> Orçamento Aberto Com Sucesso!</div>';
                 return false;
             } else {
@@ -2287,6 +2225,9 @@ class AdmsTecnico extends Conn {
                 $result->bindParam(":idproduto", $this->dados['idproduto']);
                 $result->bindParam(":estoque", $this->dados['estoque']);
                 $result->execute();
+                if ($result->rowCount()) {
+                    (new \App\adms\Models\AdmsMovimentoEstoque())->registar((int)$this->dados['idproduto'], 'Entrada', 1, 'OrcamentoEliminado', $this->dados['idorcamentos'], $_SESSION['idlogado'] ?? null);
+                }
             }
         }
         if ($result->rowCount() || empty($produtos)) {
@@ -2337,6 +2278,7 @@ class AdmsTecnico extends Conn {
                     $result->execute();
 
                     if ($result->rowCount()) {
+                        (new \App\adms\Models\AdmsMovimentoEstoque())->registar((int)$this->dados['idproduto'], 'Saida', 1, 'Orcamento', $this->dados['idorcamentos'], $_SESSION['idlogado'] ?? null);
                         $this->cdsContasReceber();
                     } else {
                         $_SESSION['msg'] = '<div class="alert alert-danger text-center"> Produto Redução do Valor no Estoque Sem Sucesso!</div>';
@@ -2368,6 +2310,7 @@ class AdmsTecnico extends Conn {
                     $result->execute();
 
                     if ($result->rowCount()) {
+                        (new \App\adms\Models\AdmsMovimentoEstoque())->registar((int)$this->dados['idproduto'], 'Saida', 1, 'Orcamento', $this->dados['idorcamentos'], $_SESSION['idlogado'] ?? null);
                         $this->cdsContasReceber();
                     } else {
                         $_SESSION['msg'] = '<div class="alert alert-danger text-center"> Produto Redução do Valor no Estoque Sem Sucesso!</div>';
@@ -2460,6 +2403,7 @@ class AdmsTecnico extends Conn {
         $result->execute();
 
         if ($result->rowCount()) {
+            (new \App\adms\Models\AdmsMovimentoEstoque())->registar((int)$this->dados['idproduto'], 'Entrada', 1, 'OrcamentoRemoverPeca', $this->dados['idorc_prod'], $_SESSION['idlogado'] ?? null);
             $result = $this->conn->prepare("DELETE FROM orc_prod WHERE idorc_prod=:idorc_prod");
             $result->bindParam(":idorc_prod", $this->dados['idorc_prod']);
             $result->execute();
@@ -2501,6 +2445,7 @@ class AdmsTecnico extends Conn {
             $result->execute();
 
             if ($result->rowCount()) {
+                (new \App\adms\Models\AdmsMovimentoEstoque())->registar((int)$this->dados['idproduto'], 'Entrada', 1, 'OrcamentoReduzirPeca', $this->dados['idorc_prod'], $_SESSION['idlogado'] ?? null);
                 $this->dados['quantidade'] = $this->dados['quantidade'] - 1;
                 $result = $this->conn->prepare("UPDATE orc_prod SET quantidade=:quantidade WHERE idorc_prod=:idorc_prod");
                 $result->bindParam(":idorc_prod", $this->dados['idorc_prod']);
@@ -2618,7 +2563,9 @@ class AdmsTecnico extends Conn {
                 // Achar a ComssÕa inicial com  o desconto
                 $this->dados['valor_comissaoi'] = $this->dados['valor_t_servico'] + $this->dados['valor_maodeobra'];
                 $desconto = ($this->dados['valor_comissaoi'] * VALOR_DESCONTO);
-                $this->dados['valor_comissao'] = ($this->dados['valor_comissaoi'] - $desconto) * VALOR_COMISSAO;
+                $idTipoServicoComissao = !empty($this->dados['id_tipo_servico']) ? (int)$this->dados['id_tipo_servico'] : null;
+                $percentualComissao = (new \App\adms\Models\AdmsComissaoConfig())->obterPercentualEfetivo($_SESSION['idlogado'] ?? null, $idTipoServicoComissao);
+                $this->dados['valor_comissao'] = ($this->dados['valor_comissaoi'] - $desconto) * $percentualComissao;
                 //$this->dados['data_venci'] = $this->limparInput($this->dados['data_venci']);
                 $this->dados['pago'] = "nao";
 
@@ -2629,9 +2576,11 @@ class AdmsTecnico extends Conn {
                 $result->bindParam(":pago", $this->dados['pago']);
                 $result->execute();
 
-                $result1 = $this->conn->prepare("INSERT INTO comissao (valor, servico, tipo, data, niftecnico) VALUES (:valor, :servico, :tipo, curDate(), :funcionario)");
+                $percentualAplicadoPct = round($percentualComissao * 100, 2);
+                $result1 = $this->conn->prepare("INSERT INTO comissao (valor, percentual_aplicado, servico, tipo, data, niftecnico) VALUES (:valor, :percentual_aplicado, :servico, :tipo, curDate(), :funcionario)");
                 $result1->bindParam(":servico", $this->dados['nome_servico']);
                 $result1->bindParam(":valor", $this->dados['valor_comissao']);
+                $result1->bindParam(":percentual_aplicado", $percentualAplicadoPct);
                 $result1->bindParam(":tipo", $this->dados['tipo']);
                 $result1->bindParam(":funcionario", $_SESSION['nif']);
                 $result1->execute();

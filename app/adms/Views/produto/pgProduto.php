@@ -236,6 +236,7 @@ if (isset($_SESSION['idlogado'])) {
                                         <a href="<?php echo $valorForm['idproduto']; ?>" data-toggle="modal" data-target="#delete<?php echo $valorForm['idproduto']; ?>" title="Apagar Registo"><i class="icofont icofont-trash text-danger px-1"></i></a>
                                         <a href="<?php echo $valorForm['idproduto']; ?>" data-toggle="modal" data-target="#info<?php echo $valorForm['idproduto']; ?>" title="Descrição"><i class="icofont icofont-warning-alt text-primary px-1"></i></a>
                                         <a href="<?php echo $valorForm['idproduto']; ?>" data-toggle="modal" data-target="#mais<?php echo $valorForm['idproduto']; ?>" title="Fazer Pedido"><i class="icofont icofont-plus text-success px-2"></i></a>
+                                        <a href="<?php echo URLADM . "movimentoEstoque?produto=" . $valorForm['idproduto']; ?>" title="Histórico de Movimentações"><i class="icofont icofont-history text-info px-1"></i></a>
                                     </td>
                                 </tr>
                                 <!--  Modal Deletar-->

@@ -128,6 +128,65 @@ if (isset($this->dados['form']) && is_array($this->dados['form'])) {
                                 placeholder="Descreva o problema relatado pelo cliente..."><?= isset($valorForm['defeito_reportado']) ? htmlspecialchars($valorForm['defeito_reportado']) : '' ?></textarea>
                         </div>
                     </fieldset>
+                    <fieldset class="border rounded p-3 mb-2">
+                        <legend class="w-auto px-2 text-muted small">Dados Patrimoniais</legend>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="categoria">Categoria</label>
+                                <select class="custom-select" id="categoria" name="idcategoria_equipamento">
+                                    <option value="">Selecione...</option>
+                                    <?php
+                                    if (isset($this->dadosPaginacao)) {
+                                        foreach ($this->dadosPaginacao as $cat) {
+                                            $sel = (isset($valorForm['idcategoria_equipamento']) && $valorForm['idcategoria_equipamento'] == $cat['idcategoria_equipamento']) ? 'selected' : '';
+                                            echo '<option value="' . (int)$cat['idcategoria_equipamento'] . '" ' . $sel . '>' . htmlspecialchars($cat['nome']) . '</option>';
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="codigo">Código</label>
+                                <input type="text" class="form-control" id="codigo" name="codigo"
+                                    value="<?= isset($valorForm['codigo']) ? htmlspecialchars($valorForm['codigo']) : '' ?>">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="patrimonio">Património</label>
+                                <input type="text" class="form-control" id="patrimonio" name="patrimonio"
+                                    value="<?= isset($valorForm['patrimonio']) ? htmlspecialchars($valorForm['patrimonio']) : '' ?>">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="nome_equip">Nome do Equipamento</label>
+                                <input type="text" class="form-control" id="nome_equip" name="nome"
+                                    placeholder="Ex: PC Sala de Informática 3"
+                                    value="<?= isset($valorForm['nome']) ? htmlspecialchars($valorForm['nome']) : '' ?>">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="departamento">Departamento</label>
+                                <input type="text" class="form-control" id="departamento" name="departamento"
+                                    value="<?= isset($valorForm['departamento']) ? htmlspecialchars($valorForm['departamento']) : '' ?>">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="localizacao">Localização</label>
+                                <input type="text" class="form-control" id="localizacao" name="localizacao"
+                                    value="<?= isset($valorForm['localizacao']) ? htmlspecialchars($valorForm['localizacao']) : '' ?>">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="data_aquisicao">Data de Aquisição</label>
+                                <input type="date" class="form-control" id="data_aquisicao" name="data_aquisicao"
+                                    value="<?= isset($valorForm['data_aquisicao']) ? htmlspecialchars($valorForm['data_aquisicao']) : '' ?>">
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label for="observacoes">Observações</label>
+                                <input type="text" class="form-control" id="observacoes" name="observacoes"
+                                    value="<?= isset($valorForm['observacoes']) ? htmlspecialchars($valorForm['observacoes']) : '' ?>">
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
@@ -335,6 +394,57 @@ if (isset($this->dados['form']) && is_array($this->dados['form'])) {
                                                         <input type="text" class="form-control" name="garantia_reparacao"
                                                             placeholder="Ex: 90 dias" value="<?= htmlspecialchars($valorForm['garantia_reparacao'] ?? '') ?>">
                                                     </div>
+                                                    <fieldset class="border rounded p-3 mb-2">
+                                                        <legend class="w-auto px-2 text-muted small">Dados Patrimoniais</legend>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-4">
+                                                                <label>Categoria</label>
+                                                                <select class="custom-select" name="idcategoria_equipamento">
+                                                                    <option value="">Selecione...</option>
+                                                                    <?php
+                                                                    if (isset($this->dadosPaginacao)) {
+                                                                        foreach ($this->dadosPaginacao as $cat) {
+                                                                            $sel = ((int)($valorForm['idcategoria_equipamento'] ?? 0) === (int)$cat['idcategoria_equipamento']) ? 'selected' : '';
+                                                                            echo '<option value="' . (int)$cat['idcategoria_equipamento'] . '" ' . $sel . '>' . htmlspecialchars($cat['nome']) . '</option>';
+                                                                        }
+                                                                    }
+                                                                    ?>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label>Código</label>
+                                                                <input type="text" class="form-control" name="codigo" value="<?= htmlspecialchars($valorForm['codigo'] ?? '') ?>">
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label>Património</label>
+                                                                <input type="text" class="form-control" name="patrimonio" value="<?= htmlspecialchars($valorForm['patrimonio'] ?? '') ?>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-4">
+                                                                <label>Nome do Equipamento</label>
+                                                                <input type="text" class="form-control" name="nome" value="<?= htmlspecialchars($valorForm['nome_equipamento'] ?? '') ?>">
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label>Departamento</label>
+                                                                <input type="text" class="form-control" name="departamento" value="<?= htmlspecialchars($valorForm['departamento'] ?? '') ?>">
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label>Localização</label>
+                                                                <input type="text" class="form-control" name="localizacao" value="<?= htmlspecialchars($valorForm['localizacao'] ?? '') ?>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row">
+                                                            <div class="form-group col-md-4">
+                                                                <label>Data de Aquisição</label>
+                                                                <input type="date" class="form-control" name="data_aquisicao" value="<?= htmlspecialchars($valorForm['data_aquisicao'] ?? '') ?>">
+                                                            </div>
+                                                            <div class="form-group col-md-8">
+                                                                <label>Observações</label>
+                                                                <input type="text" class="form-control" name="observacoes" value="<?= htmlspecialchars($valorForm['observacoes'] ?? '') ?>">
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
@@ -366,6 +476,14 @@ if (isset($this->dados['form']) && is_array($this->dados['form'])) {
                                                         <p><strong>Modelo:</strong> <?= htmlspecialchars($valorForm['modelo']) ?></p>
                                                         <p><strong>Estado:</strong> <span class="badge badge-<?= $badgeColor ?>"><?= htmlspecialchars($valorForm['estado'] ?? '') ?></span></p>
                                                         <p><strong>Data de Entrada:</strong> <?= htmlspecialchars($valorForm['dataregisto'] ?? '—') ?></p>
+                                                        <?php if (!empty($valorForm['categoria_equipamento']) || !empty($valorForm['codigo']) || !empty($valorForm['patrimonio'])): ?>
+                                                        <h6 class="text-primary mt-3">Dados Patrimoniais</h6>
+                                                        <p><strong>Categoria:</strong> <?= htmlspecialchars($valorForm['categoria_equipamento'] ?? '—') ?></p>
+                                                        <p><strong>Código:</strong> <?= htmlspecialchars($valorForm['codigo'] ?? '—') ?></p>
+                                                        <p><strong>Património:</strong> <?= htmlspecialchars($valorForm['patrimonio'] ?? '—') ?></p>
+                                                        <p><strong>Departamento:</strong> <?= htmlspecialchars($valorForm['departamento'] ?? '—') ?></p>
+                                                        <p><strong>Localização:</strong> <?= htmlspecialchars($valorForm['localizacao'] ?? '—') ?></p>
+                                                        <?php endif; ?>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <h6 class="text-primary">Cliente</h6>

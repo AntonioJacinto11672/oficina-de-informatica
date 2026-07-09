@@ -31,6 +31,21 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
+-- Controlo de migrações — ver migrate.php e database/migrations/.
+-- Este ficheiro (schema.sql) é a base para instalação de raiz; qualquer
+-- alteração posterior à estrutura entra também como ficheiro numerado em
+-- database/migrations/, para que instalações já existentes se actualizem
+-- correndo `php migrate.php`.
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `schema_migrations` (
+  `id`         INT(11)      NOT NULL AUTO_INCREMENT,
+  `migration`  VARCHAR(191) NOT NULL,
+  `applied_at` DATETIME     DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `migration` (`migration`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
 -- Log de acessos
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `control_usuario` (
@@ -46,6 +61,7 @@ CREATE TABLE IF NOT EXISTS `control_usuario` (
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `tecnicos` (
   `idtecnico`  INT(11)      NOT NULL AUTO_INCREMENT,
+  `idusuario`  INT(11)      DEFAULT NULL,
   `nbi`        VARCHAR(20)  DEFAULT NULL,
   `nif`        VARCHAR(20)  DEFAULT NULL,
   `nome`       VARCHAR(100) NOT NULL,
@@ -55,7 +71,9 @@ CREATE TABLE IF NOT EXISTS `tecnicos` (
   `morada`     VARCHAR(200) DEFAULT NULL,
   `created`    DATETIME     DEFAULT CURRENT_TIMESTAMP,
   `foto`       VARCHAR(255) DEFAULT NULL,
-  PRIMARY KEY (`idtecnico`)
+  PRIMARY KEY (`idtecnico`),
+  KEY `fk_tecnicos_usuario` (`idusuario`),
+  CONSTRAINT `fk_tecnicos_usuario` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`idusuario`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -63,6 +81,7 @@ CREATE TABLE IF NOT EXISTS `tecnicos` (
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `recepcionista` (
   `idrecepcionista` INT(11)      NOT NULL AUTO_INCREMENT,
+  `idusuario`       INT(11)      DEFAULT NULL,
   `nbi`             VARCHAR(20)  DEFAULT NULL,
   `nif`             VARCHAR(20)  DEFAULT NULL,
   `nome`            VARCHAR(100) NOT NULL,
@@ -72,7 +91,9 @@ CREATE TABLE IF NOT EXISTS `recepcionista` (
   `morada`          VARCHAR(200) DEFAULT NULL,
   `created`         DATETIME     DEFAULT CURRENT_TIMESTAMP,
   `foto`            VARCHAR(255) DEFAULT NULL,
-  PRIMARY KEY (`idrecepcionista`)
+  PRIMARY KEY (`idrecepcionista`),
+  KEY `fk_recepcionista_usuario` (`idusuario`),
+  CONSTRAINT `fk_recepcionista_usuario` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`idusuario`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -92,29 +113,72 @@ CREATE TABLE IF NOT EXISTS `clientes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
+-- Categorias de Equipamento (módulo 4)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `categoria_equipamento` (
+  `idcategoria_equipamento` INT(11)      NOT NULL AUTO_INCREMENT,
+  `nome`                    VARCHAR(100) NOT NULL,
+  `created`                 DATETIME     DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idcategoria_equipamento`),
+  UNIQUE KEY `uq_categoria_equipamento_nome` (`nome`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
 -- Equipamentos Informáticos
--- tipo_equipamento: Computador, Portátil, Impressora, Servidor, Equipamento de Rede, Telemóvel, Tablet, Monitor, Outro
--- estado: Recebido, Em Diagnóstico, Aguardando Peças, Em Reparação, Concluído, Entregue
+-- tipo_equipamento (legado): Computador, Portátil, Impressora, Servidor, Equipamento de Rede, Telemóvel, Tablet, Monitor, Outro
+-- estado: Recebido, Em Diagnóstico, Aguardando Peças, Em Reparação, Concluído, Entregue, Abatido
+-- dataregisto = data de entrada/registo na oficina; data_aquisicao = data de compra do bem
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `equipamento` (
-  `idequipamento`       INT(11)      NOT NULL AUTO_INCREMENT,
-  `idcliente`           INT(11)      DEFAULT NULL,
-  `numero_serie`        VARCHAR(100) NOT NULL,
-  `imei`                VARCHAR(50)  DEFAULT NULL,
-  `tipo_equipamento`    VARCHAR(50)  DEFAULT 'Computador',
-  `marca`               VARCHAR(80)  DEFAULT NULL,
-  `modelo`              VARCHAR(80)  DEFAULT NULL,
-  `estado`              VARCHAR(50)  DEFAULT 'Recebido',
-  `defeito_reportado`   TEXT         DEFAULT NULL,
-  `diagnostico_tecnico` TEXT         DEFAULT NULL,
-  `garantia_reparacao`  VARCHAR(100) DEFAULT NULL,
-  `foto_antes`          VARCHAR(255) DEFAULT NULL,
-  `foto_depois`         VARCHAR(255) DEFAULT NULL,
-  `dataregisto`         DATE         DEFAULT NULL,
-  `created`             DATETIME     DEFAULT CURRENT_TIMESTAMP,
+  `idequipamento`           INT(11)      NOT NULL AUTO_INCREMENT,
+  `codigo`                  VARCHAR(50)  DEFAULT NULL,
+  `patrimonio`              VARCHAR(50)  DEFAULT NULL,
+  `nome`                    VARCHAR(150) DEFAULT NULL,
+  `idcliente`               INT(11)      DEFAULT NULL,
+  `departamento`            VARCHAR(100) DEFAULT NULL,
+  `localizacao`             VARCHAR(150) DEFAULT NULL,
+  `numero_serie`            VARCHAR(100) NOT NULL,
+  `imei`                    VARCHAR(50)  DEFAULT NULL,
+  `tipo_equipamento`        VARCHAR(50)  DEFAULT 'Computador',
+  `idcategoria_equipamento` INT(11)      DEFAULT NULL,
+  `marca`                   VARCHAR(80)  DEFAULT NULL,
+  `modelo`                  VARCHAR(80)  DEFAULT NULL,
+  `estado`                  VARCHAR(50)  DEFAULT 'Recebido',
+  `defeito_reportado`       TEXT         DEFAULT NULL,
+  `diagnostico_tecnico`     TEXT         DEFAULT NULL,
+  `garantia_reparacao`      VARCHAR(100) DEFAULT NULL,
+  `foto_antes`              VARCHAR(255) DEFAULT NULL,
+  `foto_depois`             VARCHAR(255) DEFAULT NULL,
+  `dataregisto`             DATE         DEFAULT NULL,
+  `data_aquisicao`          DATE         DEFAULT NULL,
+  `observacoes`             TEXT         DEFAULT NULL,
+  `created`                 DATETIME     DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idequipamento`),
   UNIQUE KEY `numero_serie` (`numero_serie`),
-  KEY `fk_equip_cliente` (`idcliente`)
+  KEY `fk_equip_cliente` (`idcliente`),
+  KEY `fk_equipamento_categoria` (`idcategoria_equipamento`),
+  CONSTRAINT `fk_equipamento_categoria` FOREIGN KEY (`idcategoria_equipamento`) REFERENCES `categoria_equipamento` (`idcategoria_equipamento`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Abatimento de Equipamentos (módulo 14) — workflow com aprovação
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `equipamentos_abatidos` (
+  `idabatimento`          INT(11)      NOT NULL AUTO_INCREMENT,
+  `id_equipamento`        INT(11)      NOT NULL,
+  `motivo`                TEXT         NOT NULL,
+  `idusuario_solicitante` INT(11)      DEFAULT NULL,
+  `idusuario_aprovador`   INT(11)      DEFAULT NULL,
+  `estado`                VARCHAR(20)  NOT NULL DEFAULT 'Solicitado',
+  `data_solicitacao`      DATETIME     DEFAULT CURRENT_TIMESTAMP,
+  `data_decisao`          DATETIME     DEFAULT NULL,
+  `observacoes`           TEXT         DEFAULT NULL,
+  PRIMARY KEY (`idabatimento`),
+  KEY `fk_abat_solicitante` (`idusuario_solicitante`),
+  KEY `fk_abat_aprovador` (`idusuario_aprovador`),
+  CONSTRAINT `fk_abat_equipamento`  FOREIGN KEY (`id_equipamento`)        REFERENCES `equipamento`(`idequipamento`) ON DELETE CASCADE,
+  CONSTRAINT `fk_abat_solicitante`  FOREIGN KEY (`idusuario_solicitante`) REFERENCES `usuario`(`idusuario`)         ON DELETE SET NULL,
+  CONSTRAINT `fk_abat_aprovador`    FOREIGN KEY (`idusuario_aprovador`)   REFERENCES `usuario`(`idusuario`)         ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Alias de compatibilidade (veiculo → equipamento)
@@ -202,13 +266,17 @@ CREATE TABLE IF NOT EXISTS `tipo_servico` (
 -- O campo `veiculo` guarda o número de série do equipamento (legado)
 -- O campo `tecnico` guarda o NIF do técnico responsável (antes: mecanico)
 -- ------------------------------------------------------------
+-- estado/status: Aberta, Em diagnóstico, Aguardando orçamento, Aguardando aprovação, Em manutenção, Concluída, Cancelada
+-- prioridade: Baixa, Média, Alta, Urgente
 CREATE TABLE IF NOT EXISTS `ocorrencias` (
   `idocorrencia`     INT(11)        NOT NULL AUTO_INCREMENT,
   `id_orcamento`     INT(11)        DEFAULT NULL,
   `id_equipamento`   INT(11)        DEFAULT NULL,
   `id_tipo_servico`  INT(11)        DEFAULT NULL,
   `tecnico`          VARCHAR(100)   DEFAULT NULL,
+  `idtecnico_responsavel` INT(11)   DEFAULT NULL,
   `tipo_manutencao`  VARCHAR(30)    DEFAULT 'Corretiva',
+  `prioridade`       VARCHAR(20)    DEFAULT 'Média',
   `descricao`        TEXT           DEFAULT NULL,
   `estado`           VARCHAR(30)    DEFAULT 'Aberta',
   `data_abertura`    DATE           DEFAULT NULL,
@@ -219,11 +287,69 @@ CREATE TABLE IF NOT EXISTS `ocorrencias` (
   `created`          DATETIME       DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idocorrencia`),
   KEY `idx_ocorrencias_data_prevista` (`data_prevista`),
-  KEY `idx_ocorrencias_status` (`status`)
+  KEY `idx_ocorrencias_status` (`status`),
+  KEY `fk_ocorrencias_tecnico` (`idtecnico_responsavel`),
+  CONSTRAINT `fk_ocorrencias_tecnico` FOREIGN KEY (`idtecnico_responsavel`) REFERENCES `usuario` (`idusuario`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Equipamentos associados a uma ocorrência (1 ocorrência : N equipamentos)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ocorrencia_equipamento` (
+  `idocorrencia_equipamento` INT(11)  NOT NULL AUTO_INCREMENT,
+  `id_ocorrencia`            INT(11)  NOT NULL,
+  `id_equipamento`           INT(11)  NOT NULL,
+  `created`                  DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idocorrencia_equipamento`),
+  UNIQUE KEY `uq_ocorrencia_equipamento` (`id_ocorrencia`, `id_equipamento`),
+  KEY `fk_oceq_equipamento` (`id_equipamento`),
+  CONSTRAINT `fk_oceq_ocorrencia`  FOREIGN KEY (`id_ocorrencia`)  REFERENCES `ocorrencias`(`idocorrencia`)   ON DELETE CASCADE,
+  CONSTRAINT `fk_oceq_equipamento` FOREIGN KEY (`id_equipamento`) REFERENCES `equipamento`(`idequipamento`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Auditoria de mudanças de estado de uma ocorrência
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ocorrencia_historico` (
+  `idocorrencia_historico` INT(11)     NOT NULL AUTO_INCREMENT,
+  `id_ocorrencia`          INT(11)     NOT NULL,
+  `estado_anterior`        VARCHAR(30) DEFAULT NULL,
+  `estado_novo`            VARCHAR(30) NOT NULL,
+  `idusuario`              INT(11)     DEFAULT NULL,
+  `observacao`             TEXT        DEFAULT NULL,
+  `created`                DATETIME    DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idocorrencia_historico`),
+  KEY `fk_ochist_usuario` (`idusuario`),
+  CONSTRAINT `fk_ochist_ocorrencia` FOREIGN KEY (`id_ocorrencia`) REFERENCES `ocorrencias`(`idocorrencia`) ON DELETE CASCADE,
+  CONSTRAINT `fk_ochist_usuario`    FOREIGN KEY (`idusuario`)     REFERENCES `usuario`(`idusuario`)       ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Diagnóstico Técnico (histórico ligado à ocorrência) — módulo 10
+-- equipamento.diagnostico_tecnico continua a guardar o resumo do último diagnóstico
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `diagnostico` (
+  `iddiagnostico`         INT(11)      NOT NULL AUTO_INCREMENT,
+  `id_ocorrencia`         INT(11)      NOT NULL,
+  `id_equipamento`        INT(11)      NOT NULL,
+  `idusuario_tecnico`     INT(11)      DEFAULT NULL,
+  `problema_descrito`     TEXT         DEFAULT NULL,
+  `solucao_proposta`      TEXT         DEFAULT NULL,
+  `pecas_solicitadas`     TEXT         DEFAULT NULL,
+  `encaminhado_orcamento` TINYINT(1)   NOT NULL DEFAULT 0,
+  `created`               DATETIME     DEFAULT CURRENT_TIMESTAMP,
+  `modified`              DATETIME     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`iddiagnostico`),
+  KEY `fk_diag_equipamento` (`id_equipamento`),
+  KEY `fk_diag_usuario` (`idusuario_tecnico`),
+  CONSTRAINT `fk_diag_ocorrencia`  FOREIGN KEY (`id_ocorrencia`)  REFERENCES `ocorrencias`(`idocorrencia`)   ON DELETE CASCADE,
+  CONSTRAINT `fk_diag_equipamento` FOREIGN KEY (`id_equipamento`) REFERENCES `equipamento`(`idequipamento`) ON DELETE CASCADE,
+  CONSTRAINT `fk_diag_usuario`     FOREIGN KEY (`idusuario_tecnico`) REFERENCES `usuario`(`idusuario`)      ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `orcamentos` (
   `idorcamentos`    INT(11)        NOT NULL AUTO_INCREMENT,
+  `id_ocorrencia`   INT(11)        DEFAULT NULL,
   `veiculo`         VARCHAR(100)   DEFAULT NULL,
   `id_tipo_servico` INT(11)        DEFAULT NULL,
   `valor`           DECIMAL(12,2)  DEFAULT 0.00,
@@ -236,7 +362,43 @@ CREATE TABLE IF NOT EXISTS `orcamentos` (
   `status`          VARCHAR(20)    DEFAULT 'Aberto',
   `tipo`            VARCHAR(20)    DEFAULT 'Orçamento',
   `created`         DATETIME       DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idorcamentos`)
+  PRIMARY KEY (`idorcamentos`),
+  KEY `fk_orcamentos_ocorrencia` (`id_ocorrencia`),
+  CONSTRAINT `fk_orcamentos_ocorrencia` FOREIGN KEY (`id_ocorrencia`) REFERENCES `ocorrencias` (`idocorrencia`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Execução da Manutenção (módulo 12) — caminho novo e independente do
+-- fluxo legado em `orcamentos` (tipo='Serviço'), que se mantém intacto
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `execucao_manutencao` (
+  `idexecucao`        INT(11)      NOT NULL AUTO_INCREMENT,
+  `id_ocorrencia`     INT(11)      NOT NULL,
+  `id_orcamento`      INT(11)      DEFAULT NULL,
+  `idusuario_tecnico` INT(11)      DEFAULT NULL,
+  `data_inicio`       DATETIME     DEFAULT NULL,
+  `data_fim`          DATETIME     DEFAULT NULL,
+  `estado`            VARCHAR(30)  NOT NULL DEFAULT 'Em execução',
+  `observacoes`       TEXT         DEFAULT NULL,
+  `created`           DATETIME     DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idexecucao`),
+  KEY `fk_exec_orcamento` (`id_orcamento`),
+  KEY `fk_exec_usuario` (`idusuario_tecnico`),
+  CONSTRAINT `fk_exec_ocorrencia` FOREIGN KEY (`id_ocorrencia`) REFERENCES `ocorrencias`(`idocorrencia`) ON DELETE CASCADE,
+  CONSTRAINT `fk_exec_orcamento`  FOREIGN KEY (`id_orcamento`)  REFERENCES `orcamentos`(`idorcamentos`)   ON DELETE SET NULL,
+  CONSTRAINT `fk_exec_usuario`    FOREIGN KEY (`idusuario_tecnico`) REFERENCES `usuario`(`idusuario`)     ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `execucao_peca` (
+  `idexecucao_peca` INT(11)  NOT NULL AUTO_INCREMENT,
+  `id_execucao`     INT(11)  NOT NULL,
+  `id_produto`      INT(11)  NOT NULL,
+  `quantidade`      INT(11)  NOT NULL DEFAULT 1,
+  `created`         DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idexecucao_peca`),
+  KEY `fk_execpeca_produto` (`id_produto`),
+  CONSTRAINT `fk_execpeca_execucao` FOREIGN KEY (`id_execucao`) REFERENCES `execucao_manutencao`(`idexecucao`) ON DELETE CASCADE,
+  CONSTRAINT `fk_execpeca_produto`  FOREIGN KEY (`id_produto`)  REFERENCES `produto`(`idproduto`)              ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -333,6 +495,7 @@ CREATE TABLE IF NOT EXISTS `vendas` (
 CREATE TABLE IF NOT EXISTS `comissao` (
   `id`         INT(11)        NOT NULL AUTO_INCREMENT,
   `valor`      DECIMAL(12,2)  DEFAULT 0.00,
+  `percentual_aplicado` DECIMAL(5,2) DEFAULT NULL,
   `servico`    VARCHAR(150)   DEFAULT NULL,
   `tipo`       VARCHAR(30)    DEFAULT NULL,
   `data`       DATE           DEFAULT NULL,
@@ -382,6 +545,76 @@ CREATE TABLE IF NOT EXISTS `reset_senha` (
   `created_at` DATETIME     DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_email_codigo` (`email`, `codigo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Planeamento de Manutenção Preventiva (módulo 13)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `plano_manutencao_preventiva` (
+  `idplano`            INT(11)      NOT NULL AUTO_INCREMENT,
+  `id_equipamento`     INT(11)      NOT NULL,
+  `id_tipo_servico`    INT(11)      DEFAULT NULL,
+  `idusuario_tecnico`  INT(11)      DEFAULT NULL,
+  `periodicidade_dias` INT(11)      NOT NULL,
+  `data_inicio`        DATE         NOT NULL,
+  `proxima_execucao`   DATE         NOT NULL,
+  `ativo`              TINYINT(1)   NOT NULL DEFAULT 1,
+  `observacoes`        TEXT         DEFAULT NULL,
+  `created`            DATETIME     DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idplano`),
+  KEY `fk_plano_tipo_servico` (`id_tipo_servico`),
+  KEY `fk_plano_usuario` (`idusuario_tecnico`),
+  KEY `idx_plano_proxima_execucao` (`proxima_execucao`),
+  CONSTRAINT `fk_plano_equipamento`  FOREIGN KEY (`id_equipamento`)    REFERENCES `equipamento`(`idequipamento`)     ON DELETE CASCADE,
+  CONSTRAINT `fk_plano_tipo_servico` FOREIGN KEY (`id_tipo_servico`)   REFERENCES `tipo_servico`(`idtipo_servico`)   ON DELETE SET NULL,
+  CONSTRAINT `fk_plano_usuario`       FOREIGN KEY (`idusuario_tecnico`) REFERENCES `usuario`(`idusuario`)            ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `plano_manutencao_lembrete` (
+  `idlembrete` INT(11)  NOT NULL AUTO_INCREMENT,
+  `idplano`    INT(11)  NOT NULL,
+  `data_envio` DATETIME DEFAULT NULL,
+  `enviado`    TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`idlembrete`),
+  CONSTRAINT `fk_lembrete_plano` FOREIGN KEY (`idplano`) REFERENCES `plano_manutencao_preventiva`(`idplano`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Configuração de comissões (módulo 16) — substitui a constante global
+-- .env VALOR_COMISSAO (mantida como fallback de última instância)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `comissao_config` (
+  `idconfig`          INT(11)       NOT NULL AUTO_INCREMENT,
+  `idusuario_tecnico` INT(11)       DEFAULT NULL,
+  `id_tipo_servico`   INT(11)       DEFAULT NULL,
+  `percentual`        DECIMAL(5,2)  NOT NULL DEFAULT 30.00,
+  `ativo`             TINYINT(1)    NOT NULL DEFAULT 1,
+  `created`           DATETIME      DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idconfig`),
+  KEY `fk_comconfig_usuario` (`idusuario_tecnico`),
+  KEY `fk_comconfig_tiposervico` (`id_tipo_servico`),
+  CONSTRAINT `fk_comconfig_usuario`     FOREIGN KEY (`idusuario_tecnico`) REFERENCES `usuario`(`idusuario`)           ON DELETE CASCADE,
+  CONSTRAINT `fk_comconfig_tiposervico` FOREIGN KEY (`id_tipo_servico`)   REFERENCES `tipo_servico`(`idtipo_servico`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Histórico de movimentações de stock (módulo 7)
+-- tipo: Entrada | Saida
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `movimento_estoque` (
+  `idmovimento`   INT(11)      NOT NULL AUTO_INCREMENT,
+  `id_produto`    INT(11)      NOT NULL,
+  `tipo`          VARCHAR(10)  NOT NULL,
+  `quantidade`    INT(11)      NOT NULL,
+  `origem`        VARCHAR(40)  DEFAULT NULL,
+  `id_referencia` INT(11)      DEFAULT NULL,
+  `idusuario`     INT(11)      DEFAULT NULL,
+  `created`       DATETIME     DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idmovimento`),
+  KEY `fk_movest_usuario` (`idusuario`),
+  KEY `idx_movest_produto` (`id_produto`),
+  CONSTRAINT `fk_movest_produto` FOREIGN KEY (`id_produto`) REFERENCES `produto`(`idproduto`) ON DELETE CASCADE,
+  CONSTRAINT `fk_movest_usuario` FOREIGN KEY (`idusuario`)  REFERENCES `usuario`(`idusuario`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================
@@ -465,12 +698,20 @@ LEFT JOIN clientes c ON c.idclientes = e.idcliente
 LEFT JOIN tipo_servico ts ON ts.idtipo_servico = o.id_tipo_servico;
 
 -- View: clientes + equipamentos
+-- equipamento.nome é exposto como nome_equipamento para não colidir com clientes.nome
 CREATE OR REPLACE VIEW `dadosClienteEquipamento` AS
 SELECT
   e.idequipamento,
+  e.codigo,
+  e.patrimonio,
+  e.nome AS nome_equipamento,
+  e.departamento,
+  e.localizacao,
   e.numero_serie,
   e.imei,
   e.tipo_equipamento,
+  e.idcategoria_equipamento,
+  ce.nome AS categoria_equipamento,
   e.marca,
   e.modelo,
   e.estado,
@@ -480,6 +721,8 @@ SELECT
   e.foto_antes,
   e.foto_depois,
   e.dataregisto,
+  e.data_aquisicao,
+  e.observacoes,
   c.idclientes,
   c.nbi,
   c.nif,
@@ -489,7 +732,8 @@ SELECT
   c.telefone,
   c.morada
 FROM equipamento e
-LEFT JOIN clientes c ON c.idclientes = e.idcliente;
+LEFT JOIN clientes c ON c.idclientes = e.idcliente
+LEFT JOIN categoria_equipamento ce ON ce.idcategoria_equipamento = e.idcategoria_equipamento;
 
 -- View: compatibilidade com código legado (dadosClienteVeiculo)
 CREATE OR REPLACE VIEW `dadosClienteVeiculo` AS
@@ -568,6 +812,22 @@ LEFT JOIN produto p         ON p.idproduto        = c.idproduto
 LEFT JOIN categoria cat     ON cat.idcategoria    = p.idcategoria
 LEFT JOIN fornecedor f      ON f.idfornecedor     = p.idfornecedor;
 
+-- View: custo de peças + serviço por ocorrência (módulo 15)
+CREATE OR REPLACE VIEW `dadosCustoOcorrencia` AS
+SELECT
+  oc.idocorrencia,
+  COALESCE(pecas.custo_pecas, 0) AS custo_pecas,
+  COALESCE(o.valor, 0) AS custo_servico,
+  COALESCE(pecas.custo_pecas, 0) + COALESCE(o.valor, 0) AS custo_total
+FROM ocorrencias oc
+LEFT JOIN orcamentos o ON o.id_ocorrencia = oc.idocorrencia
+LEFT JOIN (
+    SELECT op.orcamentos AS idorcamentos, SUM(op.quantidade * p.valor_venda) AS custo_pecas
+    FROM orc_prod op
+    INNER JOIN produto p ON p.idproduto = op.produtos
+    GROUP BY op.orcamentos
+) pecas ON pecas.idorcamentos = o.idorcamentos;
+
 -- ============================================================
 -- DADOS INICIAIS
 -- ============================================================
@@ -579,5 +839,9 @@ INSERT IGNORE INTO `usuario`
 VALUES
   ('ALDADL1222334', 'ALDADL1222334', 'António', 'Jacinto', 'antjacinto11672@gmail.com', '937585960',
    '827ccb0eea8a706c4c34a16891f84e7b', 'adimin', 'Ativada', NOW());
+
+-- Comissão global padrão (30%, igual ao valor histórico de VALOR_COMISSAO no .env)
+INSERT IGNORE INTO `comissao_config` (idconfig, idusuario_tecnico, id_tipo_servico, percentual, ativo)
+VALUES (1, NULL, NULL, 30.00, 1);
 
 SET FOREIGN_KEY_CHECKS = 1;

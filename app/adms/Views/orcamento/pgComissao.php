@@ -32,6 +32,7 @@ if (isset($_SESSION['idlogado'])) {
                     <thead>
                         <tr>
                             <th>Valor</th>
+                            <th>%</th>
                             <th>Serviço</th>
                             <th>Tipo</th>
                             <th>Data</th>
@@ -40,6 +41,7 @@ if (isset($_SESSION['idlogado'])) {
                     <tfoot>
                         <tr>
                             <th>Valor</th>
+                            <th>%</th>
                             <th>Serviço</th>
                             <th>Tipo</th>
                             <th>Data</th>
@@ -57,10 +59,11 @@ if (isset($_SESSION['idlogado'])) {
                                         echo $valorForm['valorm'];
                                         ?> KZ
                                     </td>
+                                    <td><?php echo isset($valorForm['percentual_aplicado']) ? number_format($valorForm['percentual_aplicado'], 2) . '%' : '—'; ?></td>
                                     <td><?php echo $valorForm['servico']; ?></td>
                                     <td><?php echo $valorForm['tipo']; ?></td>
                                     <td><?php echo date("d/m/Y", strtotime($valorForm['data'])); ?></td>
-                                </tr>       
+                                </tr>
                                 <!-- Modal do W3C-->
                             <?php
                         }

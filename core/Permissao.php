@@ -35,7 +35,7 @@ class Permissao {
     }
     private function pgRestrita() {
         $this->pgRestrita = ['dashboard','perfil','tecnico','perfil','recepcionista','fornecedor','produto','categoria','editarFoto','estoque','tipoServico','vendas','compras','contasPagar','contaReceber','cliente','equipamento',
-            'movimentacao','orcamento','addProdutoOrcamento','orcamentoRecepcao','servico','comissoes','consultas','relatorio','entradaEquipamento','relatorioTecnico','chat','graficos'];
+            'movimentacao','orcamento','addProdutoOrcamento','orcamentoRecepcao','servico','comissoes','consultas','relatorio','entradaEquipamento','relatorioTecnico','chat','graficos','ocorrencia','diagnostico','execucao','categoriaEquipamento','abatimento','planeamento','comissaoConfig','movimentoEstoque'];
         if (in_array($this->urlController, $this->pgRestrita)) {
             $this->verificarLogin();
         } else {

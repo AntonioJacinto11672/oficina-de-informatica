@@ -371,8 +371,41 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Pessoas</h6>
                         <a class="collapse-item" href="<?php echo URLADM; ?>tecnico">Técnicos</a>
-                        <!-- <a class="collapse-item" href="<?php echo URLADM; ?>recepcionista">Recepsionistas</a> -->
+                        <a class="collapse-item" href="<?php echo URLADM; ?>recepcionista">Recepsionistas</a>
                         <a class="collapse-item" href="<?php echo URLADM; ?>fornecedor">Fornecedores</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Manutenção Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseManutencao"
+                    aria-expanded="true" aria-controls="collapseManutencao">
+                    <i class="icon icofont-tools"></i>
+                    <span>Manutenção</span>
+                </a>
+                <div id="collapseManutencao" class="collapse" aria-labelledby="headingManutencao" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Manutenção</h6>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>ocorrencia">Ocorrências</a>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>diagnostico">Diagnósticos</a>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>execucao">Execuções</a>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>planeamento">Planeamento Preventivo</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Comissões Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseComissoes"
+                    aria-expanded="true" aria-controls="collapseComissoes">
+                    <i class="icon icofont-money-bag"></i>
+                    <span>Comissões</span>
+                </a>
+                <div id="collapseComissoes" class="collapse" aria-labelledby="headingComissoes" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Comissões</h6>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>comissaoConfig">Configurar %</a>
                     </div>
                 </div>
             </li>
@@ -388,9 +421,11 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Produtos</h6>
-                        <a class="collapse-item" href="<?php echo URLADM; ?>categoria">Categorias</a>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>categoria">Categorias de Peças</a>
                         <a class="collapse-item" href="<?php echo URLADM; ?>produto">Produtos</a>
                         <a class="collapse-item" href="<?php echo URLADM; ?>equipamento">Equipamentos</a>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>categoriaEquipamento">Categorias de Equipamentos</a>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>abatimento">Abatimentos</a>
                     </div>
                 </div>
             </li>
@@ -545,6 +580,8 @@
                         <h6 class="collapse-header">Cadastro</h6>
                         <a class="collapse-item" href="<?php echo URLADM; ?>cliente">Clientes</a>
                         <a class="collapse-item" href="<?php echo URLADM; ?>equipamento">Equipamentos</a>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>ocorrencia">Ocorrências</a>
+                        <a class="collapse-item" href="<?php echo URLADM; ?>abatimento">Abatimentos</a>
                     </div>
                 </div>
             </li>
@@ -616,6 +653,44 @@
 
         <?php } elseif ($_SESSION['usuario'] == 'tecnico') {
         ?>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Manutenção
+            </div>
+            <!-- Nav Item - Ocorrências -->
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo URLADM; ?>ocorrencia">
+                    <i class="icon icofont-tools"></i>
+                    <span>Ocorrências</span></a>
+            </li>
+            <!-- Nav Item - Diagnósticos -->
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo URLADM; ?>diagnostico">
+                    <i class="icon icofont-stethoscope"></i>
+                    <span>Diagnósticos</span></a>
+            </li>
+            <!-- Nav Item - Execuções -->
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo URLADM; ?>execucao">
+                    <i class="icon icofont-tools"></i>
+                    <span>Execuções</span></a>
+            </li>
+            <!-- Nav Item - Abatimentos -->
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo URLADM; ?>abatimento">
+                    <i class="icon icofont-archive"></i>
+                    <span>Abatimentos</span></a>
+            </li>
+            <!-- Nav Item - Planeamento Preventivo -->
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo URLADM; ?>planeamento">
+                    <i class="icon icofont-calendar"></i>
+                    <span>Planeamento Preventivo</span></a>
+            </li>
+
             <!-- Divider -->
             <hr class="sidebar-divider">
 
