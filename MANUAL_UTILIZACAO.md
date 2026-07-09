@@ -39,7 +39,28 @@ ou o **[GUIA_EXECUCAO.md](GUIA_EXECUCAO.md)**.
 
 ## 2. Fluxo Típico de uma Manutenção
 
-Desde a versão 4.0, a **Ocorrência** é o ponto de entrada real do sistema — é ela que representa o pedido de intervenção num equipamento, do início ao fim. Este é o percurso normal, do momento em que o problema é identificado até ao encerramento:
+Desde a versão 4.0, a **Ocorrência** é o ponto de entrada real do sistema — é ela que representa o pedido de intervenção num equipamento, do início ao fim.
+
+### 2.1 Visão Geral — Quem Faz o Quê, e Quando
+
+```
+ RECEPÇÃO                TÉCNICO                    RECEPÇÃO/GERENTE        TÉCNICO
+ ─────────                ───────                    ────────────────        ───────
+ 1. Regista               3. Diagnostica     5. Orçamento    6. Aprova       7-8. Executa
+    Cliente +      2. Abre    o problema         é criado       o Orçamento     e encerra
+    Equipamento   Ocorrência                     a partir           │              │
+       │              │            │             da Ocorrência       │              │
+       ▼              ▼            ▼                  │              ▼              ▼
+   [Cliente]      [Aberta] → [Em diagnóstico] → [Aguardando   → [Aguardando  → [Em manu-  → [Concluída]
+   [Equipamento]                                 orçamento]      aprovação]     tenção]         │
+                                                                                                  ▼
+                                                                                    9. Comissão calculada
+                                                                                    10. Pagamento + Entrega
+```
+
+Cada seta acima é um clique num botão do sistema (não é automático) — alguém tem sempre de o accionar. As secções 4.1 a 4.3 mostram exactamente onde clicar, passo a passo, para cada perfil.
+
+Este é o percurso normal por extenso, do momento em que o problema é identificado até ao encerramento:
 
 1. **Recepcionista** cadastra o **Cliente** (se ainda não existir) e o **Equipamento** associado (nº de série, categoria, marca, modelo, departamento, localização).
 2. **Recepcionista** ou **Técnico** abre uma **Ocorrência**: escolhe um ou vários equipamentos, o tipo de serviço, a prioridade (Baixa/Média/Alta/Urgente), o tipo de manutenção (Corretiva/Preventiva) e, opcionalmente, atribui logo um técnico responsável. A ocorrência nasce no estado **Aberta**.
@@ -54,7 +75,7 @@ Desde a versão 4.0, a **Ocorrência** é o ponto de entrada real do sistema —
 
 Todo este percurso fica registado no **Histórico da Ocorrência** (acessível a partir da lista de Ocorrências), com data, utilizador responsável e observação de cada mudança de estado — útil para auditoria e para os relatórios de tempo médio de reparação.
 
-### 2.1 Estados de uma Ocorrência
+### 2.2 Estados de uma Ocorrência
 
 `Aberta` → `Em diagnóstico` → `Aguardando orçamento` → `Aguardando aprovação` → `Em manutenção` → `Concluída` (ou `Cancelada`, a partir de qualquer estado).
 
@@ -148,7 +169,20 @@ Menu **Comissões › Configurar %** (Administrador).
 
 ### 4.1 Administrador (Gerente) — `adimin`
 
-Tem acesso total ao sistema. Menu lateral: **Cadastrar › Pessoas / Produtos**, **Contas**, **Tipo Serviço**, **Consultas**, **Relatório**, **Estatística**.
+Tem acesso total ao sistema. Menu lateral: **Cadastrar › Pessoas / Produtos**, **Manutenção**, **Comissões**, **Contas**, **Tipo Serviço**, **Consultas**, **Relatório**, **Estatística**.
+
+#### 📋 Exemplo prático: configurar o sistema pela primeira vez
+
+Numa oficina nova, é o Administrador quem prepara o terreno antes de a equipa começar a trabalhar:
+
+1. **Cadastrar Técnicos** (secção seguinte) — cada técnico criado recebe automaticamente uma conta de acesso por email.
+2. **Cadastrar Recepcionistas**, se aplicável (menu **Cadastrar › Pessoas › Recepcionistas**).
+3. **Criar Categorias de Equipamentos** (secção 3.5) — ex.: Computador, Impressora, Servidor — antes de a recepção começar a registar equipamentos.
+4. **Criar Tipos de Serviço** (ex.: "Manutenção Preventiva", "Formatação", "Substituição de Peça") — vão aparecer depois no formulário de Ocorrência/Orçamento.
+5. **Criar Categorias de Peças** e **cadastrar Produtos/Peças** com o stock inicial.
+6. (Opcional) **Configurar Comissões** por técnico ou tipo de serviço (secção 3.8) — se não configurar nada, o sistema usa a percentagem global definida no `.env`.
+
+A partir daqui, o dia-a-dia do Administrador é sobretudo **supervisão**: aprovar abatimentos (secção 3.6), acompanhar o dashboard, consultar relatórios e, ocasionalmente, intervir directamente numa Ocorrência ou Orçamento se for preciso.
 
 #### Cadastrar Técnicos
 1. Menu **Cadastrar › Pessoas › Técnicos**.
@@ -194,7 +228,17 @@ Menu **Estatística**: gráficos de Movimentação de Entrada, Movimentação de
 
 ### 4.2 Recepcionista — `recep`
 
-Foco em atendimento ao cliente: cadastro de clientes/equipamentos e gestão financeira do dia-a-dia.
+Foco em atendimento ao cliente: cadastro de clientes/equipamentos e gestão financeira do dia-a-dia. É normalmente quem primeiro toca num caso novo.
+
+#### 📋 Exemplo prático: um cliente chega com um computador avariado
+
+1. **Menu Cadastro › Clientes** — verifique se o cliente já existe (pesquise pelo NIF). Se não existir, cadastre-o (Nome, NIF, Telefone, Email).
+2. **Menu Cadastro › Equipamentos** — registe o computador: escolha o cliente, a categoria (ex.: "Computador"), marca/modelo, nº de série, e descreva o **Defeito Reportado** pelo cliente (ex.: "não liga").
+3. **Menu Cadastro › Ocorrências** — clique em **Nova Ocorrência**, seleccione o equipamento acabado de registar, escolha a prioridade e, se souber, o técnico responsável. Clique em **Abrir Ocorrência**.
+4. A partir daqui, o caso passa para o **Técnico** (secção 4.3), que vai diagnosticar e orçamentar. Você não precisa de fazer mais nada até o orçamento estar pronto.
+5. **Alguns dias depois** — quando o técnico cria o orçamento, ele aparece em **Consultas › Orçamentos** (ou `/orcamentoRecepcao`). Contacte o cliente, explique o valor e, se aceitar, clique em **Aprovar** — isto gera automaticamente a **Conta a Receber**.
+6. Registe o **Adiantamento**, se o cliente pagar uma parte já.
+7. **Quando o técnico encerrar a execução** (equipamento pronto), volte à Conta a Receber, marque o **pagamento** e entregue o equipamento ao cliente.
 
 #### Cadastrar Cliente
 1. Menu **Cadastro › Clientes**.
@@ -224,7 +268,19 @@ Pode abrir Ocorrências (menu **Cadastro › Ocorrências**, junto de Clientes/E
 
 ### 4.3 Técnico — `tecnico`
 
-Foco na execução de orçamentos e serviços atribuídos.
+Foco na execução de orçamentos e serviços atribuídos. É quem mais usa o menu **Manutenção** no dia-a-dia.
+
+#### 📋 Exemplo prático: resolver uma ocorrência atribuída a mim
+
+1. **Menu Manutenção › Ocorrências** — encontre a ocorrência (a recepção já registou o cliente e o equipamento, e abriu a ocorrência). Se ainda não tiver técnico atribuído, use o ícone **Atribuir Técnico** para se atribuir a si próprio.
+2. Clique no ícone de **Diagnóstico** (estetoscópio) — descreva o problema encontrado e a solução proposta (ex.: "Fonte de alimentação queimada — substituir por uma nova"). Grave.
+3. Quando tiver a certeza do diagnóstico, clique em **Encaminhar para Orçamento**.
+4. Volte à lista de Ocorrências e clique no ícone de **Criar Orçamento** (💰) — o formulário já vem com o cliente e o equipamento preenchidos. Complete o **Tipo de Serviço**, **Valor (Mão de Obra)**, **Garantia** e **Data de Entrega** prevista, e grave.
+5. Aguarde a recepção aprovar o orçamento junto do cliente (secção 4.2). Não precisa de fazer nada enquanto isso.
+6. **Depois de aprovado** — volte à Ocorrência e clique em **Iniciar Execução** (menu **Manutenção › Execuções**, ou pelo ícone na lista de Ocorrências).
+7. Vá adicionando as **peças que realmente usar** (ex.: a fonte de alimentação nova) — o stock é reduzido automaticamente.
+8. Quando terminar a reparação, clique em **Encerrar** — a ocorrência fica **Concluída**, o equipamento fica marcado como "Concluído", e a sua **comissão** é calculada e registada automaticamente.
+9. Pode confirmar o valor da comissão em **Comissões › Comissões**.
 
 #### Criar Orçamento
 1. Menu **Orçamentos e Serviços › Orçamentos**.

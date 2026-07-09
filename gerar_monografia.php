@@ -15,6 +15,11 @@ use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Shared\Converter;
 use PhpOffice\PhpWord\SimpleType\Jc;
 use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\Settings;
+
+// Por omissão o PHPWord NÃO escapa caracteres especiais (&, <, >) no texto —
+// sem isto, qualquer "&" literal (ex: "Laudon & Laudon") corrompe o XML.
+Settings::setOutputEscapingEnabled(true);
 
 $phpWord = new PhpWord();
 $phpWord->getSettings()->setThemeFontLang(new \PhpOffice\PhpWord\Style\Language('pt-PT'));
