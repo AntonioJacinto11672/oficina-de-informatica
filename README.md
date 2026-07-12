@@ -212,6 +212,23 @@ mysql -u root -P 3308 manutencao < database/schema.sql
 "C:\xampp\mysql\bin\mysql.exe" -u root -P 3308 manutencao < database\schema.sql
 ```
 
+### 5. Aplicar as migrações da base de dados
+
+Para aplicar as migrações incrementais do projecto, execute:
+
+```bash
+php migrate.php
+```
+
+Este comando lê os ficheiros em [database/migrations](database/migrations) e aplica apenas as alterações pendentes, registando-as para não serem executadas novamente.
+
+Se precisar de carregar dados padrão adicionais, pode importar também:
+
+```bash
+# Windows CMD
+"C:\xampp\mysql\bin\mysql.exe" -u root -P 3308 manutencao < database\seed_dados_padrao.sql
+```
+
 > Se aparecer `ERROR 1045 (28000): Plugin caching_sha2_password could not be loaded`, isso indica que o cliente MySQL não suporta o método de autenticação do servidor. Nesse caso:
 >
 > - Use um cliente MySQL 8 oficial em vez do cliente MariaDB do XAMPP

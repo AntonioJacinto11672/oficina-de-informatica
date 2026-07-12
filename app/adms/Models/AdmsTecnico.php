@@ -1037,7 +1037,7 @@ class AdmsTecnico extends Conn {
     }
 
     public function dadosTecnico() {
-        $dadosMecânico = "SELECT m.*, u.st_conta FROM tecnicos m LEFT JOIN usuario u ON u.nbi = m.nbi AND u.nif = m.nif AND u.nivel = 'mecanico'";
+        $dadosMecânico = "SELECT m.*, u.st_conta FROM tecnicos m LEFT JOIN usuario u ON u.nbi = m.nbi AND u.nif = m.nif AND u.nivel IN ('tecnico', 'mecanico')";
         $result_resenceador = $this->conn->prepare($dadosMecânico);
         $result_resenceador->execute();
         $this->dados = $result_resenceador->fetchAll();

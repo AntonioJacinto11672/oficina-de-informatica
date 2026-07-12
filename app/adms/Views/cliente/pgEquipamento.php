@@ -34,6 +34,22 @@ if (isset($this->dados['form']) && is_array($this->dados['form'])) {
                                 placeholder="Ex: 358043056789012" value="<?= isset($valorForm['imei']) ? htmlspecialchars($valorForm['imei']) : '' ?>">
                         </div>
                         <div class="form-group col-md-4">
+                            <label for="idclientes">Cliente <span class="text-danger">*</span></label>
+                            <select class="custom-select" id="idclientes" name="idclientes" required>
+                                <option value="">Selecione...</option>
+                                <?php
+                                if (!empty($this->dadosAlter) && is_array($this->dadosAlter)) {
+                                    $clienteSel = isset($valorForm['idclientes']) ? (int)$valorForm['idclientes'] : (int)($this->dados['default_client_id'] ?? 0);
+                                    foreach ($this->dadosAlter as $cliente) {
+                                        $sel = ((int)($cliente['idclientes'] ?? 0) === $clienteSel) ? 'selected' : '';
+                                        echo '<option value="' . (int)$cliente['idclientes'] . '" ' . $sel . '>' . htmlspecialchars($cliente['nif'] . ' — ' . $cliente['nome'] . ' ' . $cliente['sobrenome']) . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                            <div class="invalid-feedback">Selecione o cliente.</div>
+                        </div>
+                        <div class="form-group col-md-4">
                             <label for="tipo_equipamento">Tipo de Equipamento <span class="text-danger">*</span></label>
                             <select class="custom-select" id="tipo_equipamento" name="tipo_equipamento" required>
                                 <option value="">Selecione...</option>
@@ -77,49 +93,7 @@ if (isset($this->dados['form']) && is_array($this->dados['form'])) {
                             <div class="invalid-feedback">Campo obrigatório.</div>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="col-md-6 mb-3">
-                            <label for="idclientes">Cliente (NIF) <span class="text-danger">*</span></label>
-                            <?php
-                            // Se houver um cliente padrão definido pelo controlador, passamos o id automaticamente
-                            if (isset($this->dados['default_client_id']) && $this->dados['default_client_id']) {
-                                $defaultId = $this->dados['default_client_id'];
-                                $defaultInfo = null;
-                                if (isset($this->dadosAlter)) {
-                                    foreach ($this->dadosAlter as $valor) {
-                                        if ($valor['idclientes'] == $defaultId) {
-                                            $defaultInfo = $valor;
-                                            break;
-                                        }
-                                    }
-                                }
-                                echo '<input type="hidden" id="idclientes" name="idclientes" value="' . htmlspecialchars($defaultId) . '">';
-                                if ($defaultInfo) {
-                                    echo '<input type="text" class="form-control" value="' . htmlspecialchars($defaultInfo['nif'] . ' — ' . $defaultInfo['nome'] . ' ' . $defaultInfo['sobrenome']) . '" readonly>'; 
-                                } else {
-                                    echo '<input type="text" class="form-control" value="Cliente padrão" readonly>'; 
-                                }
-                            } else {
-                                // fallback: mostrar select com todos os clientes
-                                echo '<select class="custom-select" id="idclientes" name="idclientes" required>';
-                                echo '<option selected disabled value="">Selecione o Cliente...</option>';
-                                if (isset($this->dadosAlter)) {
-                                    foreach ($this->dadosAlter as $valor) {
-                                        echo '<option value="' . $valor['idclientes'] . '">' . htmlspecialchars($valor['nif'] . ' — ' . $valor['nome'] . ' ' . $valor['sobrenome']) . '</option>';
-                                    }
-                                }
-                                echo '</select>';
-                            }
-                            ?>
-                            <div class="invalid-feedback">Selecione o cliente.</div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="dataregisto">Data de Entrada</label>
-                            <input type="date" id="dataregisto" class="form-control" name="dataregisto"
-                                value="<?= isset($valorForm['dataregisto']) ? htmlspecialchars($valorForm['dataregisto']) : date('Y-m-d') ?>" required>
-                            <div class="invalid-feedback">Campo obrigatório.</div>
-                        </div>
-                    </div>
+                  
                     <fieldset class="border rounded p-3 mb-2">
                         <legend class="w-auto px-2 text-muted small">Diagnóstico Técnico</legend>
                         <div class="form-group">

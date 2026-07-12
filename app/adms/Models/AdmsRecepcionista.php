@@ -352,15 +352,22 @@ class AdmsRecepcionista extends Conn {
 
     public function cdsEquipamento($dados) {
         $this->dados = $dados;
-        $this->dados['idclientes']        = $this->limparInput($this->dados['idclientes']);
-        $this->dados['numero_serie']      = $this->limparInput($this->dados['numero_serie']);
+        if (empty($this->dados['idclientes'] ?? null)) {
+            $defaultClientId = $this->findDefaultClientId();
+            $this->dados['idclientes'] = $defaultClientId;
+        } else {
+            $this->dados['idclientes'] = (int)$this->limparInput($this->dados['idclientes']);
+        }
+        $this->dados['numero_serie']      = $this->limparInput($this->dados['numero_serie'] ?? '');
         $this->dados['imei']              = $this->limparInput($this->dados['imei'] ?? '');
-        $this->dados['tipo_equipamento']  = $this->limparInput($this->dados['tipo_equipamento']);
-        $this->dados['marca']             = $this->limparInput($this->dados['marca']);
-        $this->dados['modelo']            = $this->limparInput($this->dados['modelo']);
+        $this->dados['tipo_equipamento']  = $this->limparInput($this->dados['tipo_equipamento'] ?? '');
+        $this->dados['marca']             = $this->limparInput($this->dados['marca'] ?? '');
+        $this->dados['modelo']            = $this->limparInput($this->dados['modelo'] ?? '');
         $this->dados['estado']            = $this->limparInput($this->dados['estado'] ?? 'Recebido');
         $this->dados['defeito_reportado'] = $this->limparInput($this->dados['defeito_reportado'] ?? '');
-        $this->dados['dataregisto']       = $this->limparInput($this->dados['dataregisto']);
+        $this->dados['dataregisto']       = !empty($this->dados['dataregisto'] ?? null)
+            ? $this->limparInput($this->dados['dataregisto'])
+            : date('Y-m-d');
         $this->dados['idcategoria_equipamento'] = !empty($this->dados['idcategoria_equipamento']) ? (int)$this->dados['idcategoria_equipamento'] : null;
         $this->dados['codigo']            = $this->limparInput($this->dados['codigo'] ?? '') ?: null;
         $this->dados['patrimonio']        = $this->limparInput($this->dados['patrimonio'] ?? '') ?: null;
@@ -418,6 +425,13 @@ class AdmsRecepcionista extends Conn {
         }
     }
 
+    private function findDefaultClientId() {
+        $stmt = $this->conn->prepare("SELECT idclientes FROM clientes WHERE nif = '0.025.816/00-4' LIMIT 1");
+        $stmt->execute();
+        $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+        return !empty($cliente['idclientes']) ? (int)$cliente['idclientes'] : null;
+    }
+
     private function valEquipamento() {
         $query = "SELECT numero_serie FROM equipamento WHERE numero_serie LIKE '{$this->dados['numero_serie']}'";
         $result = $this->conn->prepare($query);
@@ -464,17 +478,24 @@ class AdmsRecepcionista extends Conn {
     public function editEquipamento($dados) {
         $this->dados = $dados;
         $this->dados['idequipamento']     = $this->limparInput($this->dados['idequipamento'] ?? $this->dados['idveiculo'] ?? 0);
-        $this->dados['idclientes']        = $this->limparInput($this->dados['idclientes']);
-        $this->dados['numero_serie']      = $this->limparInput($this->dados['numero_serie']);
+        if (empty($this->dados['idclientes'] ?? null)) {
+            $defaultClientId = $this->findDefaultClientId();
+            $this->dados['idclientes'] = $defaultClientId;
+        } else {
+            $this->dados['idclientes'] = (int)$this->limparInput($this->dados['idclientes']);
+        }
+        $this->dados['numero_serie']      = $this->limparInput($this->dados['numero_serie'] ?? '');
         $this->dados['imei']              = $this->limparInput($this->dados['imei'] ?? '');
-        $this->dados['tipo_equipamento']  = $this->limparInput($this->dados['tipo_equipamento']);
-        $this->dados['marca']             = $this->limparInput($this->dados['marca']);
-        $this->dados['modelo']            = $this->limparInput($this->dados['modelo']);
+        $this->dados['tipo_equipamento']  = $this->limparInput($this->dados['tipo_equipamento'] ?? '');
+        $this->dados['marca']             = $this->limparInput($this->dados['marca'] ?? '');
+        $this->dados['modelo']            = $this->limparInput($this->dados['modelo'] ?? '');
         $this->dados['estado']            = $this->limparInput($this->dados['estado'] ?? 'Recebido');
         $this->dados['defeito_reportado'] = $this->limparInput($this->dados['defeito_reportado'] ?? '');
         $this->dados['diagnostico_tecnico'] = $this->limparInput($this->dados['diagnostico_tecnico'] ?? '');
         $this->dados['garantia_reparacao']  = $this->limparInput($this->dados['garantia_reparacao'] ?? '');
-        $this->dados['dataregisto']       = $this->limparInput($this->dados['dataregisto']);
+        $this->dados['dataregisto']       = !empty($this->dados['dataregisto'] ?? null)
+            ? $this->limparInput($this->dados['dataregisto'])
+            : date('Y-m-d');
         $this->dados['idcategoria_equipamento'] = !empty($this->dados['idcategoria_equipamento']) ? (int)$this->dados['idcategoria_equipamento'] : null;
         $this->dados['codigo']            = $this->limparInput($this->dados['codigo'] ?? '') ?: null;
         $this->dados['patrimonio']        = $this->limparInput($this->dados['patrimonio'] ?? '') ?: null;
