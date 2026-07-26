@@ -371,7 +371,6 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Pessoas</h6>
                         <a class="collapse-item" href="<?php echo URLADM; ?>tecnico">Técnicos</a>
-                        <a class="collapse-item" href="<?php echo URLADM; ?>recepcionista">Recepsionistas</a>
                         <a class="collapse-item" href="<?php echo URLADM; ?>fornecedor">Fornecedores</a>
                     </div>
                 </div>
@@ -445,7 +444,6 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Pessoas</h6>
                         <a class="collapse-item" href="<?php echo URLADM; ?>contasPagar">Contas à Pagar</a>
-                        <a class="collapse-item" href="<?php echo URLADM; ?>contaReceber">Conta à Receber</a>
                     </div>
                 </div>
             </li>
@@ -477,13 +475,7 @@
                     <span>Compras</span></a>
             </li>
 
-            <!-- Nav Item - Compras -->
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo URLADM; ?>vendas">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Vendas</span></a>
-            </li>
-
+          
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">

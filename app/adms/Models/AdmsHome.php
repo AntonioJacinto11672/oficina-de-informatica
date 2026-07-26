@@ -199,8 +199,9 @@ class AdmsHome extends Conn {
     }
 
     public function dadosOcorrenciasPreventivas() {
-        // Ocorrências preventivas já abertas + planos (módulo 13) ainda por gerar
-        // (aditivo: a query original de ocorrências mantém-se inalterada).
+        // Ocorrências preventivas já abertas + planos (módulo 13) ainda por gerar.
+        // Se o módulo/ tabela `plano_manutencao_preventiva` não existir, retornamos
+        // apenas as ocorrências para evitar erro fatal na dashboard.
         $query = "
             SELECT o.data_prevista, e.numero_serie, e.marca, e.modelo, ts.nome AS tipo_servico, o.tipo_manutencao, 'ocorrencia' AS origem
                   FROM ocorrencias o
@@ -208,18 +209,28 @@ class AdmsHome extends Conn {
                   LEFT JOIN tipo_servico ts ON ts.idtipo_servico = o.id_tipo_servico
                   WHERE o.tipo_manutencao = 'Preventiva'
                     AND o.status NOT IN ('Concluída', 'Encerrada')
-                    AND o.data_prevista BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 MONTH)
+                    AND o.data_prevista BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 MONTH)";
+
+        try {
+            $tableExists = $this->conn->query("SHOW TABLES LIKE 'plano_manutencao_preventiva'")->fetchColumn();
+            if ($tableExists) {
+                $query .= "
             UNION ALL
             SELECT p.proxima_execucao AS data_prevista, e.numero_serie, e.marca, e.modelo, ts.nome AS tipo_servico, 'Preventiva (planeada)' AS tipo_manutencao, 'plano' AS origem
                   FROM plano_manutencao_preventiva p
                   INNER JOIN equipamento e ON e.idequipamento = p.id_equipamento
                   LEFT JOIN tipo_servico ts ON ts.idtipo_servico = p.id_tipo_servico
                   WHERE p.ativo = 1
-                    AND p.proxima_execucao BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 MONTH)
-            ORDER BY data_prevista ASC";
-        $result = $this->conn->prepare($query);
-        $result->execute();
-        return $result->fetchAll(PDO::FETCH_ASSOC);
+                    AND p.proxima_execucao BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 MONTH)";
+            }
+            $query .= "\n            ORDER BY data_prevista ASC";
+
+            $result = $this->conn->prepare($query);
+            $result->execute();
+            return $result->fetchAll(PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            return [];
+        }
     }
 
     public function dadosHomeAdm() {

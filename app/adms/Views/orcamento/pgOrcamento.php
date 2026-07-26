@@ -253,54 +253,78 @@ if (isset($_SESSION['idlogado'])) {
                     </tfoot>
                     <tbody>
                         <?php
-                        if (isset($this->dados)) {
-                            for ($index = 0; $index < count($this->dados); $index++) {
-                                $valorForm = $this->dados[$index];
+                        $orcamentos = $this->dados ?? [];
+                        if (isset($orcamentos['form'])) {
+                            unset($orcamentos['form']);
+                        }
+                        if (isset($orcamentos['id_ocorrencia_origem'])) {
+                            unset($orcamentos['id_ocorrencia_origem']);
+                        }
+
+                        if (!empty($orcamentos)) {
+                            foreach ($orcamentos as $valorForm) {
+                                if (!is_array($valorForm)) {
+                                    continue;
+                                }
+
+                                $idOrcamento = (int)($valorForm['idorcamentos'] ?? 0);
+                                $clienteNome = trim(($valorForm['nome_cliente'] ?? '') . ' ' . ($valorForm['sobrenome'] ?? ''));
+                                $veiculo = $valorForm['marca'] ?? '';
+                                $valorFormatado = number_format((float)($valorForm['valor'] ?? 0), 2, ',', '.');
+                                $servico = $valorForm['tipo_servico'] ?? '';
+                                $dataOrcamento = '';
+                                if (!empty($valorForm['data_orcamento'])) {
+                                    $dataOrcamento = date('d/m/Y', strtotime((string) $valorForm['data_orcamento']));
+                                }
+
+                                $tecnicoNome = '';
+                                if (!empty($valorForm['tecnico'])) {
+                                    $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
+                                    if ($newConn) {
+                                        $query = "SELECT * FROM usuario WHERE nif='" . mysqli_real_escape_string($newConn, (string) $valorForm['tecnico']) . "' LIMIT 1";
+                                        $result = mysqli_query($newConn, $query);
+                                        if ($result && $mecanico = mysqli_fetch_assoc($result)) {
+                                            $tecnicoNome = trim(($mecanico['nome'] ?? '') . ' ' . ($mecanico['sobrenome'] ?? ''));
+                                        }
+                                    }
+                                }
+
+                                $status = $valorForm['status'] ?? '';
+                                $nifCliente = $valorForm['nif'] ?? '';
+                                $matricula = $valorForm['matricula'] ?? '';
+                                $modelo = $valorForm['modelo'] ?? '';
+                                $tipo = $valorForm['tipo'] ?? '';
+                                $idTipoServico = $valorForm['idtipo_servico'] ?? '';
+                                $valorMaoObra = $valorForm['valor'] ?? 0;
                                 ?>
                                 <tr>
-                                    <td><?php echo $valorForm['nome_cliente'] . " " . $valorForm['sobrenome']; ?></td>
-                                    <td><?php echo $valorForm['marca']; ?></td>
-                                    <td><?php
-                                    $valorForm['valorm'] = number_format($valorForm['valor'], 2, ',', '.');
-                                    echo $valorForm['valorm'];
-                                    ?> KZ
-                                    </td>
-                                    <td><?php echo $valorForm['tipo_servico']; ?></td>
-                                    <td><?php
-                                    echo date("d/m/Y", strtotime($valorForm['data_orcamento']));
-                                    ;
-                                    ?></td>
-                                    <td><?php
-                                    $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
-                                    $query = "SELECT * FROM usuario WHERE nif='{$valorForm['tecnico']}' LIMIT 1";
-                                    $result = mysqli_query($newConn, $query);
-                                    $mecanico = mysqli_fetch_assoc($result);
-                                    //var_dump($mecanico);
-                                    $mecanico = $mecanico['nome'] . " " . $mecanico['sobrenome'];
-                                    ?>
-                                        <?php echo $mecanico; ?>
-                                    </td>
+                                    <td><?php echo $clienteNome; ?></td>
+                                    <td><?php echo $veiculo; ?></td>
+                                    <td><?php echo $valorFormatado; ?> KZ</td>
+                                    <td><?php echo $servico; ?></td>
+                                    <td><?php echo $dataOrcamento; ?></td>
+                                    <td><?php echo $tecnicoNome; ?></td>
                                     <td>
-                                        <?php if ($valorForm['status'] == "Aberto") { ?>
-                                            <a href="<?php echo $valorForm['idorcamentos']; ?>" data-toggle="modal"
-                                                data-target="#edit<?php echo $valorForm['idorcamentos']; ?>"
+                                        <?php if ($status == "Aberto") { ?>
+                                            <a href="<?php echo $idOrcamento; ?>" data-toggle="modal"
+                                                data-target="#edit<?php echo $idOrcamento; ?>"
                                                 title="Editar Registo"><i class="icofont icofont-edit px-1"></i></a>
-                                            <a href="<?php echo $valorForm['idorcamentos']; ?>" data-toggle="modal"
-                                                data-target="#delete<?php echo $valorForm['idorcamentos']; ?>"
+                                            <a href="<?php echo $idOrcamento; ?>" data-toggle="modal"
+                                                data-target="#delete<?php echo $idOrcamento; ?>"
                                                 title="Apagar Registo"><i class="icofont icofont-trash text-danger px-1"></i></a>
-                                            <a href="<?php echo URLADM . "addProdutoOrcamento?id=" . $valorForm['idorcamentos'] . "&cliente=" . $valorForm['nif']; ?>"
+                                            <a href="<?php echo URLADM . "addProdutoOrcamento?id=" . $idOrcamento . "&cliente=" . $nifCliente; ?>"
                                                 title="Adicionar Produto"><i class="icofont icofont-plus text-success px-2"></i></a>
-                                            <a href="<?php echo URLADM . "relatorioTecnico?relatorio=orcamento&idorcamentos=" . $valorForm['idorcamentos']; ?>"
+                                            <a href="<?php echo URLADM . "relatorioTecnico?relatorio=orcamento&idorcamentos=" . $idOrcamento; ?>"
                                                 title="Imprimir Relatório"><i
                                                     class="icofont icofont-file-text text-success px-1"></i></a>
                                             <a href="" data-toggle="modal"
-                                                data-target="#aprovar<?php echo $valorForm['idorcamentos']; ?>"
+                                                data-target="#aprovar<?php echo $idOrcamento; ?>"
                                                 title="Aprovar Orcamento"><i class="icofont icofont-ui-check text-success px-2"></i></a>
                                             <a href="" data-toggle="modal"
-                                                data-target="#enviar<?php echo $valorForm['idorcamentos']; ?>"
+                                                data-target="#enviar<?php echo $idOrcamento; ?>"
                                                 title="Enviar Email"><i class="icofont icofont-envelope text-success px-1"></i></a>
                                         <?php } else { ?>
-                                            <a href="<?php echo URLADM . "relatorioTecnico?relatorio=orcamento&idorcamentos=" . $valorForm['idorcamentos']; ?>"
+                                            <a href="<?php echo URLADM . "relatorioTecnico?relatorio=orcamento&idorcamentos=" . $idOrcamento; ?>"
                                                 title="Imprimir Relatório"><i
                                                     class="icofont icofont-file-text text-success px-1"></i></a>
                                         <?php } ?>
@@ -308,7 +332,7 @@ if (isset($_SESSION['idlogado'])) {
                                     </td>
                                 </tr>
                                 <!-- Modal do W3C-->
-                                <div class="modal fade" id="mais<?php echo $valorForm['idorcamentos']; ?>">
+                                <div class="modal fade" id="mais<?php echo $idOrcamento; ?>">
                                     <div class="modal-dialog">
                                         <div class="modal-content bg-primary">
                                             <div class="modal-header">
@@ -336,7 +360,7 @@ if (isset($_SESSION['idlogado'])) {
                     </div>
                     <!-- /.modal -->
                     <!--  Modal Deletar-->
-                    <div class="modal fade" id="delete<?php echo $valorForm['idorcamentos']; ?>" tabindex="-1" role="dialog"
+                    <div class="modal fade" id="delete<?php echo $idOrcamento; ?>" tabindex="-1" role="dialog"
                         aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -352,7 +376,7 @@ if (isset($_SESSION['idlogado'])) {
                                     <form action="" method="post" class="needs-validation" enctype="multipart/form-data"
                                         novalidate>
                                         <input type="hidden" name="idorcamentos"
-                                            value="<?php echo $valorForm['idorcamentos']; ?>">
+                                            value="<?php echo $idOrcamento; ?>">
                                         <button class="btn btn-primary" name="btnDeletOrcamento">Sim</button>
                                     </form>
                                 </div>
@@ -360,7 +384,7 @@ if (isset($_SESSION['idlogado'])) {
                         </div>
                     </div>
                     <!-- Aprovar Orçamento Modal-->
-                    <div class="modal fade" id="aprovar<?php echo $valorForm['idorcamentos']; ?>" tabindex="-1" role="dialog"
+                    <div class="modal fade" id="aprovar<?php echo $idOrcamento; ?>" tabindex="-1" role="dialog"
                         aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content text-white">
@@ -376,16 +400,16 @@ if (isset($_SESSION['idlogado'])) {
                                     </div>
                                     <div class="modal-footer bg-success text-gray-600">
                                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                        <input type="hidden" value="<?php echo $valorForm['idorcamentos']; ?>" name="idorcamentos"/>
-                                        <input type="hidden" value="<?php echo $valorForm['matricula']; ?>" name="veiculo"/>
-                                        <input type="hidden" value="<?php echo $valorForm['idtipo_servico']; ?>" name="id_tipo_servico"/>
-                                        <input type="hidden" value="<?php echo $valorForm['valor']; ?>" name="valor_t_servico"/>
-                                        <input type="hidden" value="<?php echo $valorForm['valor']; ?>" name="valor_maodeobra"/>
-                                        <input type="hidden" value="<?php echo $valorForm['nif']; ?>" name="cliente"/>
-                                        <input type="hidden" value="<?php echo $valorForm['tipo_servico']; ?>" name="servico"/>
-                                        <input type="hidden" value="<?php echo $valorForm['matricula']; ?>" name="matricula"/>
-                                        <input type="hidden" value="<?php echo $valorForm['modelo']; ?>" name="modelo"/>
-                                        <input type="hidden" value="<?php echo $valorForm['tipo']; ?>" name="tipo"/>
+                                        <input type="hidden" value="<?php echo $idOrcamento; ?>" name="idorcamentos"/>
+                                        <input type="hidden" value="<?php echo $matricula; ?>" name="veiculo"/>
+                                        <input type="hidden" value="<?php echo $idTipoServico; ?>" name="id_tipo_servico"/>
+                                        <input type="hidden" value="<?php echo $valorMaoObra; ?>" name="valor_t_servico"/>
+                                        <input type="hidden" value="<?php echo $valorMaoObra; ?>" name="valor_maodeobra"/>
+                                        <input type="hidden" value="<?php echo $nifCliente; ?>" name="cliente"/>
+                                        <input type="hidden" value="<?php echo $servico; ?>" name="servico"/>
+                                        <input type="hidden" value="<?php echo $matricula; ?>" name="matricula"/>
+                                        <input type="hidden" value="<?php echo $modelo; ?>" name="modelo"/>
+                                        <input type="hidden" value="<?php echo $tipo; ?>" name="tipo"/>
                                         <button class="btn btn-info text-white " name="btnAprovar">Aprovar</button>
                                     </div>
                                 </form>
@@ -393,7 +417,7 @@ if (isset($_SESSION['idlogado'])) {
                         </div>
                     </div>
                     <!-- Abrir Orçamento Modal-->
-                    <div class="modal fade" id="edit<?php echo $valorForm['idorcamentos']; ?>" tabindex="-1" role="dialog"
+                    <div class="modal fade" id="edit<?php echo $idOrcamento; ?>" tabindex="-1" role="dialog"
                         aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content">
@@ -410,9 +434,7 @@ if (isset($_SESSION['idlogado'])) {
                                                 <label for="Cliente">Nif do Cliente </label>
                                                 <input type="text" class="form-control" id="tel1"
                                                     placeholder="Digete o Nif  do Cliente" name="clinete" value="<?php
-                                                    if (isset($valorForm['nif'])) {
-                                                        echo $valorForm['nif'];
-                                                    }
+                                                    echo $nifCliente;
                                                     ?>" required>
                                                 <div class="invalid-feedback">
                                                     Insira O Nome.
@@ -422,9 +444,7 @@ if (isset($_SESSION['idlogado'])) {
                                                 <label for="veiculo">Nº de Série do Equipamento</label>
                                                 <input type="text" class="form-control" id="referencia"
                                                     placeholder="Digite o Nº de Série do Equipamento" name="veiculo" value="<?php
-                                                    if (isset($valorForm['matricula'])) {
-                                                        echo $valorForm['matricula'];
-                                                    }
+                                                    echo $matricula;
                                                     ?>" required>
                                                 <div class="invalid-feedback">
                                                     Campo Obrigatório.
@@ -537,7 +557,7 @@ if (isset($_SESSION['idlogado'])) {
                                     </div>
                                     <div class="modal-footer">
                                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                        <input type="hidden" value="<?php echo $valorForm['idorcamentos'] ?>"
+                                        <input type="hidden" value="<?php echo $idOrcamento; ?>"
                                             name="idorcamentos" />
                                         <button class="btn btn-primary text-white" name="btnEditOrcamento">Salvar</button>
                                     </div>
@@ -547,7 +567,7 @@ if (isset($_SESSION['idlogado'])) {
                     </div>
 
                     <!--  Modal Dados Do Fornecedor-->
-                    <div class="modal fade" id="fornecedor<?php echo $valorForm['idorcamentos']; ?>" tabindex="-1" role="dialog"
+                    <div class="modal fade" id="fornecedor<?php echo $idOrcamento; ?>" tabindex="-1" role="dialog"
                         aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -559,12 +579,12 @@ if (isset($_SESSION['idlogado'])) {
                                 </div>
                                 <div class="modal-body">
                                     <div class="container">
-                                        <p><strong>Nome: </strong><?php echo $valorForm['fornecedor']; ?></p>
-                                        <p><strong>Nif: </strong><?php echo $valorForm['nif']; ?></p>
-                                        <p><strong>Tipo Pessoa: </strong><?php echo $valorForm['tipo_pessoa']; ?></p>
-                                        <p><strong>Telefone: </strong><?php echo $valorForm['telefone']; ?></p>
-                                        <p><strong>Email: </strong><?php echo $valorForm['email']; ?></p>
-                                        <p><strong>Andereço: </strong><?php echo $valorForm['morada']; ?></p>
+                                        <p><strong>Nome: </strong><?php echo $valorForm['fornecedor'] ?? ''; ?></p>
+                                        <p><strong>Nif: </strong><?php echo $nifCliente; ?></p>
+                                        <p><strong>Tipo Pessoa: </strong><?php echo $valorForm['tipo_pessoa'] ?? ''; ?></p>
+                                        <p><strong>Telefone: </strong><?php echo $valorForm['telefone'] ?? ''; ?></p>
+                                        <p><strong>Email: </strong><?php echo $valorForm['email'] ?? ''; ?></p>
+                                        <p><strong>Andereço: </strong><?php echo $valorForm['morada'] ?? ''; ?></p>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -573,7 +593,7 @@ if (isset($_SESSION['idlogado'])) {
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="enviar<?php echo $valorForm['idorcamentos']; ?>" tabindex="-1" role="dialog"
+                    <div class="modal fade" id="enviar<?php echo $idOrcamento; ?>" tabindex="-1" role="dialog"
                         aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content text-white">
@@ -589,7 +609,7 @@ if (isset($_SESSION['idlogado'])) {
                                     </div>
                                     <div class="modal-footer bg-success">
                                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                        <input type="hidden" value="<?php echo $valorForm['idorcamentos'] ?>"
+                                        <input type="hidden" value="<?php echo $idOrcamento; ?>"
                                             name="idorcamentos" />
                                         <button class="btn btn-info text-white " name="btnEnviar">Enviar Relatório</button>
                                     </div>
