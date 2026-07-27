@@ -68,12 +68,12 @@ class AdmsTecnico extends Conn {
             $mail->isSMTP();                                            // Send using SMTP
             $mail->Host = 'smtp.mailtrap.io';                    // Set the SMTP server to send through  Servidor de teste
             $mail->SMTPAuth = true;                                   // Enable SMTP authentication
-            $mail->Username = 'c85e426e1ec5a1';                     // SMTP username
-            $mail->Password = '7cf202962d5c0e';                               // SMTP password
+            $mail->Username = '3e746e90bec3a6';                     // SMTP username
+            $mail->Password = 'f24d1db0161205';                               // SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
             $mail->Port = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
             //Recipients
-            $mail->setFrom('josimardasilvaf36@gmail.com', 'António');                       //Que está Enviar
+            $mail->setFrom('josimardasilvaf36@gmail.com', 'Josimar');                       //Que está Enviar
             $mail->addAddress($this->dados['email'], $this->dados['nome']);     // Add a recipient //Destinatario
             // Content
             $mail->isHTML(true);                                  // Set email format to HTML // formatar com Html
@@ -118,12 +118,12 @@ class AdmsTecnico extends Conn {
             $mail->isSMTP();                                            // Send using SMTP
             $mail->Host = 'smtp.mailtrap.io';                    // Set the SMTP server to send through  Servidor de teste
             $mail->SMTPAuth = true;                                   // Enable SMTP authentication
-            $mail->Username = 'c85e426e1ec5a1';                     // SMTP username
-            $mail->Password = '7cf202962d5c0e';                               // SMTP password
+            $mail->Username = '3e746e90bec3a6';                     // SMTP username
+            $mail->Password = 'f24d1db0161205';                               // SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
             $mail->Port = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
             //Recipients
-            $mail->setFrom('josimardasilvaf36@gmail.com', 'António');                       //Que está Enviar
+            $mail->setFrom('josimardasilvaf36@gmail.com', 'Josimar');                       //Que está Enviar
             $mail->addAddress($this->dados['email'], $this->dados['nome_cliente']);     // Add a recipient //Destinatario
             // Content
             $mail->isHTML(true);                                  // Set email format to HTML // formatar com Html
@@ -313,7 +313,7 @@ class AdmsTecnico extends Conn {
                                                                     </tr>
                                                                     <tr>
                                                                         <th>Mecânico:</th>
-                                                                        <td>António Jacinto</td>
+                                                                        <td>Josimar Ferreira</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th>Subtotal:</th>
@@ -545,7 +545,7 @@ class AdmsTecnico extends Conn {
                                                                     </tr>
                                                                     <tr>
                                                                         <th>Mecânico:</th>
-                                                                        <td>António Jacinto</td>
+                                                                        <td>Josimar Ferreira</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th>Subtotal:</th>
@@ -804,7 +804,7 @@ class AdmsTecnico extends Conn {
                                                                     </tr>
                                                                     <tr>
                                                                         <th>Mecânico:</th>
-                                                                        <td>António Jacinto</td>
+                                                                        <td>Josimar Ferreira</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th>Subtotal:</th>

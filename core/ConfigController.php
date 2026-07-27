@@ -52,7 +52,7 @@ class ConfigController {
         define('DEBUG_MODE', $config['DEBUG'] === 'true' ? true : false);
 
         define('DBHOST', $config['DB_HOST'] ?? 'localhost');
-        define('DBPORT', $config['DB_PORT'] ?? '3308');
+        define('DBPORT', $config['DB_PORT'] ?? '3306');
         define('DBNAME', $config['DB_NAME'] ?? 'manutencao');
         define('DBUSER', $config['DB_USER'] ?? 'root');
         define('DBPASS', $config['DB_PASS'] ?? '');
@@ -78,7 +78,7 @@ class ConfigController {
         $query = "SELECT * FROM usuario WHERE nivel='adimin'";
         $result = mysqli_query($newConn, $query);
         if ($result && mysqli_num_rows($result) == 0) {
-            $query = "INSERT INTO usuario (nbi,nif,nome,sobrenome,email,telefone,senha,nivel,st_conta) VALUES ('ALDADL1222334','ALDADL1222334','Antonio','Jacinto','josimardasilvaf36@gmail.com','937585960','827ccb0eea8a706c4c34a16891f84e7b','adimin','Ativada')";
+            $query = "INSERT INTO usuario (nbi,nif,nome,sobrenome,email,telefone,senha,nivel,st_conta) VALUES ('ALDADL1222334','ALDADL1222334','Antonio','Ferreira','josimardasilvaf36@gmail.com','937585960','827ccb0eea8a706c4c34a16891f84e7b','adimin','Ativada')";
             mysqli_query($newConn, $query);
         }
     }

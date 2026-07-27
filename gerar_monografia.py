@@ -1,6 +1,6 @@
 """
 Gerador de Monografia — Sistema de Gestão de Assistência Técnica Informática
-Autor: António Jacinto
+Autor: Josimar Ferreira
 """
 from docx import Document
 from docx.shared import Pt, Inches, RGBColor, Cm
@@ -126,7 +126,7 @@ doc.add_paragraph()
 
 p = doc.add_paragraph()
 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-r = p.add_run("Autor:  António Jacinto")
+r = p.add_run("Autor:  Josimar Ferreira")
 r.bold = True; r.font.size = Pt(13)
 
 doc.add_paragraph()

@@ -32,7 +32,7 @@
                                 <div class="col-sm-4 invoice-col">
                                     <address>
                                         <strong>Cliente.</strong><br>
-                                        Nome: António José Jacinto<br>
+                                        Nome: Josimar José Ferreira<br>
                                         Nº BI: 00012323434A234<br>
                                         NIF: 00012323434A234<br>
                                         Email: info@almasaeedstudio.com

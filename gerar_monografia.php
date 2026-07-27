@@ -3,7 +3,7 @@
 /**
  * Gerador de Monografia — Sistema de Gestão de Assistência Técnica Informática
  * (evolução para um modelo CMMS de Manutenção Preventiva e Corretiva)
- * Autor: António Jacinto
+ * Autor: Josimar Ferreira
  *
  * Gerado com PHPWord (em vez de python-docx / PHPWord porque o Python não
  * está disponível nesta máquina — ver nota no CHANGELOG.md v4.0.0).
@@ -134,7 +134,7 @@ centerLine("EVOLUÇÃO DE UM SISTEMA DE GESTÃO DE ASSISTÊNCIA TÉCNICA\nINFORM
 $section->addTextBreak(1);
 centerLine("Monografia apresentada como requisito parcial para a obtenção\ndo grau de Licenciatura em Engenharia Informática", false, 12);
 $section->addTextBreak(2);
-centerLine('Autor:  António Jacinto', true, 13);
+centerLine('Autor:  Josimar Ferreira', true, 13);
 $section->addTextBreak(4);
 centerLine('Luanda — ' . date('Y'), false, 12);
 pageBreak();

@@ -837,7 +837,7 @@ LEFT JOIN (
 INSERT IGNORE INTO `usuario`
   (nbi, nif, nome, sobrenome, email, telefone, senha, nivel, st_conta, created)
 VALUES
-  ('ALDADL1222334', 'ALDADL1222334', 'António', 'Jacinto', 'josimardasilvaf36@gmail.com', '937585960',
+  ('ALDADL1222334', 'ALDADL1222334', 'Josimar', 'Ferreira', 'josimardasilvaf36@gmail.com', '937585960',
    '827ccb0eea8a706c4c34a16891f84e7b', 'adimin', 'Ativada', NOW());
 
 -- Comissão global padrão (30%, igual ao valor histórico de VALOR_COMISSAO no .env)

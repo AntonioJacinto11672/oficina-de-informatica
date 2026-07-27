@@ -86,7 +86,7 @@ Antes de começar, certifique-se de que tem instalado:
 ### 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/AntonioJacinto11672/oficina-de-informatica.git
+git clone https://github.com/AntonioFerreira11672/oficina-de-informatica.git
 cd oficina-de-informatica
 ```
 
@@ -188,8 +188,8 @@ DEBUG=false
 SMTP_HOST=smtp.mailtrap.io
 SMTP_PORT=587
 SMTP_SECURE=tls
-SMTP_USER=c85e426e1ec5a1
-SMTP_PASS=7cf202962d5c0e
+SMTP_USER=3e746e90bec3a6
+SMTP_PASS=f24d1db0161205
 ```
 
 ---
@@ -483,9 +483,9 @@ Browser → Apache (.htaccess) → index.php
 
 ## Autor
 
-**António Jacinto**
+**Josimar Ferreira**
 - Email: josimardasilvaf36@gmail.com
-- GitHub: [AntonioJacinto11672](https://github.com/AntonioJacinto11672)
+- GitHub: [AntonioFerreira11672](https://github.com/AntonioFerreira11672)
 
 ---
 

@@ -5,7 +5,7 @@
     "description": "Sistema completo de gestão para assistência técnica informática. Controla técnicos, clientes, equipamentos, orçamentos, serviços, estoque, vendas, compras e relatórios.\n\n## Autenticação\nO sistema usa sessões PHP. Para aceder a rotas restritas, realize o login primeiro.\n\n## Navegação\nAs páginas são acedidas via o parâmetro `?url=<rota>` ou directamente pela URL amigável `/<rota>` (via mod_rewrite).\n\n## Base de Dados\nNome da BD: `manutencao`",
     "version": "3.0.1",
     "contact": {
-      "name": "António Jacinto",
+      "name": "Josimar Ferreira",
       "email": "josimardasilvaf36@gmail.com"
     },
     "license": {

@@ -5,7 +5,7 @@
 ## Versão 4.0.0 — Sistema CMMS: Ocorrências, Diagnóstico, Execução, Planeamento Preventivo, Abatimento e Comissões Configuráveis
 
 **Data:** 2026-07-09
-**Autor:** António Jacinto (com assistência de Claude)
+**Autor:** Josimar Ferreira (com assistência de Claude)
 **Descrição:** Refactoração faseada do sistema de gestão de orçamentos de oficina para um CMMS
 (Computerized Maintenance Management System) completo, alinhado com os 17 módulos de gestão de
 manutenção preventiva e corretiva. `ocorrencias` — que existia apenas como tabela-sombra
@@ -112,7 +112,7 @@ trabalho maior e mais arriscado, fora do âmbito desta versão.
 ## Versão 3.0.2 — Dados de Demonstração e Documentação de Utilização
 
 **Data:** 2026-07-06
-**Autor:** António Jacinto
+**Autor:** Josimar Ferreira
 
 ### Adicionado
 
@@ -128,7 +128,7 @@ trabalho maior e mais arriscado, fora do âmbito desta versão.
 ## Versão 3.0.1 — Correcções Pós-Migração
 
 **Data:** 2026-06-19
-**Autor:** António Jacinto
+**Autor:** Josimar Ferreira
 
 ### Bugs Corrigidos
 
@@ -203,7 +203,7 @@ O nome da base de dados foi alterado de `mecanica` para `manutencao`. Todos os f
 ## Versão 3.0.0 — Sistema de Gestão de Assistência Técnica Informática
 
 **Data:** 2026-06-17
-**Autor:** António Jacinto
+**Autor:** Josimar Ferreira
 **Descrição:** Transformação completa do Sistema de gestão de Assistência técnica para sistema de gestão de assistência técnica informática. Toda a nomenclatura do projeto — classes, ficheiros, métodos, colunas de base de dados e rotas — foi atualizada para refletir o novo domínio.
 
 ---
