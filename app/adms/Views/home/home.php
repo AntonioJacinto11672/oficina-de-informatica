@@ -179,29 +179,7 @@ if (!defined('R4F5CC')) {
                     </div>
                 </div>
             </div>
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Total Cliente</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['clientes'])) {
-                                                                                        echo $this->dados['clientes'];
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-3x text-danger"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+         
             <!-- Earnings (Annual) Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-success shadow h-100 py-2">
@@ -225,29 +203,7 @@ if (!defined('R4F5CC')) {
                     </div>
                 </div>
             </div>
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Total de Recepcionista</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['recepcionista'])) {
-                                                                                        echo $this->dados['recepcionista'];
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-3x text-danger"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        
         </div>
 
     <?php } elseif ($_SESSION['usuario'] == 'recep') {
