@@ -43,22 +43,30 @@ Desde a versão 4.0, a **Ocorrência** é o ponto de entrada real do sistema —
 
 ### 2.1 Visão Geral — Quem Faz o Quê, e Quando
 
-```
- RECEPÇÃO                TÉCNICO                    RECEPÇÃO/GERENTE        TÉCNICO
- ─────────                ───────                    ────────────────        ───────
- 1. Regista               3. Diagnostica     5. Orçamento    6. Aprova       7-8. Executa
-    Cliente +      2. Abre    o problema         é criado       o Orçamento     e encerra
-    Equipamento   Ocorrência                     a partir           │              │
-       │              │            │             da Ocorrência       │              │
-       ▼              ▼            ▼                  │              ▼              ▼
-   [Cliente]      [Aberta] → [Em diagnóstico] → [Aguardando   → [Aguardando  → [Em manu-  → [Concluída]
-   [Equipamento]                                 orçamento]      aprovação]     tenção]         │
-                                                                                                  ▼
-                                                                                    9. Comissão calculada
-                                                                                    10. Pagamento + Entrega
+```mermaid
+flowchart LR
+    A["1. Regista Cliente<br/>+ Equipamento"]:::recep
+    B["2. Abre Ocorrência<br/><i>Aberta</i>"]:::tecnico
+    C["3. Diagnostica o problema<br/><i>Em diagnóstico</i>"]:::tecnico
+    D["4. Encaminha p/ Orçamento<br/><i>Aguardando orçamento</i>"]:::tecnico
+    E["5. Cria o Orçamento<br/><i>Aguardando aprovação</i>"]:::tecnico
+    F["6. Aprova o Orçamento<br/>→ gera Conta a Receber"]:::gerencia
+    G["7. Inicia Execução<br/><i>Em manutenção</i>"]:::tecnico
+    H["8. Encerra Execução<br/><i>Concluída</i>"]:::tecnico
+    I["9. Comissão calculada"]:::sistema
+    J["10. Regista Pagamento<br/>+ Entrega Equipamento"]:::gerencia
+
+    A --> B --> C --> D --> E --> F --> G --> H --> I --> J
+
+    classDef recep fill:#cfe8ff,stroke:#2b6cb0,color:#1a365d
+    classDef tecnico fill:#d4f7dc,stroke:#2f855a,color:#22543d
+    classDef gerencia fill:#ffe8cc,stroke:#c05621,color:#7b341e
+    classDef sistema fill:#eee,stroke:#718096,color:#2d3748
 ```
 
-Cada seta acima é um clique num botão do sistema (não é automático) — alguém tem sempre de o accionar. As secções 4.1 a 4.3 mostram exactamente onde clicar, passo a passo, para cada perfil.
+🔵 Recepção &nbsp;·&nbsp; 🟢 Técnico &nbsp;·&nbsp; 🟠 Recepção/Gerente &nbsp;·&nbsp; ⚪ Sistema (automático)
+
+Cada seta acima é um clique num botão do sistema (não é automático) — alguém tem sempre de o accionar. As secções 4.0 a 4.3 mostram, respectivamente, um comparativo rápido de acessos e exactamente onde clicar, passo a passo, para cada perfil.
 
 Este é o percurso normal por extenso, do momento em que o problema é identificado até ao encerramento:
 
@@ -167,6 +175,36 @@ Menu **Comissões › Configurar %** (Administrador).
 
 ## 4. Guia por Perfil de Acesso
 
+### 4.0 Comparativo Rápido de Acesso por Perfil
+
+Legenda: ✅ tem atalho no menu lateral · — sem acesso a essa área · 🔗 funcionalidade continua a existir mas já não tem atalho no menu (só por URL directa, ver secção 7).
+
+| Funcionalidade | Administrador | Recepcionista | Técnico |
+|---|:---:|:---:|:---:|
+| Cadastrar Técnicos / Fornecedores | ✅ | — | — |
+| Cadastrar Recepcionistas | 🔗 | — | — |
+| Cadastrar Clientes | — | ✅ | — |
+| Cadastrar Equipamentos | ✅ | ✅ | — |
+| Categorias e Produtos (Peças/Equipamento) | ✅ | — | — |
+| Ocorrências (abrir/gerir) | ✅ | ✅ | ✅ |
+| Diagnóstico | ✅ | — | ✅ |
+| Execução | ✅ | — | ✅ |
+| Planeamento Preventivo | ✅ | — | ✅ |
+| Abatimentos (solicitar) | ✅ | ✅ | ✅ |
+| Abatimentos (aprovar) | ✅ | — | — |
+| Orçamentos (criar) | — | — | ✅ |
+| Orçamentos (aprovar) | ✅ | ✅ | — |
+| Configuração de Comissões (%) | ✅ | — | — |
+| Ver as próprias Comissões | — | — | ✅ |
+| Contas a Pagar | ✅ | ✅ | — |
+| Contas a Receber (lista) | 🔗 | ✅ | — |
+| Compras | ✅ | ✅ | — |
+| Vendas (lista) | 🔗 | 🔗 | — |
+| Relatórios (PDF) | ✅ | ✅ | apenas Comissão |
+| Estatística / Gráficos | ✅ | — | — |
+
+> O Administrador tem acesso técnico a **todas** as áreas do sistema (por URL directa, mesmo sem atalho no menu). Este comparativo mostra o que aparece **no menu lateral de cada perfil**, que é o que efectivamente orienta o dia-a-dia de cada utilizador.
+
 ### 4.1 Administrador (Gerente) — `adimin`
 
 Tem acesso total ao sistema. Menu lateral: **Cadastrar › Pessoas / Produtos**, **Manutenção**, **Comissões**, **Contas**, **Tipo Serviço**, **Consultas**, **Relatório**, **Estatística**.
@@ -176,7 +214,7 @@ Tem acesso total ao sistema. Menu lateral: **Cadastrar › Pessoas / Produtos**,
 Numa oficina nova, é o Administrador quem prepara o terreno antes de a equipa começar a trabalhar:
 
 1. **Cadastrar Técnicos** (secção seguinte) — cada técnico criado recebe automaticamente uma conta de acesso por email.
-2. **Cadastrar Recepcionistas**, se aplicável (menu **Cadastrar › Pessoas › Recepcionistas**).
+2. **Cadastrar Recepcionistas**, se aplicável — esta página (`/recepcionista`) já não tem atalho no menu lateral do Administrador, mas continua acessível por URL directa.
 3. **Criar Categorias de Equipamentos** (secção 3.5) — ex.: Computador, Impressora, Servidor — antes de a recepção começar a registar equipamentos.
 4. **Criar Tipos de Serviço** (ex.: "Manutenção Preventiva", "Formatação", "Substituição de Peça") — vão aparecer depois no formulário de Ocorrência/Orçamento.
 5. **Criar Categorias de Peças** e **cadastrar Produtos/Peças** com o stock inicial.
@@ -211,7 +249,7 @@ A partir daqui, o dia-a-dia do Administrador é sobretudo **supervisão**: aprov
 
 #### Contas a Pagar e a Receber
 - **Contas a Pagar**: normalmente geradas automaticamente a partir de **Compras**. Pode também criar uma conta manual (Descrição, Valor, Data de Vencimento). Use **Aprovar** para marcar como paga.
-- **Contas a Receber**: geradas automaticamente quando um **Orçamento é aprovado**. Permite registar **Adiantamento** e **Aprovar/Pagar** o valor total.
+- **Contas a Receber**: geradas automaticamente quando um **Orçamento é aprovado**. Permite registar **Adiantamento** e **Aprovar/Pagar** o valor total. A lista já não tem atalho no menu do Administrador (é gerida sobretudo pela Recepcionista — secção 4.2), mas o Administrador pode gerar o **Relatório › Contas à Receber** em PDF ou aceder por `/contaReceber`.
 
 #### Consultas (leitura)
 Menu **Consultas**: Orçamentos, Serviço, Movimentação (caixa), Compras, Entrada de Equipamentos — listas filtráveis/pesquisáveis para acompanhamento.
@@ -314,7 +352,7 @@ O menu **Manutenção** dá acesso directo às Ocorrências atribuídas, aos Dia
 
 - **Estoque Baixo**: lista de produtos que atingiram o nível mínimo (`STOCK_LEVEL`) — reponha o stock criando uma **Compra**.
 - **Compras**: ao adicionar estoque a um produto (Fornecedor + Valor de Compra + Quantidade), o sistema gera automaticamente o registo em **Compras** e a respectiva **Conta a Pagar**.
-- **Vendas**: histórico de vendas de peças/produtos avulsas, consultável na lista de Vendas.
+- **Vendas**: histórico de vendas de peças/produtos avulsas. A lista deixou de ter atalho no menu lateral (Administrador/Recepcionista) — continua acessível por `/vendas` e o **Relatório › Vendas** (PDF) mantém-se disponível no menu.
 - **Histórico de Movimentações**: ver secção 3.7.
 
 ---
@@ -342,6 +380,7 @@ O menu **Manutenção** dá acesso directo às Ocorrências atribuídas, aos Dia
 | Login | `/` |
 | Dashboard | `/home` |
 | Técnicos | `/tecnico` |
+| Recepcionistas (sem atalho no menu) | `/recepcionista` |
 | Fornecedores | `/fornecedor` |
 | Categorias de Peças | `/categoria` |
 | Categorias de Equipamentos | `/categoriaEquipamento` |
