@@ -169,7 +169,7 @@ APP_NAME=ASSISTÊNCIA TÉCNICA INFORMÁTICA
 
 # === DADOS DA OFICINA ===
 OFFICE_ADDRESS=Luanda Rua da CTT, Rangel
-OFFICE_EMAIL=antjacinto11672@gmail.com
+OFFICE_EMAIL=josimardasilvaf36@gmail.com
 OFFICE_PHONE=+244 931 950 857
 
 # === NEGÓCIO ===
@@ -341,7 +341,7 @@ O sistema redireccionará automaticamente para a página de login.
 
 | Perfil | Email | Senha | Nível | Origem |
 |--------|-------|-------|-------|--------|
-| Administrador | `antjacinto11672@gmail.com` | `12345` (MD5: `827ccb0eea8a706c4c34a16891f84e7b`) | `adimin` | `database/schema.sql` |
+| Administrador | `josimardasilvaf36@gmail.com` | `12345` (MD5: `827ccb0eea8a706c4c34a16891f84e7b`) | `adimin` | `database/schema.sql` |
 | Técnico (demonstração) | `tecnico@gmail.com` | `tecnico123` | `tecnico` | `database/seed_dados_padrao.sql` (opcional) |
 
 > Altere a senha após o primeiro acesso no menu **Perfil**.
@@ -484,7 +484,7 @@ Browser → Apache (.htaccess) → index.php
 ## Autor
 
 **António Jacinto**
-- Email: antjacinto11672@gmail.com
+- Email: josimardasilvaf36@gmail.com
 - GitHub: [AntonioJacinto11672](https://github.com/AntonioJacinto11672)
 
 ---

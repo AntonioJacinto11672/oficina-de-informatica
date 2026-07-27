@@ -97,7 +97,7 @@ Resultado esperado:
 
 | Perfil | Email | Senha |
 |--------|-------|-------|
-| Administrador | `antjacinto11672@gmail.com` | `12345` |
+| Administrador | `josimardasilvaf36@gmail.com` | `12345` |
 | Técnico (opcional, via `seed_dados_padrao.sql`) | `tecnico@gmail.com` | `tecnico123` |
 
 > Para o guia completo de utilização de cada módulo do sistema, consulte **[MANUAL_UTILIZACAO.md](MANUAL_UTILIZACAO.md)**.

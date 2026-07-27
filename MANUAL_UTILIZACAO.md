@@ -18,7 +18,7 @@ ou o **[GUIA_EXECUCAO.md](GUIA_EXECUCAO.md)**.
 
 | Perfil | Email | Senha |
 |--------|-------|-------|
-| Administrador (Gerente) | `antjacinto11672@gmail.com` | `12345` |
+| Administrador (Gerente) | `josimardasilvaf36@gmail.com` | `12345` |
 | Técnico (opcional, demonstração) | `tecnico@gmail.com` | `tecnico123` |
 
 > Depois do login, o sistema mostra menus diferentes consoante o **nível de acesso** da conta: `adimin` (Gerente), `tecnico` ou `recep` (Recepcionista).

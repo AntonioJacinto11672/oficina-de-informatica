@@ -40,7 +40,7 @@ class ConfigController {
         define("NOME_OFICINA", $config['APP_NAME'] ?? "OFICINA DO BAIRRO");
         define('URLADM', $config['APP_URL'] ?? "http://localhost/oficinamecanica.co.ao/");
         define('ENDERECO_OFICINA', $config['OFFICE_ADDRESS'] ?? "Luanda Rua da CTT, Rangel");
-        define("EMAIL_OFICINA", $config['OFFICE_EMAIL'] ?? "antjacinto11672@gmail.com");
+        define("EMAIL_OFICINA", $config['OFFICE_EMAIL'] ?? "josimardasilvaf36@gmail.com");
         define("TELEFONE", $config['OFFICE_PHONE'] ?? "+244 931 950 857");
         define('NIVEL_STOQUE', (int)($config['STOCK_LEVEL'] ?? 5)); // A Partir De X Produtos O Nível de Estoue Estará Baixo
         define('DESCONTO_ORC', $config['DISCOUNT_ORC'] ?? "SIM");
@@ -78,7 +78,7 @@ class ConfigController {
         $query = "SELECT * FROM usuario WHERE nivel='adimin'";
         $result = mysqli_query($newConn, $query);
         if ($result && mysqli_num_rows($result) == 0) {
-            $query = "INSERT INTO usuario (nbi,nif,nome,sobrenome,email,telefone,senha,nivel,st_conta) VALUES ('ALDADL1222334','ALDADL1222334','Antonio','Jacinto','antjacinto11672@gmail.com','937585960','827ccb0eea8a706c4c34a16891f84e7b','adimin','Ativada')";
+            $query = "INSERT INTO usuario (nbi,nif,nome,sobrenome,email,telefone,senha,nivel,st_conta) VALUES ('ALDADL1222334','ALDADL1222334','Antonio','Jacinto','josimardasilvaf36@gmail.com','937585960','827ccb0eea8a706c4c34a16891f84e7b','adimin','Ativada')";
             mysqli_query($newConn, $query);
         }
     }

@@ -115,7 +115,7 @@ oficina-de-informatica/
 | `/docs.php` | Swagger UI |
 | `/test-config.php` | Validação de configuração |
 
-**Credenciais padrão:** `antjacinto11672@gmail.com` / `12345`
+**Credenciais padrão:** `josimardasilvaf36@gmail.com` / `12345`
 
 > Para o guia passo-a-passo de utilização de cada módulo, consulte **[MANUAL_UTILIZACAO.md](MANUAL_UTILIZACAO.md)**.
 

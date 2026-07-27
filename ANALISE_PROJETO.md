@@ -38,7 +38,7 @@ APP_NAME=ASSISTÊNCIA TÉCNICA INFORMÁTICA
 
 # Dados da Oficina
 OFFICE_ADDRESS=Luanda Rua da CTT, Rangel
-OFFICE_EMAIL=antjacinto11672@gmail.com
+OFFICE_EMAIL=josimardasilvaf36@gmail.com
 OFFICE_PHONE=+244 931 950 857
 
 # Negócio

@@ -73,14 +73,14 @@ class AdmsTecnico extends Conn {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
             $mail->Port = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
             //Recipients
-            $mail->setFrom('antjacinto11672@gmail.com', 'António');                       //Que está Enviar
+            $mail->setFrom('josimardasilvaf36@gmail.com', 'António');                       //Que está Enviar
             $mail->addAddress($this->dados['email'], $this->dados['nome']);     // Add a recipient //Destinatario
             // Content
             $mail->isHTML(true);                                  // Set email format to HTML // formatar com Html
             $mail->Subject = '  Confirmar e-mail'; // Asunto do Email
             //A Conteudo HTML do Email
             $conteudoHTML = "Prezado {$this->dados['nome']}<br><br>";
-            $conteudoHTML .= "A Foste Cadastrado Com Supervisor Use o Seu email Para Acessar o Sistema e A Sua palavra passe é {$this->dados['senhaguardada']}<br>";
+            $conteudoHTML .= "A Foste Cadastrado Com Tecnico no Sistema de Gestão de Oficina mecanica, Use o Seu email Para Acessar o Sistema e A Sua palavra passe é {$this->dados['senhaguardada']}<br>";
             //$conteudoHTML .= "<a href='".URLADM."/index?chave={$this->dados['chave_ativar']}'>".URL."ativar/index?chave={$this->dados['chave_ativar']}</a><br>";
             $mail->Body = $conteudoHTML;
 
@@ -123,7 +123,7 @@ class AdmsTecnico extends Conn {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
             $mail->Port = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
             //Recipients
-            $mail->setFrom('antjacinto11672@gmail.com', 'António');                       //Que está Enviar
+            $mail->setFrom('josimardasilvaf36@gmail.com', 'António');                       //Que está Enviar
             $mail->addAddress($this->dados['email'], $this->dados['nome_cliente']);     // Add a recipient //Destinatario
             // Content
             $mail->isHTML(true);                                  // Set email format to HTML // formatar com Html
@@ -589,7 +589,7 @@ class AdmsTecnico extends Conn {
 
             //O Conteudo Só texto do Email
             $conteudoTexto = "Prezado {$this->dados['nome']}\n\n";
-            $conteudoTexto .= "A Foste Cadastrado Com Supervisor Use o Seu email Para Acessar o Sistema e A Sua palavra passe é {$this->dados['nome']}<br>.\n";
+            $conteudoTexto .= "A Foste Cadastrado Com Tecnico no Sistema de Gestão de Oficina Infomatica, Use o Seu email Para Acessar o Sistema e A Sua palavra passe e {$this->dados['nome']}<br>.\n";
 
             //$conteudoTexto .= URL."ativar/index?chave={$this->dados['chave_ativar']}\n";
             $mail->AltBody = $conteudoTexto;
