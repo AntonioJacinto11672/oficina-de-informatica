@@ -26,7 +26,14 @@ class ConfigController {
     }
 
     public function carregar() {
-        $this->config();
+        try {
+            $this->config();
+        } catch (\Throwable $e) {
+            http_response_code(503);
+            echo '<!DOCTYPE html><html lang="pt"><head><meta charset="utf-8"><title>Serviço indisponível</title><style>body{font-family:Arial,sans-serif;padding:2rem;line-height:1.6;} .card{max-width:640px;margin:2rem auto;padding:1.5rem;border:1px solid #ddd;border-radius:8px;}</style></head><body><div class="card"><h1>Serviço indisponível</h1><p>Não foi possível estabelecer ligação ao banco de dados neste momento.</p><p>Verifique a configuração do sistema e tente novamente mais tarde.</p></div></body></html>';
+            return;
+        }
+
         $valPermissao = new \Core\Permissao();
         $valPermissao->index($this->url);
         $urlController = ucwords($this->url);
@@ -67,19 +74,30 @@ class ConfigController {
         // A estrutura da base de dados (tabelas, incluindo `ocorrencias`) é gerida por
         // database/schema.sql (instalação de raiz) + database/migrations/ (via migrate.php),
         // nunca aqui — DDL não deve correr a cada pedido HTTP.
-        $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
-        if (!$newConn) {
-            if (DEBUG_MODE) {
-                die('Erro de conexão ao banco de dados: ' . mysqli_connect_error());
-            }
-            die('Erro: não foi possível conectar ao banco de dados. Verifique as credenciais em .env.');
-        }
+        mysqli_report(MYSQLI_REPORT_OFF);
 
-        $query = "SELECT * FROM usuario WHERE nivel='adimin'";
-        $result = mysqli_query($newConn, $query);
-        if ($result && mysqli_num_rows($result) == 0) {
-            $query = "INSERT INTO usuario (nbi,nif,nome,sobrenome,email,telefone,senha,nivel,st_conta) VALUES ('ALDADL1222334','ALDADL1222334','Antonio','Ferreira','josimardasilvaf36@gmail.com','937585960','827ccb0eea8a706c4c34a16891f84e7b','adimin','Ativada')";
-            mysqli_query($newConn, $query);
+        try {
+            $newConn = mysqli_connect(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT);
+            if (!$newConn) {
+                throw new \RuntimeException('Não foi possível conectar ao banco de dados. Verifique as credenciais em .env.');
+            }
+
+            $query = "SELECT * FROM usuario WHERE nivel='adimin'";
+            $result = mysqli_query($newConn, $query);
+            if ($result === false) {
+                throw new \RuntimeException('Não foi possível consultar a tabela usuario.');
+            }
+
+            if (mysqli_num_rows($result) == 0) {
+                $query = "INSERT INTO usuario (nbi,nif,nome,sobrenome,email,telefone,senha,nivel,st_conta) VALUES ('ALDADL1222334','ALDADL1222334','Antonio','Ferreira','josimardasilvaf36@gmail.com','937585960','827ccb0eea8a706c4c34a16891f84e7b','adimin','Ativada')";
+                mysqli_query($newConn, $query);
+            }
+        } catch (\Throwable $e) {
+            if (DEBUG_MODE) {
+                throw new \RuntimeException('Erro de conexão ao banco de dados: ' . $e->getMessage(), 0, $e);
+            }
+
+            throw new \RuntimeException('Erro: não foi possível conectar ao banco de dados. Verifique as credenciais em .env.', 0, $e);
         }
     }
 
