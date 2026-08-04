@@ -306,6 +306,7 @@ CREATE TABLE IF NOT EXISTS `diagnostico` (
 CREATE TABLE IF NOT EXISTS `execucao_manutencao` (
   `idexecucao`        INT(11)      NOT NULL AUTO_INCREMENT,
   `id_ocorrencia`     INT(11)      NOT NULL,
+  `id_equipamento`    INT(11)      DEFAULT NULL,
   `idusuario_tecnico` INT(11)      DEFAULT NULL,
   `data_inicio`       DATETIME     DEFAULT NULL,
   `data_fim`          DATETIME     DEFAULT NULL,
@@ -314,8 +315,10 @@ CREATE TABLE IF NOT EXISTS `execucao_manutencao` (
   `created`           DATETIME     DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idexecucao`),
   KEY `fk_exec_usuario` (`idusuario_tecnico`),
-  CONSTRAINT `fk_exec_ocorrencia` FOREIGN KEY (`id_ocorrencia`) REFERENCES `ocorrencias`(`idocorrencia`) ON DELETE CASCADE,
-  CONSTRAINT `fk_exec_usuario`    FOREIGN KEY (`idusuario_tecnico`) REFERENCES `usuario`(`idusuario`)     ON DELETE SET NULL
+  KEY `fk_exec_equipamento` (`id_equipamento`),
+  CONSTRAINT `fk_exec_ocorrencia`   FOREIGN KEY (`id_ocorrencia`)  REFERENCES `ocorrencias`(`idocorrencia`)   ON DELETE CASCADE,
+  CONSTRAINT `fk_exec_usuario`      FOREIGN KEY (`idusuario_tecnico`) REFERENCES `usuario`(`idusuario`)       ON DELETE SET NULL,
+  CONSTRAINT `fk_exec_equipamento`  FOREIGN KEY (`id_equipamento`) REFERENCES `equipamento`(`idequipamento`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------

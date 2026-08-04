@@ -8,6 +8,7 @@ $idOcorrencia = $this->dados['idocorrencia'] ?? null;
 $ocorrencia = $this->dados['ocorrencia'] ?? null;
 $lista = $this->dados['lista'] ?? [];
 $equipamentos = $this->dadosAlter['equipamentos'] ?? [];
+$semEquipamentoParaDiagnostico = $idOcorrencia && empty($equipamentos);
 ?>
 <div class="container-fluid">
     <?php
@@ -20,7 +21,9 @@ $equipamentos = $this->dadosAlter['equipamentos'] ?? [];
     <?php if ($idOcorrencia): ?>
         <div class="row mt-4 mb-4">
             <a class="btn btn-secondary btn-sm ml-3" href="<?= URLADM ?>ocorrencia"><i class="icofont icofont-arrow-left mr-1"></i>Voltar às Ocorrências</a>
-            <a class="btn-primary btn-sm ml-3 d-none d-md-block text-white" style="cursor:pointer;padding:0.375rem 1rem;border-radius:0.35rem;" data-toggle="modal" data-target="#novoDiagnostico">Novo Diagnóstico</a>
+            <?php if (!$semEquipamentoParaDiagnostico): ?>
+                <a class="btn-primary btn-sm ml-3 d-none d-md-block text-white" style="cursor:pointer;padding:0.375rem 1rem;border-radius:0.35rem;" data-toggle="modal" data-target="#novoDiagnostico">Novo Diagnóstico</a>
+            <?php endif; ?>
         </div>
 
         <?php if (!$ocorrencia): ?>
@@ -32,9 +35,13 @@ $equipamentos = $this->dadosAlter['equipamentos'] ?? [];
                 </div>
                 <div class="card-body">
                     <?= nl2br(htmlspecialchars($ocorrencia['descricao'] ?? 'Sem descrição.')) ?>
+                    <?php if ($semEquipamentoParaDiagnostico): ?>
+                        <p class="text-muted small mb-0 mt-2">Todos os equipamentos desta ocorrência já têm diagnóstico registado. Edite-os abaixo (enquanto não forem encaminhados) ou encaminhe-os para execução.</p>
+                    <?php endif; ?>
                 </div>
             </div>
 
+            <?php if (!$semEquipamentoParaDiagnostico): ?>
             <!-- Modal: Novo Diagnóstico -->
             <div class="modal fade" id="novoDiagnostico" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
@@ -76,6 +83,7 @@ $equipamentos = $this->dadosAlter['equipamentos'] ?? [];
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
         <?php endif; ?>
     <?php else: ?>
         <div class="row mt-4 mb-4">
@@ -166,9 +174,6 @@ $equipamentos = $this->dadosAlter['equipamentos'] ?? [];
                                 </div>
                             <?php endif; ?>
                         <?php endforeach; ?>
-                        <?php if (empty($lista)): ?>
-                            <tr><td colspan="8" class="text-center text-muted">Sem diagnósticos registados.</td></tr>
-                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

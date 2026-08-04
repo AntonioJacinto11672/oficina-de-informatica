@@ -1,7 +1,11 @@
-// Inicialização global das DataTables — idioma Português e responsividade.
+// Inicialização global das DataTables — idioma Português.
+// Nota: a extensão "Responsive" do DataTables foi propositadamente deixada de
+// fora — em combinação com tabelas sem linhas de dados, produzia o aviso
+// "Incorrect column count" (datatables.net/tn/18). O scroll horizontal do
+// Bootstrap (.table-responsive, já presente em todas as tabelas) continua a
+// tratar do comportamento em ecrãs estreitos.
 $(document).ready(function() {
   $('#dataTable').DataTable({
-    responsive: true,
     language: {
       sEmptyTable: "Não existem dados disponíveis nesta tabela",
       sInfo: "A mostrar _START_ a _END_ de _TOTAL_ registos",

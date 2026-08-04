@@ -239,9 +239,6 @@ $fornecedores = $this->dadosAlter ?? [];
                                 </div>
                             </div>
                         <?php endforeach; ?>
-                        <?php if (empty($lista)): ?>
-                            <tr><td colspan="7" class="text-center text-muted">Não existem dados para apresentar.</td></tr>
-                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

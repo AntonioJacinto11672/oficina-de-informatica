@@ -28,6 +28,10 @@ class AdmsOcorrencia extends Conn {
 
     public const ESTADOS_FINAIS = ['Concluída', 'Cancelada'];
 
+    // Só é possível cancelar antes de a execução física do trabalho começar
+    // (uma vez em "Em execução", o caminho normal é terminar em "Encerrar").
+    public const ESTADOS_CANCELAVEIS = ['Aberta', 'Em diagnóstico', 'Aguardando execução'];
+
     public const PRIORIDADES = ['Baixa', 'Média', 'Alta', 'Urgente'];
 
     public function __construct() {
@@ -145,6 +149,33 @@ class AdmsOcorrencia extends Conn {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Equipamentos disponíveis para uma Ocorrência: exclui os que já estão
+     * ligados a outra ocorrência ainda não concluída/cancelada (evita duas
+     * ocorrências em curso para o mesmo equipamento em simultâneo). Ao editar
+     * uma ocorrência existente, passe o seu próprio id em $idOcorrenciaAtual
+     * para que os equipamentos já ligados a ela continuem a aparecer.
+     */
+    public function dadosEquipamentosParaOcorrencia(?int $idOcorrenciaAtual = null): array {
+        $idAtual = $idOcorrenciaAtual ?? 0;
+        $stmt = $this->conn->prepare("
+            SELECT e.idequipamento, e.numero_serie, e.marca, e.modelo
+            FROM equipamento e
+            WHERE (e.estado <> 'Abatido' OR e.estado IS NULL)
+              AND NOT EXISTS (
+                  SELECT 1 FROM ocorrencia_equipamento oe
+                  INNER JOIN ocorrencias o2 ON o2.idocorrencia = oe.id_ocorrencia
+                  WHERE oe.id_equipamento = e.idequipamento
+                    AND o2.estado NOT IN ('Concluída', 'Cancelada')
+                    AND oe.id_ocorrencia <> :idAtual
+              )
+            ORDER BY e.numero_serie
+        ");
+        $stmt->bindParam(':idAtual', $idAtual, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function dadosEquipamentosDisponiveis(): array {
         $stmt = $this->conn->prepare("
             SELECT idequipamento, numero_serie, marca, modelo
@@ -167,8 +198,13 @@ class AdmsOcorrencia extends Conn {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function dadosTiposManutencao(): array {
-        $stmt = $this->conn->prepare("SELECT idtipo_manutencao, nome, categoria FROM tipo_manutencao ORDER BY categoria, nome");
+    public function dadosTiposManutencao(?string $categoria = null): array {
+        if ($categoria !== null) {
+            $stmt = $this->conn->prepare("SELECT idtipo_manutencao, nome, categoria FROM tipo_manutencao WHERE categoria = :categoria ORDER BY nome");
+            $stmt->bindParam(':categoria', $categoria);
+        } else {
+            $stmt = $this->conn->prepare("SELECT idtipo_manutencao, nome, categoria FROM tipo_manutencao ORDER BY categoria, nome");
+        }
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -188,7 +224,11 @@ class AdmsOcorrencia extends Conn {
 
     public function cdsOcorrencia(array $dados): bool {
         $idTipoManutencao = !empty($dados['id_tipo_manutencao']) ? (int)$dados['id_tipo_manutencao'] : null;
-        $categoriaManutencao = in_array($dados['categoria_manutencao'] ?? '', ['Preventiva', 'Corretiva'], true) ? $dados['categoria_manutencao'] : 'Corretiva';
+        // Ocorrências abertas manualmente são sempre de manutenção Corretiva — as
+        // Preventivas só nascem automaticamente do Planeamento Preventivo
+        // (AdmsOcorrencia::criarOcorrenciaPreventiva), para não haver contradição
+        // entre a categoria escolhida aqui e o tipo de manutenção do catálogo.
+        $categoriaManutencao = 'Corretiva';
         $prioridade = in_array($dados['prioridade'] ?? '', self::PRIORIDADES, true) ? $dados['prioridade'] : 'Média';
         $descricao = !empty($dados['descricao']) ? $this->limparInput($dados['descricao']) : null;
         $dataPrevista = !empty($dados['data_prevista']) ? $this->limparInput($dados['data_prevista']) : null;
@@ -233,18 +273,18 @@ class AdmsOcorrencia extends Conn {
     public function editOcorrencia(array $dados): bool {
         $idOcorrencia = (int)$this->limparInput($dados['idocorrencia']);
         $idTipoManutencao = !empty($dados['id_tipo_manutencao']) ? (int)$dados['id_tipo_manutencao'] : null;
-        $categoriaManutencao = in_array($dados['categoria_manutencao'] ?? '', ['Preventiva', 'Corretiva'], true) ? $dados['categoria_manutencao'] : 'Corretiva';
         $prioridade = in_array($dados['prioridade'] ?? '', self::PRIORIDADES, true) ? $dados['prioridade'] : 'Média';
         $descricao = !empty($dados['descricao']) ? $this->limparInput($dados['descricao']) : null;
         $dataPrevista = !empty($dados['data_prevista']) ? $this->limparInput($dados['data_prevista']) : null;
         $equipamentos = array_filter(array_map('intval', (array)($dados['equipamentos'] ?? [])));
 
-        $query = "UPDATE ocorrencias SET id_tipo_manutencao=:id_tipo_manutencao, categoria_manutencao=:categoria_manutencao,
+        // categoria_manutencao não é editável — fica como ficou definida na criação
+        // (Corretiva se aberta manualmente, Preventiva se gerada pelo Planeamento).
+        $query = "UPDATE ocorrencias SET id_tipo_manutencao=:id_tipo_manutencao,
                     prioridade=:prioridade, descricao=:descricao, data_prevista=:data_prevista
                   WHERE idocorrencia=:idocorrencia";
         $result = $this->conn->prepare($query);
         $result->bindParam(':id_tipo_manutencao', $idTipoManutencao, PDO::PARAM_INT);
-        $result->bindParam(':categoria_manutencao', $categoriaManutencao);
         $result->bindParam(':prioridade', $prioridade);
         $result->bindParam(':descricao', $descricao);
         $result->bindParam(':data_prevista', $dataPrevista);
@@ -329,6 +369,28 @@ class AdmsOcorrencia extends Conn {
 
     public function encerrarOcorrencia(array $dados): bool {
         $dados['estado'] = 'Concluída';
+        return $this->alterarEstado($dados);
+    }
+
+    /**
+     * Cancela uma ocorrência — só antes de a execução física do trabalho
+     * começar (estados em ESTADOS_CANCELAVEIS). Depois de "Em execução", a
+     * ocorrência só pode ser terminada normalmente (Encerrar), não cancelada.
+     */
+    public function cancelarOcorrencia(array $dados): bool {
+        $idOcorrencia = (int)$this->limparInput($dados['idocorrencia']);
+        $atual = $this->dadosOcorrencia($idOcorrencia);
+        if (!$atual) {
+            $_SESSION['msg'] = '<div class="alert alert-danger text-center">Ocorrência não encontrada.</div>';
+            return false;
+        }
+
+        if (!in_array($atual['estado'], self::ESTADOS_CANCELAVEIS, true)) {
+            $_SESSION['msg'] = '<div class="alert alert-danger text-center">Já não é possível cancelar esta ocorrência — a execução já foi iniciada. Termine-a em Execuções.</div>';
+            return false;
+        }
+
+        $dados['estado'] = 'Cancelada';
         return $this->alterarEstado($dados);
     }
 

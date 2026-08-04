@@ -2,6 +2,40 @@
 
 ---
 
+## Versão 5.0.1 — Correções pós-entrega e simplificação do fluxo de Ocorrências
+
+**Data:** 2026-08-04
+**Autor:** António Jacinto (com assistência de Claude)
+**Descrição:** Três correções identificadas em utilização real do sistema já adaptado (v5.0.0).
+
+### DataTables — aviso "Incorrect column count"
+
+**Causa:** as linhas "Não existem dados para apresentar" usavam `<td colspan="N">` dentro do `<tbody>` — não suportado pelo DataTables (confirmado em [datatables.net/tn/18](https://datatables.net/tn/18), que recomenda explicitamente remover `colspan`/`rowspan` do corpo da tabela). Uma primeira tentativa de correção removeu a extensão *Responsive* do DataTables, o que não resolveu por si só a causa raiz.
+
+**Correção definitiva:** removidas as linhas `<tr><td colspan="N">…</td></tr>` de "sem dados" nas 12 tabelas que as tinham (`pgUtilizador`, `pgDepartamento`, `pgEquipamento`, `pgTipoManutencao`, `pgCompras`, `pgFornecedor`, `pgPlaneamento`, `pgDiagnostico`, `pgAbatimento`, `pgHistoricoGeral`, `pgProduto`, `pgMovimentoEstoque`). O `<tbody>` fica vazio quando não há dados, e é o próprio DataTables a apresentar a mensagem "Não existem dados disponíveis nesta tabela" (`language.sEmptyTable`, já traduzida em `datatables-demo.js`).
+
+### E-mail de credenciais do Técnico — falha silenciosa
+
+**Causa:** `AdmsTecnico::enviarCredenciais()` definia uma mensagem de aviso quando o envio SMTP falhava (ex.: `SMTP_USER`/`SMTP_PASS` vazios no `.env`), mas `cdsTecnico()` escrevia por cima, sem condição, a mensagem de sucesso — escondendo a falha real do envio.
+
+**Correção:** `enviarCredenciais()` passa a devolver `bool`; `cdsTecnico()` usa esse resultado para mostrar "Técnico registado com sucesso, mas o e-mail não foi enviado" (com a senha temporária incluída na mensagem, para comunicação manual) sempre que o envio falhar. A falha real (`SMTP Error: Could not authenticate`) passa a ficar registada em `error_log()` para diagnóstico.
+
+### Fluxo de Ocorrências — categoria redundante e mudança de estado livre
+
+**Problema 1:** o formulário de Ocorrência pedia a **Categoria** (Preventiva/Corretiva) em separado do **Tipo de Manutenção** (já classificado como Preventivo ou Corretivo no catálogo), permitindo combinações contraditórias (ex.: tipo "Corretiva" com categoria "Preventiva").
+
+**Correção:** o campo Categoria foi removido do formulário de Ocorrência. Uma ocorrência aberta manualmente é sempre gravada como **Corretiva** (`AdmsOcorrencia::cdsOcorrencia()`); a categoria deixou de ser editável (`editOcorrencia()`). Manutenção **Preventiva** só nasce automaticamente a partir de um Plano de Manutenção Preventiva vencido (já assim desde a v5.0.0). O dropdown de Tipo de Manutenção passa a filtrar pelo catálogo — `AdmsOcorrencia::dadosTiposManutencao(?string $categoria)` — mostrando só tipos Corretivos nas Ocorrências e só tipos Preventivos no Planeamento.
+
+**Problema 2:** existia um ícone "Alterar Estado" na lista de Ocorrências que abria um menu com **qualquer** estado à escolha (Aberta, Em diagnóstico, Aguardando execução, Em execução, Concluída, Cancelada), permitindo saltar o fluxo real.
+
+**Correção:** o modal e o botão "Alterar Estado" foram removidos (view `pgOcorrencia.php`, controller `Ocorrencia.php`). O estado passa a avançar **apenas** como consequência das ações reais já existentes — registar Diagnóstico, Encaminhar para Execução, Iniciar Execução, Encerrar — sem alterar o método interno `AdmsOcorrencia::alterarEstado()`, que continua a ser usado por essas ações. O botão **Encerrar**, no ecrã de Execução, já cobre a necessidade de o técnico terminar o trabalho que iniciou.
+
+### Documentação
+
+`MANUAL_UTILIZACAO.md` reorganizado com índice de navegação no topo e atualizado para refletir o fluxo de Ocorrências sem escolha de categoria e sem "Alterar Estado"; nova entrada na secção de Perguntas Frequentes sobre a mensagem de e-mail não enviado.
+
+---
+
 ## Versão 5.0.0 — Adaptação Institucional para a Universidade Lusíada de Angola (TFC)
 
 **Data:** 2026-08-04

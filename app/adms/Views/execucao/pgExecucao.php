@@ -9,6 +9,7 @@ $ocorrencia = $this->dados['ocorrencia'] ?? null;
 $lista = $this->dados['lista'] ?? [];
 $produtos = $this->dadosAlter['produtos'] ?? [];
 $pecasPorExecucao = $this->dados['pecasPorExecucao'] ?? [];
+$equipamentosParaExecucao = $this->dadosAlter['equipamentosParaExecucao'] ?? [];
 ?>
 <div class="container-fluid">
     <?php
@@ -21,13 +22,23 @@ $pecasPorExecucao = $this->dados['pecasPorExecucao'] ?? [];
     <?php if ($idOcorrencia): ?>
         <div class="row mt-4 mb-4">
             <a class="btn btn-secondary btn-sm ml-3" href="<?= URLADM ?>ocorrencia"><i class="icofont icofont-arrow-left mr-1"></i>Voltar às Ocorrências</a>
-            <?php if (!$ocorrencia || !in_array($ocorrencia['estado'], ['Concluída', 'Cancelada'], true)): ?>
-                <form action="" method="post" style="display:inline" class="ml-3">
+            <?php if ($ocorrencia && !in_array($ocorrencia['estado'], ['Concluída', 'Cancelada'], true) && !empty($equipamentosParaExecucao)): ?>
+                <form action="" method="post" style="display:inline" class="form-inline ml-3">
                     <input type="hidden" name="id_ocorrencia" value="<?= (int)$idOcorrencia ?>">
+                    <select class="custom-select mr-2" name="id_equipamento" required>
+                        <option value="">Equipamento a executar...</option>
+                        <?php foreach ($equipamentosParaExecucao as $eq): ?>
+                            <option value="<?= (int)$eq['idequipamento'] ?>"><?= htmlspecialchars($eq['numero_serie'] . ' — ' . $eq['marca'] . ' ' . $eq['modelo']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
                     <button type="submit" class="btn btn-primary btn-sm text-white" name="btnIniciarExecucao"><i class="fas fa-play mr-1"></i>Iniciar Execução</button>
                 </form>
             <?php endif; ?>
         </div>
+
+        <?php if ($ocorrencia && !in_array($ocorrencia['estado'], ['Concluída', 'Cancelada'], true) && empty($equipamentosParaExecucao)): ?>
+            <div class="alert alert-info mx-3">Todos os equipamentos desta ocorrência já têm execução iniciada — só é possível encerrar as execuções em curso.</div>
+        <?php endif; ?>
 
         <?php if ($ocorrencia): ?>
             <div class="card shadow mb-4">
@@ -47,7 +58,10 @@ $pecasPorExecucao = $this->dados['pecasPorExecucao'] ?? [];
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">
                     Execução #<?= $idExec ?> — <?= htmlspecialchars($ex['estado']) ?>
-                    <small class="text-muted">Técnico: <?= htmlspecialchars(trim(($ex['tecnico_nome'] ?? '') . ' ' . ($ex['tecnico_sobrenome'] ?? '')) ?: '—') ?></small>
+                    <small class="text-muted">
+                        Equipamento: <?= !empty($ex['numero_serie']) ? htmlspecialchars($ex['numero_serie'] . ' — ' . $ex['marca'] . ' ' . $ex['modelo']) : '—' ?>
+                        &nbsp;|&nbsp; Técnico: <?= htmlspecialchars(trim(($ex['tecnico_nome'] ?? '') . ' ' . ($ex['tecnico_sobrenome'] ?? '')) ?: '—') ?>
+                    </small>
                 </h6>
                 <?php if ($idOcorrencia && $ex['estado'] === 'Em execução'): ?>
                     <form action="" method="post" onsubmit="return confirm('Encerrar esta execução e a ocorrência associada?');">

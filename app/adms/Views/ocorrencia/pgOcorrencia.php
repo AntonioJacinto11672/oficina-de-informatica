@@ -13,9 +13,10 @@ $lista = $this->dados['lista'] ?? [];
 $equipamentosDisponiveis = $this->dadosAlter['equipamentos'] ?? [];
 $tiposManutencao = $this->dadosAlter['tiposManutencao'] ?? [];
 $tecnicos = $this->dadosAlter['tecnicos'] ?? [];
-$estados = $this->dadosAlter['estados'] ?? [];
 $prioridades = $this->dadosAlter['prioridades'] ?? [];
 $equipamentosPorOcorrencia = $this->dadosAlter['equipamentosPorOcorrencia'] ?? [];
+$equipamentosDisponiveisPorOcorrencia = $this->dadosAlter['equipamentosDisponiveisPorOcorrencia'] ?? [];
+$estadosCancelaveis = $this->dadosAlter['estadosCancelaveis'] ?? [];
 
 if (!function_exists('ocorrencia_badge_prioridade')) {
     function ocorrencia_badge_prioridade($prioridade) {
@@ -62,7 +63,7 @@ if (!function_exists('ocorrencia_badge_estado')) {
                         <small class="form-text text-muted">Ctrl+clique (ou Cmd+clique) para seleccionar mais do que um equipamento.</small>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-6">
                             <label for="id_tipo_manutencao">Tipo de Manutenção</label>
                             <select class="custom-select" id="id_tipo_manutencao" name="id_tipo_manutencao">
                                 <option value="">Selecione...</option>
@@ -70,15 +71,9 @@ if (!function_exists('ocorrencia_badge_estado')) {
                                     <option value="<?= (int)$tm['idtipo_manutencao'] ?>"><?= htmlspecialchars($tm['nome']) ?></option>
                                 <?php endforeach; ?>
                             </select>
+                            <small class="form-text text-muted">Ocorrências abertas manualmente são sempre de manutenção corretiva. As manutenções preventivas são geradas pelo Planeamento Preventivo.</small>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label for="categoria_manutencao">Categoria</label>
-                            <select class="custom-select" id="categoria_manutencao" name="categoria_manutencao">
-                                <option value="Corretiva">Corretiva</option>
-                                <option value="Preventiva">Preventiva</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-6">
                             <label for="prioridade">Prioridade</label>
                             <select class="custom-select" id="prioridade" name="prioridade">
                                 <?php foreach ($prioridades as $p): ?>
@@ -151,7 +146,7 @@ if (!function_exists('ocorrencia_badge_estado')) {
                             <tr>
                                 <td><?= $id ?></td>
                                 <td><?= htmlspecialchars($o['numero_serie'] ?? '—') ?></td>
-                                <td><?= htmlspecialchars($o['tipo_manutencao'] ?? $o['categoria_manutencao'] ?? '—') ?></td>
+                                <td><?= htmlspecialchars($o['tipo_manutencao'] ?? '—') ?> <span class="badge badge-<?= $o['categoria_manutencao'] === 'Preventiva' ? 'info' : 'warning' ?>"><?= htmlspecialchars($o['categoria_manutencao']) ?></span></td>
                                 <td><?= ocorrencia_badge_prioridade($o['prioridade']) ?></td>
                                 <td><?= ocorrencia_badge_estado($o['estado']) ?></td>
                                 <td><?= htmlspecialchars(trim(($o['tecnico_nome'] ?? '') . ' ' . ($o['tecnico_sobrenome'] ?? '')) ?: 'Por atribuir') ?></td>
@@ -162,7 +157,9 @@ if (!function_exists('ocorrencia_badge_estado')) {
                                     <a href="<?= URLADM ?>execucao?ocorrencia=<?= $id ?>" title="Execução"><i class="icofont icofont-tools px-2"></i></a>
                                     <a href="<?= $id ?>" data-toggle="modal" data-target="#edit<?= $id ?>" title="Editar"><i class="icofont icofont-edit px-2"></i></a>
                                     <a href="<?= $id ?>" data-toggle="modal" data-target="#tecnico<?= $id ?>" title="Atribuir Técnico"><i class="icofont icofont-user px-2"></i></a>
-                                    <a href="<?= $id ?>" data-toggle="modal" data-target="#estado<?= $id ?>" title="Alterar Estado"><i class="icofont icofont-refresh px-2"></i></a>
+                                    <?php if (in_array($o['estado'], $estadosCancelaveis, true)): ?>
+                                        <a href="<?= $id ?>" data-toggle="modal" data-target="#cancelar<?= $id ?>" title="Cancelar Ocorrência"><i class="icofont icofont-close-circled text-warning px-2"></i></a>
+                                    <?php endif; ?>
                                     <a href="<?= $id ?>" data-toggle="modal" data-target="#delete<?= $id ?>" title="Eliminar"><i class="icofont icofont-trash text-danger"></i></a>
                                 </td>
                             </tr>
@@ -181,7 +178,7 @@ if (!function_exists('ocorrencia_badge_estado')) {
                                                     <label>Equipamento(s)</label>
                                                     <?php $ligados = array_column($equipamentosPorOcorrencia[$id] ?? [], 'idequipamento'); ?>
                                                     <select class="custom-select" name="equipamentos[]" multiple size="5">
-                                                        <?php foreach ($equipamentosDisponiveis as $eq): ?>
+                                                        <?php foreach (($equipamentosDisponiveisPorOcorrencia[$id] ?? []) as $eq): ?>
                                                             <option value="<?= (int)$eq['idequipamento'] ?>" <?= in_array((int)$eq['idequipamento'], $ligados, true) ? 'selected' : '' ?>>
                                                                 <?= htmlspecialchars($eq['numero_serie'] . ' — ' . $eq['marca'] . ' ' . $eq['modelo']) ?>
                                                             </option>
@@ -189,7 +186,7 @@ if (!function_exists('ocorrencia_badge_estado')) {
                                                     </select>
                                                 </div>
                                                 <div class="form-row">
-                                                    <div class="form-group col-md-4">
+                                                    <div class="form-group col-md-6">
                                                         <label>Tipo de Manutenção</label>
                                                         <select class="custom-select" name="id_tipo_manutencao">
                                                             <option value="">Selecione...</option>
@@ -198,14 +195,7 @@ if (!function_exists('ocorrencia_badge_estado')) {
                                                             <?php endforeach; ?>
                                                         </select>
                                                     </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label>Categoria</label>
-                                                        <select class="custom-select" name="categoria_manutencao">
-                                                            <option value="Corretiva" <?= $o['categoria_manutencao'] === 'Corretiva' ? 'selected' : '' ?>>Corretiva</option>
-                                                            <option value="Preventiva" <?= $o['categoria_manutencao'] === 'Preventiva' ? 'selected' : '' ?>>Preventiva</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group col-md-4">
+                                                    <div class="form-group col-md-6">
                                                         <label>Prioridade</label>
                                                         <select class="custom-select" name="prioridade">
                                                             <?php foreach ($prioridades as $p): ?>
@@ -260,38 +250,33 @@ if (!function_exists('ocorrencia_badge_estado')) {
                                 </div>
                             </div>
 
-                            <!-- Modal: Alterar Estado -->
-                            <div class="modal fade" id="estado<?= $id ?>" tabindex="-1" role="dialog" aria-hidden="true">
+                            <?php if (in_array($o['estado'], $estadosCancelaveis, true)): ?>
+                            <!-- Modal: Cancelar -->
+                            <div class="modal fade" id="cancelar<?= $id ?>" tabindex="-1" role="dialog" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Cancelar Ocorrência #<?= $id ?>?</h5>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        </div>
                                         <form action="" method="post" novalidate>
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Alterar Estado — Ocorrência #<?= $id ?></h5>
-                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            </div>
                                             <div class="modal-body">
+                                                <p>O equipamento associado fica novamente disponível para outras ocorrências.</p>
                                                 <div class="form-group">
-                                                    <label>Novo Estado</label>
-                                                    <select class="custom-select" name="estado">
-                                                        <?php foreach ($estados as $e): ?>
-                                                            <option value="<?= htmlspecialchars($e) ?>" <?= $o['estado'] === $e ? 'selected' : '' ?>><?= htmlspecialchars($e) ?></option>
-                                                        <?php endforeach; ?>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Observação</label>
-                                                    <textarea class="form-control" name="observacao" rows="2" placeholder="Opcional"></textarea>
+                                                    <label>Motivo (opcional)</label>
+                                                    <textarea class="form-control" name="observacao" rows="2" placeholder="Ex: pedido duplicado, resolvido de outra forma..."></textarea>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Voltar</button>
                                                 <input type="hidden" name="idocorrencia" value="<?= $id ?>">
-                                                <button class="btn btn-primary" name="btnAlterarEstadoOcorrencia">Guardar</button>
+                                                <button class="btn btn-warning" name="btnCancelarOcorrencia">Cancelar Ocorrência</button>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
                             </div>
+                            <?php endif; ?>
 
                             <!-- Modal: Eliminar -->
                             <div class="modal fade" id="delete<?= $id ?>" tabindex="-1" role="dialog" aria-hidden="true">

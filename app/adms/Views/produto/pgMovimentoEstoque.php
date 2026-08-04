@@ -56,9 +56,6 @@ if (!function_exists('movimento_badge_tipo')) {
                                 <td><?php echo htmlspecialchars(trim(($m['usuario_nome'] ?? '') . ' ' . ($m['usuario_sobrenome'] ?? '')) ?: '—'); ?></td>
                             </tr>
                         <?php endforeach; ?>
-                        <?php if (empty($movimentos)): ?>
-                            <tr><td colspan="<?php echo $produto ? 5 : 6; ?>" class="text-center text-muted">Não existem dados para apresentar.</td></tr>
-                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

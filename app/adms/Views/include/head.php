@@ -40,7 +40,6 @@ if (!defined('R4F5CC')) {
 
         <!-- DataTables -->
         <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-        <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css" rel="stylesheet">
 
         <!-- Local CSS -->
         <link href="<?php echo URLADM; ?>app/adms/assets/css/adminlte.min.css" rel="stylesheet">

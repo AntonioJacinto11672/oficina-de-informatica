@@ -191,9 +191,6 @@ $tecnicos = $this->dadosAlter['tecnicos'] ?? [];
                                 </div>
                             </div>
                         <?php endforeach; ?>
-                        <?php if (empty($lista)): ?>
-                            <tr><td colspan="7" class="text-center text-muted">Sem planos de manutenção preventiva.</td></tr>
-                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

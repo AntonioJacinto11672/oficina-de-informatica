@@ -118,8 +118,11 @@ class AdmsTecnico extends Conn {
             return false;
         }
 
-        $this->enviarCredenciais($this->dados['email'], $this->dados['nome'], $senhaTemporaria);
-        $_SESSION['msg'] = '<div class="alert alert-success text-center">Técnico registado com sucesso. As credenciais de acesso foram enviadas por e-mail.</div>';
+        if ($this->enviarCredenciais($this->dados['email'], $this->dados['nome'], $senhaTemporaria)) {
+            $_SESSION['msg'] = '<div class="alert alert-success text-center">Técnico registado com sucesso. As credenciais de acesso foram enviadas por e-mail.</div>';
+        } else {
+            $_SESSION['msg'] = '<div class="alert alert-warning text-center">Técnico registado com sucesso, mas o e-mail com as credenciais não foi enviado. Verifique as configurações SMTP em <code>.env</code> ou comunique a senha temporária ao técnico por outro meio: <strong>' . htmlspecialchars($senhaTemporaria) . '</strong>.</div>';
+        }
         return true;
     }
 
@@ -290,7 +293,7 @@ class AdmsTecnico extends Conn {
         return false;
     }
 
-    private function enviarCredenciais(string $email, string $nome, string $senhaTemporaria): void {
+    private function enviarCredenciais(string $email, string $nome, string $senhaTemporaria): bool {
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
@@ -316,8 +319,10 @@ class AdmsTecnico extends Conn {
                     <p style='color:#888;font-size:13px;'>Por segurança, altere esta palavra-passe assim que possível através da opção 'Esqueci-me da Senha'.</p>
                 </div>";
             $mail->send();
+            return true;
         } catch (Exception $e) {
-            $_SESSION['msg'] = '<div class="alert alert-warning text-center">Técnico registado, mas não foi possível enviar o e-mail com as credenciais. Verifique as configurações SMTP.</div>';
+            error_log('Falha ao enviar credenciais por e-mail para ' . $email . ': ' . $mail->ErrorInfo);
+            return false;
         }
     }
 }

@@ -32,9 +32,9 @@ class Ocorrencia {
             } elseif (isset($this->dadosForm['btnAtribuirTecnico'])) {
                 $model = new \App\adms\Models\AdmsOcorrencia();
                 $model->atribuirTecnico($this->dadosForm);
-            } elseif (isset($this->dadosForm['btnAlterarEstadoOcorrencia'])) {
+            } elseif (isset($this->dadosForm['btnCancelarOcorrencia'])) {
                 $model = new \App\adms\Models\AdmsOcorrencia();
-                $model->alterarEstado($this->dadosForm);
+                $model->cancelarOcorrencia($this->dadosForm);
             } else {
                 $this->dados['form'] = $this->dadosForm;
             }
@@ -53,17 +53,22 @@ class Ocorrencia {
     private function carregarDadosLista(): void {
         $model = new \App\adms\Models\AdmsOcorrencia();
         $this->dados['lista'] = $model->dadosOcorrencias();
-        $this->dadosAlter['equipamentos'] = $model->dadosEquipamentosDisponiveis();
-        $this->dadosAlter['tiposManutencao'] = $model->dadosTiposManutencao();
+        // Equipamentos livres para uma Ocorrência NOVA — exclui os já ligados a
+        // outra ocorrência ainda não concluída/cancelada.
+        $this->dadosAlter['equipamentos'] = $model->dadosEquipamentosParaOcorrencia();
+        $this->dadosAlter['tiposManutencao'] = $model->dadosTiposManutencao('Corretiva');
         $this->dadosAlter['tecnicos'] = $model->dadosTecnicos();
-        $this->dadosAlter['estados'] = \App\adms\Models\AdmsOcorrencia::ESTADOS;
         $this->dadosAlter['prioridades'] = \App\adms\Models\AdmsOcorrencia::PRIORIDADES;
+        $this->dadosAlter['estadosCancelaveis'] = \App\adms\Models\AdmsOcorrencia::ESTADOS_CANCELAVEIS;
 
-        // equipamentos/histórico já associados a cada ocorrência, para preencher os modais de edição
+        // equipamentos já associados a cada ocorrência, e a lista de equipamentos
+        // disponíveis para o respetivo modal de edição (mantém os já ligados a ela).
         $this->dadosAlter['equipamentosPorOcorrencia'] = [];
+        $this->dadosAlter['equipamentosDisponiveisPorOcorrencia'] = [];
         foreach ($this->dados['lista'] as $ocorrencia) {
             $id = $ocorrencia['idocorrencia'];
             $this->dadosAlter['equipamentosPorOcorrencia'][$id] = $model->dadosEquipamentosDaOcorrencia($id);
+            $this->dadosAlter['equipamentosDisponiveisPorOcorrencia'][$id] = $model->dadosEquipamentosParaOcorrencia($id);
         }
     }
 

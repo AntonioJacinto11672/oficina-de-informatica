@@ -32,9 +32,6 @@ $lista = $this->dados ?? [];
                                 <td><a href="<?= URLADM ?>ocorrencia?historico=<?= (int)$o['idocorrencia'] ?>" title="Ver detalhe"><i class="icofont icofont-eye-alt px-2"></i></a></td>
                             </tr>
                         <?php endforeach; ?>
-                        <?php if (empty($lista)): ?>
-                            <tr><td colspan="8" class="text-center text-muted">Não existem dados para apresentar.</td></tr>
-                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

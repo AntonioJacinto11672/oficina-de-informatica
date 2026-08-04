@@ -39,9 +39,11 @@ class AdmsExecucao extends Conn {
 
     public function dadosExecucoesDaOcorrencia($idocorrencia): array {
         $stmt = $this->conn->prepare("
-            SELECT ex.*, u.nome AS tecnico_nome, u.sobrenome AS tecnico_sobrenome
+            SELECT ex.*, u.nome AS tecnico_nome, u.sobrenome AS tecnico_sobrenome,
+                   e.numero_serie, e.marca, e.modelo
             FROM execucao_manutencao ex
             LEFT JOIN usuario u ON u.idusuario = ex.idusuario_tecnico
+            LEFT JOIN equipamento e ON e.idequipamento = ex.id_equipamento
             WHERE ex.id_ocorrencia = :id
             ORDER BY ex.created DESC
         ");
@@ -55,6 +57,39 @@ class AdmsExecucao extends Conn {
         $stmt->bindParam(':id', $idexecucao, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Equipamentos da ocorrência que ainda não têm nenhuma execução aberta —
+     * um computador só pode ser executado uma vez por ocorrência. Quando a
+     * lista vier vazia, já não há novo equipamento para iniciar execução;
+     * só resta terminar as execuções em curso.
+     */
+    public function dadosEquipamentosParaExecucao(int $idOcorrencia): array {
+        $stmt = $this->conn->prepare("
+            SELECT e.idequipamento, e.numero_serie, e.marca, e.modelo
+            FROM ocorrencia_equipamento oe
+            INNER JOIN equipamento e ON e.idequipamento = oe.id_equipamento
+            WHERE oe.id_ocorrencia = :id
+              AND NOT EXISTS (
+                  SELECT 1 FROM execucao_manutencao ex
+                  WHERE ex.id_ocorrencia = oe.id_ocorrencia AND ex.id_equipamento = oe.id_equipamento
+              )
+            ORDER BY e.numero_serie
+        ");
+        $stmt->bindParam(':id', $idOcorrencia, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    private function todosEquipamentosExecutados(int $idOcorrencia): bool {
+        if (!empty($this->dadosEquipamentosParaExecucao($idOcorrencia))) {
+            return false;
+        }
+        $stmt = $this->conn->prepare("SELECT COUNT(*) FROM execucao_manutencao WHERE id_ocorrencia = :id AND estado = 'Em execução'");
+        $stmt->bindParam(':id', $idOcorrencia, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn() === 0;
     }
 
     public function dadosPecasDaExecucao($idexecucao): array {
@@ -72,14 +107,22 @@ class AdmsExecucao extends Conn {
 
     public function iniciarExecucao(array $dados): bool {
         $idOcorrencia = (int)$this->limparInput($dados['id_ocorrencia']);
+        $idEquipamento = (int)$this->limparInput($dados['id_equipamento'] ?? 0);
         $idTecnico = $_SESSION['idlogado'] ?? null;
         $observacoes = !empty($dados['observacoes']) ? $this->limparInput($dados['observacoes']) : null;
 
+        $disponiveis = array_column($this->dadosEquipamentosParaExecucao($idOcorrencia), 'idequipamento');
+        if (!in_array($idEquipamento, $disponiveis, true)) {
+            $_SESSION['msg'] = '<div class="alert alert-danger text-center">Este equipamento não está disponível para iniciar execução — já foi executado ou não pertence a esta ocorrência.</div>';
+            return false;
+        }
+
         $stmt = $this->conn->prepare("
-            INSERT INTO execucao_manutencao (id_ocorrencia, idusuario_tecnico, data_inicio, estado, observacoes, created)
-            VALUES (:id_ocorrencia, :idusuario_tecnico, NOW(), 'Em execução', :observacoes, NOW())
+            INSERT INTO execucao_manutencao (id_ocorrencia, id_equipamento, idusuario_tecnico, data_inicio, estado, observacoes, created)
+            VALUES (:id_ocorrencia, :id_equipamento, :idusuario_tecnico, NOW(), 'Em execução', :observacoes, NOW())
         ");
         $stmt->bindParam(':id_ocorrencia', $idOcorrencia, PDO::PARAM_INT);
+        $stmt->bindParam(':id_equipamento', $idEquipamento, PDO::PARAM_INT);
         $stmt->bindParam(':idusuario_tecnico', $idTecnico, PDO::PARAM_INT);
         $stmt->bindParam(':observacoes', $observacoes);
         $stmt->execute();
@@ -91,11 +134,9 @@ class AdmsExecucao extends Conn {
                 'estado' => 'Em execução',
                 'observacao' => 'Execução da manutenção iniciada.',
             ]);
-            foreach ($ocorrenciaModel->dadosEquipamentosDaOcorrencia($idOcorrencia) as $eq) {
-                $upd = $this->conn->prepare("UPDATE equipamento SET estado='Em Manutenção' WHERE idequipamento=:id");
-                $upd->bindParam(':id', $eq['idequipamento'], PDO::PARAM_INT);
-                $upd->execute();
-            }
+            $upd = $this->conn->prepare("UPDATE equipamento SET estado='Em Manutenção' WHERE idequipamento=:id");
+            $upd->bindParam(':id', $idEquipamento, PDO::PARAM_INT);
+            $upd->execute();
             $_SESSION['msg'] = '<div class="alert alert-success text-center">Execução iniciada com sucesso!</div>';
             return true;
         }
@@ -176,18 +217,24 @@ class AdmsExecucao extends Conn {
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            $ocorrenciaModel = new AdmsOcorrencia();
-            $ocorrenciaModel->encerrarOcorrencia([
-                'idocorrencia' => $execucao['id_ocorrencia'],
-                'observacao' => 'Execução da manutenção concluída.',
-            ]);
+            $idOcorrencia = (int)$execucao['id_ocorrencia'];
 
-            // Actualizar estado dos equipamentos associados (passo 10 do fluxo geral)
-            $equipamentos = $ocorrenciaModel->dadosEquipamentosDaOcorrencia($execucao['id_ocorrencia']);
-            foreach ($equipamentos as $eq) {
+            // O equipamento desta execução fica disponível assim que ela termina.
+            if (!empty($execucao['id_equipamento'])) {
                 $upd = $this->conn->prepare("UPDATE equipamento SET estado='Disponível' WHERE idequipamento=:id");
-                $upd->bindParam(':id', $eq['idequipamento'], PDO::PARAM_INT);
+                $upd->bindParam(':id', $execucao['id_equipamento'], PDO::PARAM_INT);
                 $upd->execute();
+            }
+
+            // A ocorrência só é dada como concluída quando já não houver
+            // equipamento por executar nem execução ainda em curso — se ainda
+            // faltar executar outro computador, a ocorrência mantém-se "Em execução".
+            if ($this->todosEquipamentosExecutados($idOcorrencia)) {
+                $ocorrenciaModel = new AdmsOcorrencia();
+                $ocorrenciaModel->encerrarOcorrencia([
+                    'idocorrencia' => $idOcorrencia,
+                    'observacao' => 'Execução da manutenção concluída.',
+                ]);
             }
 
             $_SESSION['msg'] = '<div class="alert alert-success text-center">Execução encerrada com sucesso!</div>';

@@ -96,9 +96,6 @@ if (!function_exists('abatimento_badge_estado')) {
                                 <?php endif; ?>
                             </tr>
                         <?php endforeach; ?>
-                        <?php if (empty($lista)): ?>
-                            <tr><td colspan="<?php echo $souAdmin ? 6 : 5; ?>" class="text-center text-muted">Não existem dados para apresentar.</td></tr>
-                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>

@@ -42,7 +42,7 @@ class Diagnostico {
         if ($idOcorrencia) {
             $this->dados['ocorrencia'] = $ocorrenciaModel->dadosOcorrencia($idOcorrencia);
             $this->dados['lista'] = $model->dadosDiagnosticosDaOcorrencia($idOcorrencia);
-            $this->dadosAlter['equipamentos'] = $ocorrenciaModel->dadosEquipamentosDaOcorrencia($idOcorrencia);
+            $this->dadosAlter['equipamentos'] = $model->dadosEquipamentosParaDiagnostico($idOcorrencia);
             $this->dados['idocorrencia'] = $idOcorrencia;
         } else {
             $this->dados['lista'] = $model->dadosDiagnosticos();

@@ -63,9 +63,44 @@ class AdmsDiagnostico extends Conn {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Equipamentos da ocorrência que ainda não têm diagnóstico registado —
+     * usado para preencher o seletor de "Novo Diagnóstico" (um diagnóstico
+     * por computador) e para saber se já não há mais nenhum por diagnosticar.
+     */
+    public function dadosEquipamentosParaDiagnostico(int $idOcorrencia): array {
+        $stmt = $this->conn->prepare("
+            SELECT e.idequipamento, e.numero_serie, e.marca, e.modelo
+            FROM ocorrencia_equipamento oe
+            INNER JOIN equipamento e ON e.idequipamento = oe.id_equipamento
+            WHERE oe.id_ocorrencia = :id
+              AND NOT EXISTS (
+                  SELECT 1 FROM diagnostico d
+                  WHERE d.id_ocorrencia = oe.id_ocorrencia AND d.id_equipamento = oe.id_equipamento
+              )
+            ORDER BY e.numero_serie
+        ");
+        $stmt->bindParam(':id', $idOcorrencia, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function cdsDiagnostico(array $dados): bool {
         $idOcorrencia = (int)$this->limparInput($dados['id_ocorrencia']);
         $idEquipamento = (int)$this->limparInput($dados['id_equipamento']);
+
+        foreach ($this->dadosDiagnosticosDaOcorrencia($idOcorrencia) as $existente) {
+            if ((int)$existente['id_equipamento'] === $idEquipamento) {
+                $_SESSION['msg'] = '<div class="alert alert-danger text-center">Este equipamento já tem um diagnóstico registado nesta ocorrência.</div>';
+                return false;
+            }
+        }
+
+        if (!in_array($idEquipamento, array_column($this->dadosEquipamentosParaDiagnostico($idOcorrencia), 'idequipamento'), true)) {
+            $_SESSION['msg'] = '<div class="alert alert-danger text-center">Não há mais equipamentos por diagnosticar nesta ocorrência.</div>';
+            return false;
+        }
+
         $problema = !empty($dados['problema_descrito']) ? $this->limparInput($dados['problema_descrito']) : null;
         $solucao = !empty($dados['solucao_proposta']) ? $this->limparInput($dados['solucao_proposta']) : null;
         $pecas = !empty($dados['pecas_solicitadas']) ? $this->limparInput($dados['pecas_solicitadas']) : null;

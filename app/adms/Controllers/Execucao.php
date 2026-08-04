@@ -44,6 +44,7 @@ class Execucao {
             $this->dados['idocorrencia'] = $idOcorrencia;
             $this->dados['lista'] = $model->dadosExecucoesDaOcorrencia($idOcorrencia);
             $this->dadosAlter['produtos'] = (new \App\adms\Models\AdmsProduto())->dadosProdutos();
+            $this->dadosAlter['equipamentosParaExecucao'] = $model->dadosEquipamentosParaExecucao($idOcorrencia);
 
             $this->dados['pecasPorExecucao'] = [];
             foreach ($this->dados['lista'] as $ex) {
