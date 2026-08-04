@@ -88,7 +88,6 @@ if (isset($_SESSION['idlogado'])) {
                         </tr>
                     </tfoot>
                     <tbody>
-                        </tr>
                         <?php
                         if (isset($this->dados)) {
                             for ($index = 0; $index < count($this->dados); $index++) {
@@ -107,12 +106,12 @@ if (isset($_SESSION['idlogado'])) {
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Tens A Certeza Que Queres Apagar?</h5>
+                                            <h5 class="modal-title" id="exampleModalLabel">Tem a certeza que quer eliminar?</h5>
                                             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">×</span>
                                             </button>
                                         </div>
-                                        <div class="modal-body">Clica "Sim" Para Pagar Esse Categoria <?php echo $valorForm['nome']; ?>.</div>
+                                        <div class="modal-body">Vai eliminar a categoria <?php echo $valorForm['nome']; ?>.</div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                                             <form action="" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
@@ -130,7 +129,7 @@ if (isset($_SESSION['idlogado'])) {
                                     <div class="modal-content">
                                         <form action="" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Tens A Certeza Que Queres Editar?</h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">Editar Categoria</h5>
                                                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">×</span>
                                                 </button>

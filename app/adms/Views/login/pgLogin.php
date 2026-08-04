@@ -30,20 +30,20 @@ if (!defined('R4F5CC')) {
         //var_dump($valorForm);
     }
     ?>
-    <label for="btnUsuario" class="sr-only">Usuário</label>
-    <input type="btnUsuario" id="email" name="btnUsuario" class="form-control"  placeholder="Digete O Endereço de Email..." value="<?php
+    <label for="email" class="sr-only">E-mail</label>
+    <input type="email" id="email" name="btnUsuario" class="form-control" placeholder="Introduza o seu e-mail..." value="<?php
     if (isset($valorForm['btnUsuario'])) {
-        echo $valorForm['btnUsuario'];
+        echo htmlspecialchars($valorForm['btnUsuario']);
     }
     ?>" required autofocus>
     <div class="invalid-feedback">
-        O E-mail é necessario insira um e-mail valido.
+        Introduza um e-mail válido.
     </div>
-    <br>  
+    <br>
     <label for="btnPassword" class="sr-only">Senha</label>
-    <input type="password" id="btnPassword" class="form-control " name="btnPassword" placeholder="Digete  a Senha..."  required>
+    <input type="password" id="btnPassword" class="form-control" name="btnPassword" placeholder="Introduza a sua senha..." required>
     <div class="invalid-feedback">
-        A senha é Um Campo Obrigatório.
+        A senha é um campo obrigatório.
     </div>
     <!--<input class="btn btn-lg btn-primary btn-block" type="submit" name="btnEntrar" value="Acessar">-->
     <input class=" col-lg-12 btn btn-primary acessar" type="submit"  name="btnEntrar" value="Acessar" style="background-color: #1e4356;">

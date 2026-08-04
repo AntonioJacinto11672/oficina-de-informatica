@@ -7,72 +7,65 @@ if (!defined('R4F5CC')) {
     die("Erro: Página não encontrada!");
 }
 
-use PDO;
-
 /**
- * Description of dadosClisente
- *
- * @author Double
+ * Equipamentos Informáticos da Universidade.
  */
 class Equipamento {
 
     private $dados;
     private $dadosAlter;
-    private $dadosPaginacao;
     private $dadosForm;
 
     public function index() {
         if (!empty(filter_input_array(INPUT_POST, FILTER_DEFAULT))) {
             $this->dadosForm = filter_input_array(INPUT_POST, FILTER_DEFAULT);
-            //var_dump($this->dadosForm);
-            //var_dump($_FILES);
+            $model = new \App\adms\Models\AdmsEquipamento();
             if (isset($this->dadosForm['btnCdsEquipamento'])) {
-                $dadosClisente = new \App\adms\Models\AdmsRecepcionista();
-                $dadosClisente->cdsEquipamento($this->dadosForm);
+                $model->cdsEquipamento($this->dadosForm);
             } elseif (isset($this->dadosForm['btnEditEquipamento'])) {
-                $dadosClisente = new \App\adms\Models\AdmsRecepcionista();
-                $dadosClisente->editEquipamento($this->dadosForm);
+                $model->editEquipamento($this->dadosForm);
             } elseif (isset($this->dadosForm['btnDeleteEquipamento'])) {
-                $dadosClisente = new \App\adms\Models\AdmsRecepcionista();
-                $dadosClisente->deleteEquipamento($this->dadosForm);
-
-                //var_dump($this->dadosForm);
-            } elseif (isset($this->dadosForm['dadosClisente'])) {
-                var_dump($this->dadosForm);
+                $model->deleteEquipamento($this->dadosForm);
             } else {
                 $this->dados['form'] = $this->dadosForm;
             }
         }
 
+        $idHistorico = filter_input(INPUT_GET, 'historico', FILTER_VALIDATE_INT);
+        if (!empty($idHistorico)) {
+            $this->viewHistorico((int)$idHistorico);
+            return;
+        }
+
         $this->dadosEquipamentos();
-        $this->dadosCliente();
-        $this->dadosCategoriaEquipamento();
-        $carregarView = new \Core\ConfigView("adms/Views/cliente/pgEquipamento", $this->dados, $this->dadosAlter, $this->dadosPaginacao);
+        $this->dadosListas();
+        $carregarView = new \Core\ConfigView("adms/Views/equipamento/pgEquipamento", $this->dados, $this->dadosAlter);
         $carregarView->renderizar();
     }
 
-    private function dadosCategoriaEquipamento() {
-        $model = new \App\adms\Models\AdmsCategoriaEquipamento();
-        $this->dadosPaginacao = $model->dadosCategoriaEquipamento();
+    private function viewHistorico(int $idEquipamento) {
+        $model = new \App\adms\Models\AdmsEquipamento();
+        $dados = [
+            'equipamento' => $model->dadosEquipamento($idEquipamento),
+            'historico' => $model->dadosHistorico($idEquipamento),
+        ];
+        $carregarView = new \Core\ConfigView("adms/Views/equipamento/pgHistoricoEquipamento", $dados);
+        $carregarView->renderizar();
     }
 
-    public function dadosEquipamentos() {
-        $dadosEquipamentos = new \App\adms\Models\AdmsRecepcionista();
-        $this->dados = $dadosEquipamentos->dadosEquipamento();
+    private function dadosEquipamentos() {
+        $model = new \App\adms\Models\AdmsEquipamento();
+        $this->dados = $model->dadosEquipamentos();
     }
 
-    public function dadosCliente() {
-        $dadosEquipamentos = new \App\adms\Models\AdmsRecepcionista();
-        $this->dadosAlter = $dadosEquipamentos->dadosClientes();
-        // localizar cliente padrão e passar id para a view
-        $this->dados['default_client_id'] = null;
-        foreach ($this->dadosAlter as $c) {
-            if (isset($c['nif']) && trim($c['nif']) === '0.025.816/00-4') {
-                $this->dados['default_client_id'] = $c['idclientes'];
-                break;
-            }
-        }
+    private function dadosListas() {
+        $model = new \App\adms\Models\AdmsEquipamento();
+        $this->dadosAlter = [
+            'departamentos' => $model->dadosDepartamentos(),
+            'categorias' => $model->dadosCategorias(),
+            'fornecedores' => $model->dadosFornecedores(),
+            'responsaveis' => $model->dadosResponsaveis(),
+        ];
     }
 
 }
-

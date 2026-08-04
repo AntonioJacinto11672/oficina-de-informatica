@@ -114,15 +114,15 @@ if (isset($_SESSION['idlogado'])) {
                             </div>
                         </div>
 
-                        <img src="<?php echo URLADM . "/app/adms/assets/foto/" . $valorForm['foto']; ?>" style="width: 150px;height: 150px;" class="img-fluid rounded mx-auto d-block img-thumbnail prev-img" id="preview-img" alt="">
+                        <img src="<?php echo URLADM . "app/adms/assets/foto/" . htmlspecialchars($valorForm['foto'] ?? 'img_avatar3.png'); ?>" style="width: 150px;height: 150px;" class="img-fluid rounded mx-auto d-block img-thumbnail prev-img" id="preview-img" alt="">
                         <br>
 
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input pb-4" id="foto" name="foto"  onchange="previewImagem();" required>
-                            <label class="custom-file-label" for="foto" data-browse="Procurar foto">Escolha a Foto</label>
-                            <div class="invalid-feedback">Escolha Uma foto de Perfil Nova</div>
+                            <input type="file" class="custom-file-input pb-4" id="foto" name="foto"  onchange="previewImagem();">
+                            <label class="custom-file-label" for="foto" data-browse="Procurar foto">Escolha a Foto (opcional)</label>
+                            <div class="invalid-feedback">Escolha uma imagem válida.</div>
                         </div>
-                    </div>  
+                    </div>
 
 
                 </div>
@@ -222,13 +222,13 @@ if (isset($_SESSION['idlogado'])) {
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <p>Tens A Certeza Que Queres
+                                                        <p>Tem a certeza que quer
                                                             <?php if (isset($valorForm['st_conta']) && $valorForm['st_conta'] == "Ativada") { ?>
-                                                                Desativar
+                                                                desativar
                                                             <?php } else { ?>
-                                                                Ativar
+                                                                ativar
                                                             <?php }
-                                                            ?> Esse Técnico <?php echo $valorForm['nome'] . " " . $valorForm['sobrenome']; ?>&hellip;</p>
+                                                            ?> a conta do técnico <?php echo $valorForm['nome'] . " " . $valorForm['sobrenome']; ?>&hellip;</p>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
@@ -237,7 +237,6 @@ if (isset($_SESSION['idlogado'])) {
                                                             <input type="hidden" name="email" value="<?php echo $valorForm['email']; ?>">
                                                             <input type="hidden" name="nbi" value="<?php echo $valorForm['nbi']; ?>">
                                                             <input type="hidden" name="nif" value="<?php echo $valorForm['nif']; ?>">
-                                                            <input type="hidden" name="usuario" value="Tecnico">
                                                             <input type="hidden" name="st_conta" value="<?php echo isset($valorForm['st_conta']) ? $valorForm['st_conta'] : ''; ?>">
                                                             <?php if (isset($valorForm['st_conta']) && $valorForm['st_conta'] == "Ativada") { ?>
                                                                 <button class="btn btn-danger col-md-3" name="btnAtivarConta">Sim Desativar</button>
@@ -259,12 +258,12 @@ if (isset($_SESSION['idlogado'])) {
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Tens A Certeza Que Queres Apagar?</h5>
+                                            <h5 class="modal-title" id="exampleModalLabel">Tem a certeza que quer eliminar?</h5>
                                             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">×</span>
                                             </button>
                                         </div>
-                                        <div class="modal-body">Clica "Sim" Para Pagar Esse Técnico <?php echo $valorForm['nome'] . " " . $valorForm['sobrenome']; ?>.</div>
+                                        <div class="modal-body">Vai eliminar o técnico <?php echo $valorForm['nome'] . " " . $valorForm['sobrenome']; ?>.</div>
                                         <div class="modal-footer">
                                             <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                                             <form action="" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
@@ -285,7 +284,7 @@ if (isset($_SESSION['idlogado'])) {
                                     <div class="modal-content">
                                         <form action="" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Tens A Certeza Que Queres Editar?</h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">Editar Técnico</h5>
                                                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">×</span>
                                                 </button>

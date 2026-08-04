@@ -8,53 +8,39 @@ if (!defined('R4F5CC')) {
 }
 
 /**
- * Description of Produto
- *
- * @author Double
+ * Alterar fotografia de uma peça/consumível.
  */
 class EditarFoto {
 
     private $dados;
-    private $dadosAlter;
-    private $dadosPaginacao;
     private $dadosForm;
 
     public function index() {
-        if (filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)) {
-            @$this->dadosForm['idproduto'] = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-            //var_dump($this->dadosForm);
-            if (!empty(filter_input_array(INPUT_POST, FILTER_DEFAULT))) {
-                $this->dadosForm = filter_input_array(INPUT_POST, FILTER_DEFAULT);
-
-                //var_dump($this->dadosForm);
-                //var_dump($_FILES);
-                if (isset($this->dadosForm['btnEditFoto'])) {
-                    $this->dadosForm['foto'] = ($_FILES['foto'] ? $_FILES['foto'] : null);
-                    $cdsProduto = new \App\adms\Models\AdmsTecnico();
-                    if ($cdsProduto->editFotoProduto($this->dadosForm)) {
-                       $destino = URLADM. "produto";
-                       header("Location: $destino");
-                    }
-                } else {
-                    $this->dados['form'] = $this->dadosForm;
-                }
-            }
-
-
-            $this->dadosProdutos();
-            $carregarView = new \Core\ConfigView("adms/Views/produto/editFoto", $this->dados, $this->dadosAlter, $this->dadosPaginacao);
-            $carregarView->renderizar();
-        } else {
+        $idProduto = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if (!$idProduto) {
             $destino = URLADM . "produto";
             header("Location: $destino");
+            return;
         }
-    }
 
-    private function dadosProdutos() {
+        if (!empty(filter_input_array(INPUT_POST, FILTER_DEFAULT))) {
+            $this->dadosForm = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            if (isset($this->dadosForm['btnEditFoto'])) {
+                $this->dadosForm['idproduto'] = $idProduto;
+                $this->dadosForm['foto'] = $_FILES['foto'] ?? [];
+                $model = new \App\adms\Models\AdmsProduto();
+                if ($model->editFotoProduto($this->dadosForm)) {
+                    $destino = URLADM . "produto";
+                    header("Location: $destino");
+                    return;
+                }
+            }
+        }
 
-        $dados = new \App\adms\Models\AdmsTecnico();
-        $this->dados = $dados->dadosProdutosEditFoto($this->dadosForm);
+        $model = new \App\adms\Models\AdmsProduto();
+        $this->dados = $model->dadosProduto($idProduto);
+        $carregarView = new \Core\ConfigView("adms/Views/produto/editFoto", $this->dados);
+        $carregarView->renderizar();
     }
 
 }
-

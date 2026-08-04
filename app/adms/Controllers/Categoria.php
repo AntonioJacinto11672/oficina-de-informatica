@@ -2,41 +2,42 @@
 
 namespace App\adms\Controllers;
 
+if (!defined('R4F5CC')) {
+    header("Location: /");
+    die("Erro: Página não encontrada!");
+}
+
 /**
- * Description of Produto
- *
- * @author Double
+ * Categorias de Peças e Consumíveis.
  */
 class Categoria {
+
     private $dados;
+    private $dadosForm;
+
     public function index() {
         if (!empty(filter_input_array(INPUT_POST, FILTER_DEFAULT))) {
             $this->dadosForm = filter_input_array(INPUT_POST, FILTER_DEFAULT);
-            //var_dump($this->dadosForm);
-            //var_dump($_FILES);
+            $model = new \App\adms\Models\AdmsCategoria();
             if (isset($this->dadosForm['btnCdsCategoria'])) {
-                $cdsCategoria = new \App\adms\Models\AdmsTecnico();
-                $cdsCategoria->cdsCategoria($this->dadosForm);
+                $model->cdsCategoria($this->dadosForm);
             } elseif (isset($this->dadosForm['btnDeletCategoria'])) {
-                $cdsCategoria = new \App\adms\Models\AdmsTecnico();
-                $cdsCategoria->deletCategoria($this->dadosForm);
+                $model->deleteCategoria($this->dadosForm);
             } elseif (isset($this->dadosForm['btnEditCategoria'])) {
-                $cdsCategoria = new \App\adms\Models\AdmsTecnico();
-                $cdsCategoria->editCategoria($this->dadosForm);
-                
-                //var_dump($this->dadosForm);
+                $model->editCategoria($this->dadosForm);
             } else {
                 $this->dados['form'] = $this->dadosForm;
             }
         }
 
-        $this->dadosCategoria();
+        $this->dadosCategorias();
         $carregarView = new \Core\ConfigView("adms/Views/produto/pgCategoria", $this->dados);
         $carregarView->renderizar();
     }
-    private function dadosCategoria() {
-        $dadosCategorias = new \App\adms\Models\AdmsTecnico();
-        $this->dados = $dadosCategorias->dadosCategoria();
-    }
-}
 
+    private function dadosCategorias() {
+        $model = new \App\adms\Models\AdmsCategoria();
+        $this->dados = $model->dadosCategorias();
+    }
+
+}

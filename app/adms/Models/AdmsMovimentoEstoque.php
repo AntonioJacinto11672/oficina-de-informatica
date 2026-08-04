@@ -46,6 +46,25 @@ class AdmsMovimentoEstoque extends Conn {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function dadosMovimentos(?string $tipo = null): array {
+        $query = "
+            SELECT m.*, p.nome AS produto_nome, u.nome AS usuario_nome, u.sobrenome AS usuario_sobrenome
+            FROM movimento_estoque m
+            INNER JOIN produto p ON p.idproduto = m.id_produto
+            LEFT JOIN usuario u ON u.idusuario = m.idusuario
+        ";
+        if ($tipo === 'Entrada' || $tipo === 'Saida') {
+            $query .= " WHERE m.tipo = :tipo";
+        }
+        $query .= " ORDER BY m.created DESC";
+        $stmt = $this->conn->prepare($query);
+        if ($tipo === 'Entrada' || $tipo === 'Saida') {
+            $stmt->bindParam(':tipo', $tipo);
+        }
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function dadosMovimentosProduto(int $idProduto): array {
         $stmt = $this->conn->prepare("
             SELECT m.*, u.nome AS usuario_nome, u.sobrenome AS usuario_sobrenome

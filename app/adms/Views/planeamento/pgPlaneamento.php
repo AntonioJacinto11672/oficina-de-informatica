@@ -6,7 +6,7 @@ if (!defined('R4F5CC')) {
 $lista = $this->dados['lista'] ?? [];
 $pendentes = $this->dados['pendentes'] ?? 0;
 $equipamentos = $this->dadosAlter['equipamentos'] ?? [];
-$tiposServico = $this->dadosAlter['tiposServico'] ?? [];
+$tiposManutencao = $this->dadosAlter['tiposManutencao'] ?? [];
 $tecnicos = $this->dadosAlter['tecnicos'] ?? [];
 ?>
 <div class="modal fade" id="novoPlano" tabindex="-1" role="dialog" aria-hidden="true">
@@ -29,11 +29,11 @@ $tecnicos = $this->dadosAlter['tecnicos'] ?? [];
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <label>Tipo de Serviço</label>
-                            <select class="custom-select" name="id_tipo_servico">
+                            <label>Tipo de Manutenção</label>
+                            <select class="custom-select" name="id_tipo_manutencao">
                                 <option value="">Selecione...</option>
-                                <?php foreach ($tiposServico as $ts): ?>
-                                    <option value="<?php echo (int)$ts['idtipo_servico']; ?>"><?php echo htmlspecialchars($ts['nome']); ?></option>
+                                <?php foreach ($tiposManutencao as $tm): ?>
+                                    <option value="<?php echo (int)$tm['idtipo_manutencao']; ?>"><?php echo htmlspecialchars($tm['nome']); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -97,13 +97,13 @@ $tecnicos = $this->dadosAlter['tecnicos'] ?? [];
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
-                        <tr><th>Equipamento</th><th>Serviço</th><th>Técnico</th><th>Periodicidade</th><th>Próxima Execução</th><th>Estado</th><th>Acção</th></tr>
+                        <tr><th>Equipamento</th><th>Tipo</th><th>Técnico</th><th>Periodicidade</th><th>Próxima Execução</th><th>Estado</th><th>Acção</th></tr>
                     </thead>
                     <tbody>
                         <?php foreach ($lista as $p): $id = (int)$p['idplano']; $vencido = $p['proxima_execucao'] <= date('Y-m-d'); ?>
                             <tr class="<?php echo ($vencido && $p['ativo']) ? 'table-warning' : ''; ?>">
                                 <td><?php echo htmlspecialchars($p['numero_serie'] . ' — ' . $p['marca'] . ' ' . $p['modelo']); ?></td>
-                                <td><?php echo htmlspecialchars($p['tipo_servico'] ?? '—'); ?></td>
+                                <td><?php echo htmlspecialchars($p['tipo_manutencao'] ?? '—'); ?></td>
                                 <td><?php echo htmlspecialchars(trim(($p['tecnico_nome'] ?? '') . ' ' . ($p['tecnico_sobrenome'] ?? '')) ?: 'Por atribuir'); ?></td>
                                 <td><?php echo (int)$p['periodicidade_dias']; ?> dias</td>
                                 <td><?php echo htmlspecialchars($p['proxima_execucao']); ?><?php if ($vencido && $p['ativo']): ?> <span class="badge badge-warning">Vencido</span><?php endif; ?></td>
@@ -129,11 +129,11 @@ $tecnicos = $this->dadosAlter['tecnicos'] ?? [];
                                             <div class="modal-body">
                                                 <div class="form-row">
                                                     <div class="form-group col-md-6">
-                                                        <label>Tipo de Serviço</label>
-                                                        <select class="custom-select" name="id_tipo_servico">
+                                                        <label>Tipo de Manutenção</label>
+                                                        <select class="custom-select" name="id_tipo_manutencao">
                                                             <option value="">Selecione...</option>
-                                                            <?php foreach ($tiposServico as $ts): ?>
-                                                                <option value="<?php echo (int)$ts['idtipo_servico']; ?>" <?php echo (int)($p['id_tipo_servico'] ?? 0) === (int)$ts['idtipo_servico'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($ts['nome']); ?></option>
+                                                            <?php foreach ($tiposManutencao as $tm): ?>
+                                                                <option value="<?php echo (int)$tm['idtipo_manutencao']; ?>" <?php echo (int)($p['id_tipo_manutencao'] ?? 0) === (int)$tm['idtipo_manutencao'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($tm['nome']); ?></option>
                                                             <?php endforeach; ?>
                                                         </select>
                                                     </div>

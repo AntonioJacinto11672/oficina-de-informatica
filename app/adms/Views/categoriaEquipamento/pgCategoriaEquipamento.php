@@ -66,7 +66,7 @@ $lista = $this->dados['lista'] ?? [];
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Tens a certeza que queres apagar?</h5>
+                                            <h5 class="modal-title">Tem a certeza que quer eliminar?</h5>
                                             <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                                         </div>
                                         <div class="modal-body">Vais apagar a categoria "<?php echo htmlspecialchars($c['nome']); ?>".<?php if ((int)$c['total_equipamentos'] > 0): ?><br><strong class="text-danger">Atenção: há <?php echo (int)$c['total_equipamentos']; ?> equipamento(s) nesta categoria — ficarão sem categoria.</strong><?php endif; ?></div>

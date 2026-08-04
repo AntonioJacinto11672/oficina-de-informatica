@@ -104,7 +104,7 @@ class AdmsDiagnostico extends Conn {
     public function editDiagnostico(array $dados): bool {
         $id = (int)$this->limparInput($dados['iddiagnostico']);
         $existente = $this->dadosDiagnostico($id);
-        if (!$existente || (int)$existente['encaminhado_orcamento'] === 1) {
+        if (!$existente || (int)$existente['encaminhado_execucao'] === 1) {
             $_SESSION['msg'] = '<div class="alert alert-danger text-center">Este diagnóstico já foi encaminhado e não pode ser editado.</div>';
             return false;
         }
@@ -129,25 +129,25 @@ class AdmsDiagnostico extends Conn {
         return true;
     }
 
-    public function encaminharOrcamento(array $dados): bool {
+    public function encaminharParaExecucao(array $dados): bool {
         $id = (int)$this->limparInput($dados['iddiagnostico']);
         $diagnostico = $this->dadosDiagnostico($id);
         if (!$diagnostico) {
             return false;
         }
 
-        $stmt = $this->conn->prepare("UPDATE diagnostico SET encaminhado_orcamento=1 WHERE iddiagnostico=:id");
+        $stmt = $this->conn->prepare("UPDATE diagnostico SET encaminhado_execucao=1 WHERE iddiagnostico=:id");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
         $ocorrencia = new \App\adms\Models\AdmsOcorrencia();
         $ocorrencia->alterarEstado([
             'idocorrencia' => $diagnostico['id_ocorrencia'],
-            'estado' => 'Aguardando orçamento',
-            'observacao' => 'Diagnóstico encaminhado para orçamento.',
+            'estado' => 'Aguardando execução',
+            'observacao' => 'Diagnóstico encaminhado para execução da manutenção.',
         ]);
 
-        $_SESSION['msg'] = '<div class="alert alert-success text-center">Diagnóstico encaminhado para orçamento!</div>';
+        $_SESSION['msg'] = '<div class="alert alert-success text-center">Diagnóstico encaminhado para execução com sucesso.</div>';
         return true;
     }
 

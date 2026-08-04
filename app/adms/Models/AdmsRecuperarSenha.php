@@ -59,9 +59,9 @@ class AdmsRecuperarSenha extends Conn {
             $mail->Port       = (int) \Core\Config::get('SMTP_PORT', 587);
             $mail->CharSet    = 'UTF-8';
 
-            $nomeSistema = \Core\Config::get('APP_NAME', 'Oficina Mecânica');
+            $nomeSistema = \Core\Config::get('APP_NAME', 'Sistema de Gestão de Manutenção Preventiva e Corretiva de Equipamentos Informáticos da Universidade Lusíada de Angola');
 
-            $mail->setFrom(\Core\Config::get('OFFICE_EMAIL'), $nomeSistema);
+            $mail->setFrom(\Core\Config::get('IT_DEPT_EMAIL', 'geral@ula.co.ao'), $nomeSistema);
             $mail->addAddress($email);
 
             $mail->isHTML(true);
@@ -113,7 +113,7 @@ class AdmsRecuperarSenha extends Conn {
 
     public function alterarSenha(string $email, string $novaSenha): bool {
         $this->conn = $this->connect();
-        $hash = md5($novaSenha);
+        $hash = password_hash($novaSenha, PASSWORD_DEFAULT);
 
         $stmt = $this->conn->prepare("UPDATE usuario SET senha = :senha, modified = NOW() WHERE email = :email");
         $stmt->bindParam(':senha', $hash,  PDO::PARAM_STR);

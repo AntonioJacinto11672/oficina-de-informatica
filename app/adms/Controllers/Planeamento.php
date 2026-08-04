@@ -43,7 +43,7 @@ class Planeamento {
         $this->dados['pendentes'] = count($model->dadosPlanosPendentes());
 
         $this->dadosAlter['equipamentos'] = (new \App\adms\Models\AdmsOcorrencia())->dadosEquipamentosDisponiveis();
-        $this->dadosAlter['tiposServico'] = (new \App\adms\Models\AdmsOcorrencia())->dadosTiposServico();
+        $this->dadosAlter['tiposManutencao'] = (new \App\adms\Models\AdmsOcorrencia())->dadosTiposManutencao();
         $this->dadosAlter['tecnicos'] = (new \App\adms\Models\AdmsOcorrencia())->dadosTecnicos();
 
         $carregarView = new \Core\ConfigView("adms/Views/planeamento/pgPlaneamento", $this->dados, $this->dadosAlter);

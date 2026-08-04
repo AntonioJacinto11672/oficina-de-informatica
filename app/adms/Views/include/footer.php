@@ -34,14 +34,14 @@ if (!defined('R4F5CC')) {
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tens A Certeza Que Queres Sair?</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Terminar sessão?</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">Clica "Sair" Para terminar a Sessão.</div>
+            <div class="modal-body">Clique em "Sair" para terminar a sessão.</div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
                 <a class="btn btn-primary" href="<?php echo URLADM; ?>sair">Sair</a>
             </div>
         </div>
@@ -76,6 +76,8 @@ if (!defined('R4F5CC')) {
 <!-- DataTables -->
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
 <script src="<?php echo URLADM; ?>app/adms/assets/js/datatables-demo.js"></script>
 
 <!-- Chart.js -->

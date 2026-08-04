@@ -115,14 +115,14 @@ $equipamentos = $this->dadosAlter['equipamentos'] ?? [];
                                 <td><?= htmlspecialchars($d['solucao_proposta'] ?? '—') ?></td>
                                 <td><?= htmlspecialchars($d['pecas_solicitadas'] ?? '—') ?></td>
                                 <td><?= htmlspecialchars(trim(($d['tecnico_nome'] ?? '') . ' ' . ($d['tecnico_sobrenome'] ?? '')) ?: '—') ?></td>
-                                <td><?= $d['encaminhado_orcamento'] ? '<span class="badge badge-success">Sim</span>' : '<span class="badge badge-secondary">Não</span>' ?></td>
+                                <td><?= $d['encaminhado_execucao'] ? '<span class="badge badge-success">Sim</span>' : '<span class="badge badge-secondary">Não</span>' ?></td>
                                 <?php if ($idOcorrencia): ?>
                                     <td>
-                                        <?php if (!$d['encaminhado_orcamento']): ?>
+                                        <?php if (!$d['encaminhado_execucao']): ?>
                                             <a href="<?= $id ?>" data-toggle="modal" data-target="#edit<?= $id ?>" title="Editar"><i class="icofont icofont-edit px-2"></i></a>
-                                            <form action="" method="post" style="display:inline" onsubmit="return confirm('Encaminhar este diagnóstico para orçamento?');">
+                                            <form action="" method="post" style="display:inline" onsubmit="return confirm('Encaminhar este diagnóstico para execução da manutenção?');">
                                                 <input type="hidden" name="iddiagnostico" value="<?= $id ?>">
-                                                <button type="submit" class="btn btn-link p-0" name="btnEncaminharOrcamento" title="Encaminhar para Orçamento"><i class="icofont icofont-paper-plane"></i></button>
+                                                <button type="submit" class="btn btn-link p-0" name="btnEncaminharExecucao" title="Encaminhar para Execução"><i class="icofont icofont-paper-plane"></i></button>
                                             </form>
                                         <?php else: ?>
                                             <span class="text-muted">—</span>
@@ -131,7 +131,7 @@ $equipamentos = $this->dadosAlter['equipamentos'] ?? [];
                                 <?php endif; ?>
                             </tr>
 
-                            <?php if ($idOcorrencia && !$d['encaminhado_orcamento']): ?>
+                            <?php if ($idOcorrencia && !$d['encaminhado_execucao']): ?>
                                 <!-- Modal: Editar Diagnóstico -->
                                 <div class="modal fade" id="edit<?= $id ?>" tabindex="-1" role="dialog" aria-hidden="true">
                                     <div class="modal-dialog modal-lg" role="document">

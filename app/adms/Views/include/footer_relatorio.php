@@ -29,14 +29,14 @@ if (!defined('R4F5CC')) {
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tens A Certeza Que Queres Sair?</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Terminar sessão?</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">Clica "Sair" Para terminar a Sessão.</div>
+            <div class="modal-body">Clique em "Sair" para terminar a sessão.</div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
                 <a class="btn btn-primary" href="<?php echo URLADM; ?>sair">Sair</a>
             </div>
         </div>

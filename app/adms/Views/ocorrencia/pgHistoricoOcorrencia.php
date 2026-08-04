@@ -31,8 +31,8 @@ $equipamentos = $this->dados['equipamentos'] ?? [];
                 <div class="row">
                     <div class="col-md-3"><strong>Estado:</strong> <?= htmlspecialchars($ocorrencia['estado']) ?></div>
                     <div class="col-md-3"><strong>Prioridade:</strong> <?= htmlspecialchars($ocorrencia['prioridade'] ?? '—') ?></div>
+                    <div class="col-md-3"><strong>Categoria:</strong> <?= htmlspecialchars($ocorrencia['categoria_manutencao'] ?? '—') ?></div>
                     <div class="col-md-3"><strong>Tipo:</strong> <?= htmlspecialchars($ocorrencia['tipo_manutencao'] ?? '—') ?></div>
-                    <div class="col-md-3"><strong>Serviço:</strong> <?= htmlspecialchars($ocorrencia['tipo_servico'] ?? '—') ?></div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-4"><strong>Aberta em:</strong> <?= htmlspecialchars($ocorrencia['data_abertura'] ?? '—') ?></div>

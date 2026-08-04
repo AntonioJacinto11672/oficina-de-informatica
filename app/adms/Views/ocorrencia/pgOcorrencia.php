@@ -11,7 +11,7 @@ if (isset($this->dados['form']) && is_array($this->dados['form'])) {
 
 $lista = $this->dados['lista'] ?? [];
 $equipamentosDisponiveis = $this->dadosAlter['equipamentos'] ?? [];
-$tiposServico = $this->dadosAlter['tiposServico'] ?? [];
+$tiposManutencao = $this->dadosAlter['tiposManutencao'] ?? [];
 $tecnicos = $this->dadosAlter['tecnicos'] ?? [];
 $estados = $this->dadosAlter['estados'] ?? [];
 $prioridades = $this->dadosAlter['prioridades'] ?? [];
@@ -29,9 +29,8 @@ if (!function_exists('ocorrencia_badge_estado')) {
         $classe = [
             'Aberta' => 'primary',
             'Em diagnóstico' => 'info',
-            'Aguardando orçamento' => 'warning',
-            'Aguardando aprovação' => 'warning',
-            'Em manutenção' => 'info',
+            'Aguardando execução' => 'warning',
+            'Em execução' => 'info',
             'Concluída' => 'success',
             'Cancelada' => 'secondary',
         ][$estado] ?? 'secondary';
@@ -64,17 +63,17 @@ if (!function_exists('ocorrencia_badge_estado')) {
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-4">
-                            <label for="id_tipo_servico">Tipo de Serviço</label>
-                            <select class="custom-select" id="id_tipo_servico" name="id_tipo_servico">
+                            <label for="id_tipo_manutencao">Tipo de Manutenção</label>
+                            <select class="custom-select" id="id_tipo_manutencao" name="id_tipo_manutencao">
                                 <option value="">Selecione...</option>
-                                <?php foreach ($tiposServico as $ts): ?>
-                                    <option value="<?= (int)$ts['idtipo_servico'] ?>"><?= htmlspecialchars($ts['nome']) ?></option>
+                                <?php foreach ($tiposManutencao as $tm): ?>
+                                    <option value="<?= (int)$tm['idtipo_manutencao'] ?>"><?= htmlspecialchars($tm['nome']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="tipo_manutencao">Tipo de Manutenção</label>
-                            <select class="custom-select" id="tipo_manutencao" name="tipo_manutencao">
+                            <label for="categoria_manutencao">Categoria</label>
+                            <select class="custom-select" id="categoria_manutencao" name="categoria_manutencao">
                                 <option value="Corretiva">Corretiva</option>
                                 <option value="Preventiva">Preventiva</option>
                             </select>
@@ -139,7 +138,7 @@ if (!function_exists('ocorrencia_badge_estado')) {
                         <tr>
                             <th>#</th>
                             <th>Equipamento(s)</th>
-                            <th>Tipo Serviço</th>
+                            <th>Tipo de Manutenção</th>
                             <th>Prioridade</th>
                             <th>Estado</th>
                             <th>Técnico</th>
@@ -151,8 +150,8 @@ if (!function_exists('ocorrencia_badge_estado')) {
                         <?php foreach ($lista as $o): $id = (int)$o['idocorrencia']; ?>
                             <tr>
                                 <td><?= $id ?></td>
-                                <td><?= htmlspecialchars($o['equipamentos_numero_serie'] ?? '—') ?></td>
-                                <td><?= htmlspecialchars($o['tipo_servico'] ?? '—') ?></td>
+                                <td><?= htmlspecialchars($o['numero_serie'] ?? '—') ?></td>
+                                <td><?= htmlspecialchars($o['tipo_manutencao'] ?? $o['categoria_manutencao'] ?? '—') ?></td>
                                 <td><?= ocorrencia_badge_prioridade($o['prioridade']) ?></td>
                                 <td><?= ocorrencia_badge_estado($o['estado']) ?></td>
                                 <td><?= htmlspecialchars(trim(($o['tecnico_nome'] ?? '') . ' ' . ($o['tecnico_sobrenome'] ?? '')) ?: 'Por atribuir') ?></td>
@@ -160,7 +159,6 @@ if (!function_exists('ocorrencia_badge_estado')) {
                                 <td>
                                     <a href="<?= URLADM ?>ocorrencia?historico=<?= $id ?>" title="Histórico"><i class="icofont icofont-history px-2"></i></a>
                                     <a href="<?= URLADM ?>diagnostico?ocorrencia=<?= $id ?>" title="Diagnóstico"><i class="icofont icofont-stethoscope px-2"></i></a>
-                                    <a href="<?= URLADM ?>orcamento?id_ocorrencia=<?= $id ?>" title="Criar Orçamento"><i class="icofont icofont-money px-2"></i></a>
                                     <a href="<?= URLADM ?>execucao?ocorrencia=<?= $id ?>" title="Execução"><i class="icofont icofont-tools px-2"></i></a>
                                     <a href="<?= $id ?>" data-toggle="modal" data-target="#edit<?= $id ?>" title="Editar"><i class="icofont icofont-edit px-2"></i></a>
                                     <a href="<?= $id ?>" data-toggle="modal" data-target="#tecnico<?= $id ?>" title="Atribuir Técnico"><i class="icofont icofont-user px-2"></i></a>
@@ -192,19 +190,19 @@ if (!function_exists('ocorrencia_badge_estado')) {
                                                 </div>
                                                 <div class="form-row">
                                                     <div class="form-group col-md-4">
-                                                        <label>Tipo de Serviço</label>
-                                                        <select class="custom-select" name="id_tipo_servico">
+                                                        <label>Tipo de Manutenção</label>
+                                                        <select class="custom-select" name="id_tipo_manutencao">
                                                             <option value="">Selecione...</option>
-                                                            <?php foreach ($tiposServico as $ts): ?>
-                                                                <option value="<?= (int)$ts['idtipo_servico'] ?>" <?= (int)($o['id_tipo_servico'] ?? 0) === (int)$ts['idtipo_servico'] ? 'selected' : '' ?>><?= htmlspecialchars($ts['nome']) ?></option>
+                                                            <?php foreach ($tiposManutencao as $tm): ?>
+                                                                <option value="<?= (int)$tm['idtipo_manutencao'] ?>" <?= (int)($o['id_tipo_manutencao'] ?? 0) === (int)$tm['idtipo_manutencao'] ? 'selected' : '' ?>><?= htmlspecialchars($tm['nome']) ?></option>
                                                             <?php endforeach; ?>
                                                         </select>
                                                     </div>
                                                     <div class="form-group col-md-4">
-                                                        <label>Tipo de Manutenção</label>
-                                                        <select class="custom-select" name="tipo_manutencao">
-                                                            <option value="Corretiva" <?= $o['tipo_manutencao'] === 'Corretiva' ? 'selected' : '' ?>>Corretiva</option>
-                                                            <option value="Preventiva" <?= $o['tipo_manutencao'] === 'Preventiva' ? 'selected' : '' ?>>Preventiva</option>
+                                                        <label>Categoria</label>
+                                                        <select class="custom-select" name="categoria_manutencao">
+                                                            <option value="Corretiva" <?= $o['categoria_manutencao'] === 'Corretiva' ? 'selected' : '' ?>>Corretiva</option>
+                                                            <option value="Preventiva" <?= $o['categoria_manutencao'] === 'Preventiva' ? 'selected' : '' ?>>Preventiva</option>
                                                         </select>
                                                     </div>
                                                     <div class="form-group col-md-4">

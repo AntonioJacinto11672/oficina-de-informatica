@@ -8,9 +8,7 @@ if (!defined('R4F5CC')) {
 }
 
 /**
- * Description of Produto
- *
- * @author Double
+ * Peças e Consumíveis.
  */
 class Produto {
 
@@ -22,32 +20,16 @@ class Produto {
     public function index() {
         if (!empty(filter_input_array(INPUT_POST, FILTER_DEFAULT))) {
             $this->dadosForm = filter_input_array(INPUT_POST, FILTER_DEFAULT);
-
-            //var_dump($this->dadosForm);
-            //var_dump($_FILES);
+            $model = new \App\adms\Models\AdmsProduto();
             if (isset($this->dadosForm['btnCdsProduto'])) {
-                if ($this->filtararCampo()) {
-                    //var_dump($this->dadosForm);
-                    $this->dadosForm['foto'] = ($_FILES['foto'] ? $_FILES['foto'] : null);
-                    $cdsProduto = new \App\adms\Models\AdmsTecnico();
-                    $cdsProduto->cdsProduto($this->dadosForm);
-                }
+                $this->dadosForm['foto'] = $_FILES['foto'] ?? [];
+                $model->cdsProduto($this->dadosForm);
             } elseif (isset($this->dadosForm['btnDeletProduto'])) {
-                $cdsProduto = new \App\adms\Models\AdmsTecnico();
-                //var_dump($this->dadosForm);
-                $cdsProduto->deletProduto($this->dadosForm);
+                $model->deleteProduto($this->dadosForm);
             } elseif (isset($this->dadosForm['btnEditProduto'])) {
-                //if ($this->filtararCampo()) {
-                    $cdsProduto = new \App\adms\Models\AdmsTecnico();
-                    $cdsProduto->editProduto($this->dadosForm);
-                //}
-
-                //var_dump($this->dadosForm);
+                $model->editProduto($this->dadosForm);
             } elseif (isset($this->dadosForm['btnaddEstoque'])) {
-                if ($this->filtararCampo()) {
-                    $cdsProduto = new \App\adms\Models\AdmsTecnico();
-                    $cdsProduto->addEstoque($this->dadosForm);
-                }
+                $model->addEstoque($this->dadosForm);
             } else {
                 $this->dados['form'] = $this->dadosForm;
             }
@@ -61,34 +43,18 @@ class Produto {
     }
 
     private function dadosFornecedor() {
-        $dados = new \App\adms\Models\AdmsTecnico();
-        $this->dadosAlter = $dados->dadosFornecedorId();
+        $model = new \App\adms\Models\AdmsFornecedor();
+        $this->dadosAlter = $model->dadosFornecedores();
     }
 
     private function dadosCategoria() {
-        $dados = new \App\adms\Models\AdmsTecnico();
-        $this->dadosPaginacao = $dados->dadosCategoriaId();
+        $model = new \App\adms\Models\AdmsCategoria();
+        $this->dadosPaginacao = $model->dadosCategorias();
     }
 
     private function dadosProdutos() {
-        $dados = new \App\adms\Models\AdmsTecnico();
-        $this->dados = $dados->dadosProdutos();
-    }
-
-    private function filtararCampo() {
-        if (!$this->dadosForm['estoque'] = filter_input(INPUT_POST, "estoque", FILTER_VALIDATE_FLOAT)) {
-            $_SESSION['msg'] = "<div class='alert alert-danger text-center'>O Valor do Estoque Precissa Ser Um Número Real</div>";
-            return false;
-        } elseif (!$this->dadosForm['valor_compra'] = filter_input(INPUT_POST, "valor_compra", FILTER_VALIDATE_FLOAT)) {
-            $_SESSION['msg'] = "<div class='alert alert-danger text-center'>O Valor da compra Precissa Ser Um Número Real</div>";
-            return false;
-        } elseif (!$this->dadosForm['valor_venda'] = filter_input(INPUT_POST, "valor_venda", FILTER_VALIDATE_FLOAT)) {
-            $_SESSION['msg'] = "<div class='alert alert-danger text-center'>O Valor da Venda Precissa Ser Um Número Real</div>";
-            return false;
-        } else {
-            return true;
-        }
+        $model = new \App\adms\Models\AdmsProduto();
+        $this->dados = $model->dadosProdutos();
     }
 
 }
-

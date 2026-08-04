@@ -88,8 +88,8 @@ http_response_code($httpCode);
 
 echo json_encode([
     'status'    => $status,
-    'app'       => 'Sistema de Gestão de Assistência Técnica Informática',
-    'version'   => '3.0.0',
+    'app'       => 'Sistema de Gestão de Manutenção Preventiva e Corretiva de Equipamentos Informáticos da Universidade Lusíada de Angola',
+    'version'   => '5.0.0',
     'php'       => PHP_VERSION,
     'timestamp' => date('Y-m-d H:i:s'),
     'checks'    => $checks,

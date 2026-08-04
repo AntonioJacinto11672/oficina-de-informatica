@@ -9,9 +9,9 @@ if (!defined('R4F5CC')) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Sistema de gestão de Assistência técnica</title>
-        <meta content="#Sistema de gestão de Assistência técnica" name="description">
-        <meta content="Oficina,Mecânica,Carros,Motas, Reparação" name="keywords">
+        <title>Sistema de Gestão de Manutenção de Equipamentos Informáticos — Universidade Lusíada de Angola</title>
+        <meta content="Sistema de Gestão de Manutenção Preventiva e Corretiva de Equipamentos Informáticos da Universidade Lusíada de Angola" name="description">
+        <meta content="manutenção, equipamentos informáticos, TI, Universidade Lusíada de Angola" name="keywords">
 
         <!-- Favicons -->
         <link href="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo_novo.png" rel="icon">
@@ -40,6 +40,7 @@ if (!defined('R4F5CC')) {
 
         <!-- DataTables -->
         <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css" rel="stylesheet">
 
         <!-- Local CSS -->
         <link href="<?php echo URLADM; ?>app/adms/assets/css/adminlte.min.css" rel="stylesheet">
@@ -76,9 +77,9 @@ if (!defined('R4F5CC')) {
              aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <form action="<?php echo URLADM; ?>perfil" method="get" class="needs-validation" enctype="multipart/form-data" novalidate>
+                    <form action="<?php echo URLADM; ?>perfil" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Tens A Certeza Que Queres Editar?</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Editar Perfil</h5>
                             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
@@ -143,7 +144,7 @@ if (!defined('R4F5CC')) {
                                     ?>" required>
                                     <div class="invalid-feedback">Campo Obrigatório.</div>
                                 </div>
-                                <?php if ($_SESSION['usuario'] != "adimin") { ?>
+                                <?php if ($_SESSION['nivel'] !== 'gerente') { ?>
                                     <div class="col-md-6 mb-3">
                                         <label for="morada">Morada</label>
                                         <input type="text" class="form-control" placeholder="Digete A Morada" name="morada" value="<?php
@@ -162,7 +163,7 @@ if (!defined('R4F5CC')) {
                             <input type="hidden" name="email" value="<?php echo $_SESSION['email']; ?>">
                             <input type="hidden" name="nbiantigo" value="<?php echo $_SESSION['nbi']; ?>">
                             <input type="hidden" name="nifantigo" value="<?php echo $_SESSION['nif']; ?>">
-                            <input type="hidden" name="nivel" value="<?php echo $_SESSION['usuario']; ?>">
+                            <input type="hidden" name="nivel" value="<?php echo $_SESSION['nivel']; ?>">
                             <button class="btn btn-primary" name="btnEditPerfil">Sim</button>
                         </div>
                     </form>

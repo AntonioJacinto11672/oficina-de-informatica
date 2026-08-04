@@ -3,539 +3,248 @@ if (!defined('R4F5CC')) {
     header("Location: /");
     die("Erro: Página não encontrada!");
 }
-if (isset($this->dados['form'])) {
-    $valorForm = $this->dados['form'];
-    //var_dump($valorForm);
+$lista = $this->dados ?? [];
+if (isset($lista['form'])) {
+    $lista = [];
 }
-if (isset($_SESSION['idlogado'])) {
-    //echo "<br>id Logado " . $_SESSION['idlogado'];
-    //var_dump($_SESSION);
-    //var_dump($this->dadosAlter);
-    //echo "<br><br>";
-    //var_dump($this->dadosPaginacao);
-}
+$categorias = $this->dadosPaginacao ?? [];
+$fornecedores = $this->dadosAlter ?? [];
 ?>
-<!-- Begin Page Content -->
-
-
-<!-- Logout Modal-->
-<div class="modal fade" id="novoproduto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+<div class="modal fade" id="novoproduto" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Cadastrar Produto</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
+                    <h5 class="modal-title">Registar Peça / Consumível</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="nome">Nome</label>
-                            <input type="text" class="form-control" id="tel1" placeholder="Digete o Nome"  name="nome" value="<?php
-                            if (isset($valorForm['nome'])) {
-                                echo $valorForm['nome'];
-                            }
-                            ?>" required>
-                            <div class="invalid-feedback">
-                                Insira O Nome.
-                            </div>
+                            <input type="text" class="form-control" id="nome" name="nome" required>
+                            <div class="invalid-feedback">Campo obrigatório.</div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="referencia">Refêrencia</label>
-                            <input type="text" class="form-control" id="referencia" placeholder="Inseri O referencia" name="referencia" value="<?php
-                            if (isset($valorForm['referencia'])) {
-                                echo $valorForm['referencia'];
-                            }
-                            ?>" required>
-                            <div class="invalid-feedback">
-                                Campo Obrigatório.
-                            </div>
+                            <label for="referencia">Referência</label>
+                            <input type="text" class="form-control" id="referencia" name="referencia">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="categoria">Categoria</label>
-                            <select class="custom-select" id="fornecedor" name="categoria" required>
-                                <option selected disabled value="">Escolhe...</option>
-                                <?php
-                                if (isset($this->dadosPaginacao)) {
-                                    foreach ($this->dadosPaginacao as $valor) {
-                                        ?>
-                                        <option value="<?php echo $valor['idcategoria']; ?>"><?php echo $valor['nome']; ?></option>
-                                        <?php
-                                    }
-                                }
-                                ?>
+                            <select class="custom-select" id="categoria" name="categoria" required>
+                                <option selected disabled value="">Escolha...</option>
+                                <?php foreach ($categorias as $c): ?>
+                                    <option value="<?= (int)$c['idcategoria'] ?>"><?= htmlspecialchars($c['nome']) ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
-
                         <div class="col-md-6 mb-3">
                             <label for="fornecedor">Fornecedor</label>
-                            <select class="custom-select" id="fornecedor" name="fornecedor" required>
-                                <option selected disabled value="">Escolhe...</option>
-                                <?php
-                                if (isset($this->dadosAlter)) {
-                                    foreach ($this->dadosAlter as $valor) {
-                                        ?>
-                                        <option value="<?php echo $valor['idfornecedor']; ?>"><?php echo $valor['nome']; ?></option>
-                                        <?php
-                                    }
-                                }
-                                ?>
-
+                            <select class="custom-select" id="fornecedor" name="fornecedor">
+                                <option selected value="">Escolha...</option>
+                                <?php foreach ($fornecedores as $f): ?>
+                                    <option value="<?= (int)$f['idfornecedor'] ?>"><?= htmlspecialchars($f['nome']) ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
-                    </div> 
+                    </div>
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label for="estoque">Estoque <span class="text-muted"></span></label>
-                            <input type="text" class="form-control" id="estoque" placeholder="Número Estoque" name="estoque" value="<?php
-                            if (isset($valorForm['estoque'])) {
-                                echo $valorForm['estoque'];
-                            }
-                            ?>" required>
-                            <div class="invalid-feedback">
-                                Campo Obrigatório.
-                            </div>
+                            <label for="estoque">Stock Inicial</label>
+                            <input type="number" class="form-control" id="estoque" name="estoque" value="0" min="0">
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="valor_compra">Valor Compra</label>
-                            <input type="text" class="form-control" id="tel1" placeholder="Valor da Compra"  name="valor_compra" value="<?php
-                            if (isset($valorForm['valor_compra'])) {
-                                echo $valorForm['valor_compra'];
-                            }
-                            ?>" required>
-                            <div class="invalid-feedback">
-                                Campo Obrigatório.
-                            </div>
+                            <label for="estoque_minimo">Stock Mínimo</label>
+                            <input type="number" class="form-control" id="estoque_minimo" name="estoque_minimo" value="5" min="0">
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="valor_venda">Valor Venda</label>
-                            <input type="text" class="form-control" id="tel1" placeholder="Valor da Venda"  name="valor_venda" value="<?php
-                            if (isset($valorForm['valor_venda'])) {
-                                echo $valorForm['valor_venda'];
-                            }
-                            ?>" required>
-                            <div class="invalid-feedback">
-                                Campo Obrigatório.
-                            </div>
+                            <label for="custo_aquisicao">Custo de Aquisição (Kz)</label>
+                            <input type="number" step="0.01" class="form-control" id="custo_aquisicao" name="custo_aquisicao" value="0">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-7 mb-3">
                             <label for="descricao">Descrição</label>
-                            <textarea class="form-control" id="descricao" name="descricao" placeholder="Escreva A discrição da Peça" required></textarea>
-                            <div class="invalid-feedback">
-                                Campo Obrigatório.
-                            </div>
+                            <textarea class="form-control" id="descricao" name="descricao"></textarea>
                         </div>
                         <div class="col-md-5 mb-3">
-                            <img src="<?php echo URLADM . "/app/adms/assets/foto/" . $valorForm['foto']; ?>" style="width: 150px;height: 150px;" class="img-fluid rounded mx-auto d-block img-thumbnail prev-img" id="preview-img" alt="">
-                            <br>
-
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input pb-4" id="foto" name="foto"  onchange="previewImagem();" required>
-                                <label class="custom-file-label" for="foto" data-browse="Procurar foto">Escolha a Foto</label>
-                                <div class="invalid-feedback">Escolha Uma foto de Perfil Nova</div>
+                                <input type="file" class="custom-file-input" id="foto" name="foto">
+                                <label class="custom-file-label" for="foto" data-browse="Procurar">Fotografia (opcional)</label>
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary text-white" name="btnCdsProduto">Salvar</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-primary text-white" name="btnCdsProduto">Guardar</button>
                 </div>
-            </form> 
+            </form>
         </div>
     </div>
 </div>
 <div class="container-fluid">
-    <?php
-    if (isset($_SESSION['msg'])) {
-        echo $_SESSION['msg'];
-        unset($_SESSION['msg']);
-    }
-    ?>
-    <!-- Page Heading -->
+    <?php if (isset($_SESSION['msg'])) { echo $_SESSION['msg']; unset($_SESSION['msg']); } ?>
     <div class="row mt-4 mb-4">
-        <a type="button" class="btn-primary btn-sm ml-3 d-none d-md-block text-white" href="" data-toggle="modal" data-target="#novoproduto"> Novo Produto</a>
-        <!--<a type="button" class="btn-primary btn-sm ml-3 d-block d-lg-none"> + </a>-->
+        <a type="button" class="btn-primary btn-sm ml-3 d-none d-md-block text-white" href="" data-toggle="modal" data-target="#novoproduto">Nova Peça</a>
     </div>
-
-    <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Produtos</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Peças e Consumíveis</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Nome</th>
-                            <th>Referência</th>
-                            <th>Categoria</th>
-                            <th>Fornecedor</th>
-                            <th>Valor Compra</th>
-                            <th>Valor Venda</th>
-                            <th>Estoque</th>
-                            <th>Imagem</th>
-                            <th>Acção</th>
+                            <th>Nome</th><th>Referência</th><th>Categoria</th><th>Fornecedor</th><th>Stock</th><th>Stock Mínimo</th><th>Ação</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Referência</th>
-                            <th>Categoria</th>
-                            <th>Fornecedor</th>
-                            <th>Valor Compra</th>
-                            <th>Valor Venda</th>
-                            <th>Estoque</th>
-                            <th>Imagem</th>
-                            <th>Acção</th>
-                        </tr>
-                    </tfoot>
                     <tbody>
-                        <?php
-                        if (isset($this->dados)) {
-                            for ($index = 0; $index < count($this->dados); $index++) {
-                                $valorForm = $this->dados[$index];
-                                ?>
-                                <tr>
-                                    <td><?php echo $valorForm['nome']; ?></td>
-                                    <td><?php echo $valorForm['referencia']; ?></td>
-                                    <td><?php echo $valorForm['categoria']; ?></td>
-                                    <td><a data-toggle="modal" data-target="#fornecedor<?php echo $valorForm['idproduto']; ?>" href=""> <?php echo $valorForm['fornecedor']; ?></a></td>
-                                    <td><?php
-                                        $valorForm['valor_compra_novo'] = number_format($valorForm['valor_compra'], 2, ',', '.');
-                                        echo $valorForm['valor_compra_novo'];
-                                        ?> KZ</td>
-                                    <td><?php
-                                        $valorForm['valor_venda_novo'] = number_format($valorForm['valor_venda'], 2, '.', '.');
-                                        echo $valorForm['valor_venda_novo'];
-                                        ?> KZ</td>
-
-                                    <td class="<?php
-                                    if ($valorForm['estoque'] < NIVEL_STOQUE) {
-                                        echo "text-danger";
-                                    }
-                                    ?>"><?php echo $valorForm['estoque']; ?></td>
-                                    <td class="td-double"> 
-                                        <img src="<?php echo URLADM . "app/adms/assets/foto/" . $valorForm['foto']; ?>" width="85" height="75" alt="center" class="rounded mx-auto d-block"/>
-                                        <a href="<?php echo URLADM . "editarFoto?id=" . $valorForm['idproduto']; ?>" class="btn btn-outline-warning  btn-sm edit">
-                                            <div class="icon"><i class="icofont-edit text-uppercase w3-text-black">Editar</i></div>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo $valorForm['idproduto']; ?>" data-toggle="modal" data-target="#edit<?php echo $valorForm['idproduto']; ?>" title="Editar Registo"><i class="icofont icofont-edit px-1"></i></a>
-                                        <a href="<?php echo $valorForm['idproduto']; ?>" data-toggle="modal" data-target="#delete<?php echo $valorForm['idproduto']; ?>" title="Apagar Registo"><i class="icofont icofont-trash text-danger px-1"></i></a>
-                                        <a href="<?php echo $valorForm['idproduto']; ?>" data-toggle="modal" data-target="#info<?php echo $valorForm['idproduto']; ?>" title="Descrição"><i class="icofont icofont-warning-alt text-primary px-1"></i></a>
-                                        <a href="<?php echo $valorForm['idproduto']; ?>" data-toggle="modal" data-target="#mais<?php echo $valorForm['idproduto']; ?>" title="Fazer Pedido"><i class="icofont icofont-plus text-success px-2"></i></a>
-                                        <a href="<?php echo URLADM . "movimentoEstoque?produto=" . $valorForm['idproduto']; ?>" title="Histórico de Movimentações"><i class="icofont icofont-history text-info px-1"></i></a>
-                                    </td>
-                                </tr>
-                                <!--  Modal Deletar-->
-                            <div class="modal fade" id="delete<?php echo $valorForm['idproduto']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                                 aria-hidden="true">
+                        <?php foreach ($lista as $p): if (!isset($p['idproduto'])) { continue; } ?>
+                            <tr>
+                                <td><?= htmlspecialchars($p['nome']) ?></td>
+                                <td><?= htmlspecialchars($p['referencia'] ?? '—') ?></td>
+                                <td><?= htmlspecialchars($p['categoria'] ?? '—') ?></td>
+                                <td><?= htmlspecialchars($p['fornecedor'] ?? '—') ?></td>
+                                <td class="<?= $p['estoque'] < $p['estoque_minimo'] ? 'text-danger font-weight-bold' : '' ?>"><?= (int)$p['estoque'] ?></td>
+                                <td><?= (int)$p['estoque_minimo'] ?></td>
+                                <td>
+                                    <a href="<?= $p['idproduto'] ?>" data-toggle="modal" data-target="#edit<?= $p['idproduto'] ?>" title="Editar"><i class="icofont icofont-edit px-1"></i></a>
+                                    <a href="<?= $p['idproduto'] ?>" data-toggle="modal" data-target="#delete<?= $p['idproduto'] ?>" title="Eliminar"><i class="icofont icofont-trash text-danger px-1"></i></a>
+                                    <a href="<?= $p['idproduto'] ?>" data-toggle="modal" data-target="#info<?= $p['idproduto'] ?>" title="Descrição"><i class="icofont icofont-info-circle text-primary px-1"></i></a>
+                                    <a href="<?= $p['idproduto'] ?>" data-toggle="modal" data-target="#mais<?= $p['idproduto'] ?>" title="Adicionar Stock"><i class="icofont icofont-plus text-success px-1"></i></a>
+                                    <a href="<?= URLADM ?>movimentoEstoque?produto=<?= $p['idproduto'] ?>" title="Histórico de Movimentações"><i class="icofont icofont-history text-info px-1"></i></a>
+                                </td>
+                            </tr>
+                            <div class="modal fade" id="delete<?= $p['idproduto'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Tens A Certeza Que Queres Apagar?</h5>
-                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                            </button>
+                                            <h5 class="modal-title">Tem a certeza que quer eliminar?</h5>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                         </div>
-                                        <div class="modal-body">Clica "Sim" Para Pagar Esse Produto <?php echo $valorForm['nome']; ?>.</div>
+                                        <div class="modal-body">Vai eliminar a peça <?= htmlspecialchars($p['nome']) ?>.</div>
                                         <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                            <form action="" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
-                                                <input type="hidden" name="idproduto" value="<?php echo $valorForm['idproduto']; ?>">
+                                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                                            <form action="" method="post">
+                                                <input type="hidden" name="idproduto" value="<?= $p['idproduto'] ?>">
                                                 <button class="btn btn-primary" name="btnDeletProduto">Sim</button>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!--  Modal Deletar-->
-                            <div class="modal fade" id="edit<?php echo $valorForm['idproduto']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                                 aria-hidden="true">
+                            <div class="modal fade" id="edit<?= $p['idproduto'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
-                                        <form action="" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+                                        <form action="" method="post" novalidate>
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Tens A Certeza Que Queres Editar?</h5>
-                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">×</span>
-                                                </button>
+                                                <h5 class="modal-title">Editar Peça</h5>
+                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
-                                                        <label for="nome">Nome</label>
-                                                        <input type="text" class="form-control" id="tel1" placeholder="Digete o Nome"  name="nome" value="<?php
-                                                        if (isset($valorForm['nome'])) {
-                                                            echo $valorForm['nome'];
-                                                        }
-                                                        ?>" required>
-                                                        <div class="invalid-feedback">
-                                                            Insira O Nome.
-                                                        </div>
+                                                        <label>Nome</label>
+                                                        <input type="text" class="form-control" name="nome" value="<?= htmlspecialchars($p['nome']) ?>" required>
                                                     </div>
                                                     <div class="col-md-6 mb-3">
-                                                        <label for="referencia">Refêrencia</label>
-                                                        <input type="text" class="form-control" id="referencia" placeholder="Inseri O referencia" name="referencia" value="<?php
-                                                        if (isset($valorForm['referencia'])) {
-                                                            echo $valorForm['referencia'];
-                                                        }
-                                                        ?>" required>
-                                                        <div class="invalid-feedback">
-                                                            Campo Obrigatório.
-                                                        </div>
+                                                        <label>Referência</label>
+                                                        <input type="text" class="form-control" name="referencia" value="<?= htmlspecialchars($p['referencia'] ?? '') ?>">
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
-                                                        <label for="categoria">Categoria</label>
-                                                        <select class="custom-select" id="categoria" name="categoria" required>
-                                                            <option selected disabled value="">Escolhe...</option>
-                                                            <?php
-                                                            if (isset($this->dadosPaginacao)) {
-                                                                foreach ($this->dadosPaginacao as $valor) {
-                                                                    ?>
-                                                                    <option value="<?php echo $valor['idcategoria']; ?>"><?php echo $valor['nome']; ?></option>
-                                                                    <?php
-                                                                }
-                                                            }
-                                                            ?>
+                                                        <label>Categoria</label>
+                                                        <select class="custom-select" name="categoria">
+                                                            <option value="">Escolha...</option>
+                                                            <?php foreach ($categorias as $c): ?>
+                                                                <option value="<?= (int)$c['idcategoria'] ?>" <?= (int)($p['idcategoria'] ?? 0) === (int)$c['idcategoria'] ? 'selected' : '' ?>><?= htmlspecialchars($c['nome']) ?></option>
+                                                            <?php endforeach; ?>
                                                         </select>
                                                     </div>
-
                                                     <div class="col-md-6 mb-3">
-                                                        <label for="fornecedor">Fornecedor</label>
-                                                        <select class="custom-select" id="fornecedor" name="fornecedor" required>
-                                                            <option selected disabled value="">Escolhe...</option>
-                                                            <?php
-                                                            if (isset($this->dadosAlter)) {
-                                                                foreach ($this->dadosAlter as $valor) {
-                                                                    ?>
-                                                                    <option value="<?php echo $valor['idfornecedor']; ?>"><?php echo $valor['nome']; ?></option>
-                                                                    <?php
-                                                                }
-                                                            }
-                                                            ?>
-
+                                                        <label>Fornecedor</label>
+                                                        <select class="custom-select" name="fornecedor">
+                                                            <option value="">Escolha...</option>
+                                                            <?php foreach ($fornecedores as $f): ?>
+                                                                <option value="<?= (int)$f['idfornecedor'] ?>" <?= (int)($p['idfornecedor'] ?? 0) === (int)$f['idfornecedor'] ? 'selected' : '' ?>><?= htmlspecialchars($f['nome']) ?></option>
+                                                            <?php endforeach; ?>
                                                         </select>
                                                     </div>
-                                                </div> 
+                                                </div>
                                                 <div class="row">
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="estoque">Estoque <span class="text-muted"></span></label>
-                                                        <input type="text" class="form-control" id="estoque" placeholder="Número Estoque" name="estoque" value="<?php
-                                                        if (isset($valorForm['estoque'])) {
-                                                            echo $valorForm['estoque'];
-                                                        }
-                                                        ?>" required disabled>
-                                                        <div class="invalid-feedback">
-                                                            Campo Obrigatório.
-                                                        </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label>Stock Mínimo</label>
+                                                        <input type="number" class="form-control" name="estoque_minimo" value="<?= (int)$p['estoque_minimo'] ?>" min="0">
                                                     </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="valor_compra">Valor Compra</label>
-                                                        <input type="text" class="form-control" id="tel1" placeholder="Valor da Compra"  name="valor_compra" value="<?php
-                                                        if (isset($valorForm['valor_compra'])) {
-                                                            echo $valorForm['valor_compra'];
-                                                        }
-                                                        ?>" required>
-                                                        <div class="invalid-feedback">
-                                                            Campo Obrigatório.
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4 mb-3">
-                                                        <label for="valor_venda">Valor Venda</label>
-                                                        <input type="text" class="form-control" id="tel1" placeholder="Valor da Venda"  name="valor_venda" value="<?php
-                                                        if (isset($valorForm['valor_venda'])) {
-                                                            echo $valorForm['valor_venda'];
-                                                        }
-                                                        ?>" required>
-                                                        <div class="invalid-feedback">
-                                                            Campo Obrigatório.
-                                                        </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label>Custo de Aquisição (Kz)</label>
+                                                        <input type="number" step="0.01" class="form-control" name="custo_aquisicao" value="<?= htmlspecialchars($p['custo_aquisicao'] ?? 0) ?>">
                                                     </div>
                                                 </div>
-
-                                                <div class=" mb-3">
-                                                    <label for="descricao">Descrição</label>
-                                                    <textarea class="form-control" id="descricao" name="descricao" placeholder="Escreva A Discrição da Peça" required><?php echo $valorForm['descricao']; ?></textarea>
-                                                    <div class="invalid-feedback">
-                                                        Campo Obrigatório.
-                                                    </div>
+                                                <div class="mb-3">
+                                                    <label>Descrição</label>
+                                                    <textarea class="form-control" name="descricao"><?= htmlspecialchars($p['descricao'] ?? '') ?></textarea>
                                                 </div>
-
                                             </div>
                                             <div class="modal-footer">
-                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                                <input type="hidden" name="idproduto" value="<?php echo $valorForm['idproduto']; ?>">
-                                                <input type="hidden" name="estoque_antigo" value="<?php echo $valorForm['estoque']; ?>">
-                                                <button class="btn btn-primary" name="btnEditProduto">Sim</button>
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                                                <input type="hidden" name="idproduto" value="<?= $p['idproduto'] ?>">
+                                                <button class="btn btn-primary" name="btnEditProduto">Guardar</button>
                                             </div>
+                                        </form>
                                     </div>
-                                    </form>
                                 </div>
                             </div>
-                            <!--  Modal Descrição do Produto-->
-                            <div class="modal fade" id="info<?php echo $valorForm['idproduto']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                                 aria-hidden="true">
+                            <div class="modal fade" id="info<?= $p['idproduto'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Descrição do Produto</h5>
-                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                            </button>
+                                            <h5 class="modal-title">Descrição da Peça</h5>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <img src="<?php echo URLADM . "app/adms/assets/foto/" . $valorForm['foto']; ?>" class="card-img shadow" alt="..." width="500rem" height="300rem">
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="card-body">
-                                                        <p class="" style="font-size: 20px;"><?php echo $valorForm['descricao']; ?></p>
-                                                        <p class="" style="font-size: 20px;"><small class="text-muted">Ultima Atualização: <?php
-                                                            $__prod_modified = $valorForm['modified'] ?? $valorForm['created'] ?? null;
-                                                            if (!empty($__prod_modified)) {
-                                                                echo date('d/m/Y H:i', strtotime($__prod_modified));
-                                                            } else {
-                                                                echo '-';
-                                                            }
-                                                            ?></small></p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <p><?= nl2br(htmlspecialchars($p['descricao'] ?? 'Sem descrição.')) ?></p>
+                                            <p class="text-muted small">Última atualização: <?= !empty($p['modified']) ? date('d/m/Y H:i', strtotime($p['modified'])) : (!empty($p['created']) ? date('d/m/Y H:i', strtotime($p['created'])) : '—') ?></p>
                                         </div>
                                         <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Fechar</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!--  Modal Dados Do Fornecedor-->
-                            <div class="modal fade" id="fornecedor<?php echo $valorForm['idproduto']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                                 aria-hidden="true">
+                            <div class="modal fade" id="mais<?= $p['idproduto'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Dados do Fornecedor</h5>
-                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="container">
-                                                <p><strong>Nome: </strong><?php echo $valorForm['fornecedor']; ?></p>                                                
-                                                <p><strong>Nif: </strong><?php echo $valorForm['nif']; ?></p>
-                                                <p><strong>Tipo Pessoa: </strong><?php echo $valorForm['tipo_pessoa']; ?></p>
-                                                <p><strong>Telefone: </strong><?php echo $valorForm['telefone']; ?></p>
-                                                <p><strong>Email: </strong><?php echo $valorForm['email']; ?></p>
-                                                <p><strong>Andereço: </strong><?php echo $valorForm['morada']; ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--  Modal Fazer Pedido Do Fornecedor-->
-                            <div class="modal fade" id="mais<?php echo $valorForm['idproduto']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <form action="" method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+                                    <form action="" method="post" novalidate>
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Dados do Fornecedor</h5>
-                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">×</span>
-                                                </button>
+                                                <h5 class="modal-title">Adicionar Stock — <?= htmlspecialchars($p['nome']) ?></h5>
+                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="col-md-12 mb-3">
-                                                    <label for="fornecedor">Fornecedor</label>
-                                                    <select class="custom-select" id="fornecedor" name="fornecedor" required>
-                                                        <option selected value="<?php echo $valorForm['idfornecedor']; ?>"><?php echo $valorForm['fornecedor']; ?></option>
-                                                        <?php
-                                                        if (isset($this->dadosAlter)) {
-                                                            foreach ($this->dadosAlter as $valor) {
-                                                                ?>
-                                                                <option value="<?php echo $valor['idfornecedor']; ?>"><?php echo $valor['nome']; ?></option>
-                                                                <?php
-                                                            }
-                                                        }
-                                                        ?>
-
-                                                    </select>
-                                                </div>
-
-                                                <div class="col-md-12 mb-3">
-                                                    <label for="valor_compra">Valor Compra</label>
-                                                    <input type="text" class="form-control" id="tel1" placeholder="Valor da Compra"  name="valor_compra" value="<?php
-                                                    if (isset($valorForm['valor_compra'])) {
-                                                        //$valorForm['valor_compra'] = number_format($valorForm['valor_compra'], 2, '.');
-                                                        echo $valorForm['valor_compra'];
-                                                    }
-                                                    ?>" required>
-                                                    <div class="invalid-feedback">
-                                                        Campo Obrigatório.
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12 mb-3">
-                                                    <label for="valor_venda">Valor Venda</label>
-                                                    <input type="text" class="form-control" id="tel1" placeholder="Valor da Venda"  name="valor_venda" value="<?php
-                                                    if (isset($valorForm['valor_venda'])) {
-                                                        //$valorForm['valor_venda'] = number_format($valorForm['valor_venda'], 2, '.','.');
-                                                        echo $valorForm['valor_venda'];
-                                                    }
-                                                    ?>" required>
-                                                    <div class="invalid-feedback">
-                                                        Campo Obrigatório.
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12 mb-3">
-                                                    <label for="estoque">Estoque <span class="text-muted"></span></label>
-                                                    <input type="number" class="form-control" id="estoque" placeholder="Adicio Mais no Estoque" name="estoque" value="" required>
-                                                    <div class="invalid-feedback">
-                                                        Campo Obrigatório.
-                                                    </div>
-                                                </div>
+                                                <label>Quantidade a adicionar</label>
+                                                <input type="number" class="form-control" name="estoque" value="1" min="1" required>
                                             </div>
                                             <div class="modal-footer">
-                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                                <input type="hidden" name="idproduto" value="<?php echo $valorForm['idproduto']; ?>">
-                                                <input type="hidden" name="estoque_antigo" value="<?php echo $valorForm['estoque']; ?>">
-                                                <input type="hidden" name="nome" value="<?php echo $valorForm['nome']; ?>">
-                                                <input type="hidden" name="foto" value="<?php echo $valorForm['foto']; ?>">
-                                                <button class="btn btn-primary" name="btnaddEstoque">Sim</button>
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                                                <input type="hidden" name="idproduto" value="<?= $p['idproduto'] ?>">
+                                                <button class="btn btn-primary" name="btnaddEstoque">Confirmar</button>
                                             </div>
                                         </div>
                                     </form>
-
                                 </div>
                             </div>
-                            <?php
-                        }
-                    }
-                    ?>
+                        <?php endforeach; ?>
+                        <?php if (empty($lista)): ?>
+                            <tr><td colspan="7" class="text-center text-muted">Não existem dados para apresentar.</td></tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-
 </div>
-<!-- /.container-fluid -->

@@ -54,7 +54,7 @@ class Ocorrencia {
         $model = new \App\adms\Models\AdmsOcorrencia();
         $this->dados['lista'] = $model->dadosOcorrencias();
         $this->dadosAlter['equipamentos'] = $model->dadosEquipamentosDisponiveis();
-        $this->dadosAlter['tiposServico'] = $model->dadosTiposServico();
+        $this->dadosAlter['tiposManutencao'] = $model->dadosTiposManutencao();
         $this->dadosAlter['tecnicos'] = $model->dadosTecnicos();
         $this->dadosAlter['estados'] = \App\adms\Models\AdmsOcorrencia::ESTADOS;
         $this->dadosAlter['prioridades'] = \App\adms\Models\AdmsOcorrencia::PRIORIDADES;

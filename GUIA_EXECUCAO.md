@@ -1,4 +1,4 @@
-# Guia de Execução — Assistência Técnica Informática
+# Guia de Execução — Sistema de Gestão de Manutenção de Equipamentos Informáticos (ULA)
 
 ## 1. Configuração Inicial
 
@@ -22,7 +22,7 @@ DB_USER=root
 DB_PASS=
 
 APP_URL=http://localhost/oficina-de-informatica/
-APP_NAME=ASSISTÊNCIA TÉCNICA INFORMÁTICA
+APP_NAME=Sistema de Gestão de Manutenção Preventiva e Corretiva de Equipamentos Informáticos da Universidade Lusíada de Angola
 ```
 
 ---
@@ -46,20 +46,18 @@ composer install --ignore-platform-req=ext-gd
 # Criar a base de dados
 mysql -u root -e "CREATE DATABASE manutencao CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
-# Aplicar o schema (Git Bash / Linux / macOS)
+# Aplicar o schema institucional (Git Bash / Linux / macOS) — fonte de verdade única
 mysql -u root manutencao < database/schema.sql
 
 # Windows CMD / PowerShell
 "C:\xampp\mysql\bin\mysql.exe" -u root manutencao < database\schema.sql
+```
 
 > Em ambiente Windows, evite `Get-Content | mysql.exe` quando existir erro do plugin `caching_sha2_password.dll`. Use o redirecionamento direto para garantir que o cliente MySQL usa os ficheiros de plugin corretos.
 >
 > Se ainda vir `ERROR 1045 (28000): Plugin caching_sha2_password could not be loaded`, é sinal de incompatibilidade entre o cliente e o servidor MySQL/MariaDB. Use um cliente MySQL 8 compatível ou altere o método de autenticação do servidor para `mysql_native_password`.
 
-# (Opcional) Dados de demonstração: técnico padrão + tipos de serviço extra
-mysql -u root manutencao < database/seed_dados_padrao.sql
-"C:\xampp\mysql\bin\mysql.exe" -u root manutencao < database\seed_dados_padrao.sql
-```
+O `schema.sql` já cria o utilizador Gerente inicial e os dados base (departamentos, categorias de equipamento, tipos de manutenção). Não são necessários scripts de seed adicionais numa instalação de raiz.
 
 ---
 
@@ -95,10 +93,11 @@ Resultado esperado:
 
 **Credenciais padrão:**
 
-| Perfil | Email | Senha |
-|--------|-------|-------|
-| Administrador | `josimardasilvaf36@gmail.com` | `12345` |
-| Técnico (opcional, via `seed_dados_padrao.sql`) | `tecnico@gmail.com` | `tecnico123` |
+| Papel | Email | Senha |
+|-------|-------|-------|
+| Gerente de TI | `gerente.ti@ula.co.ao` | `Lusiada@2026` |
+
+> Altere esta senha imediatamente após o primeiro acesso.
 
 > Para o guia completo de utilização de cada módulo do sistema, consulte **[MANUAL_UTILIZACAO.md](MANUAL_UTILIZACAO.md)**.
 
@@ -151,9 +150,8 @@ oficina-de-informatica/
 │   ├── Models/                (Lógica de negócio)
 │   └── Views/                 (Templates HTML)
 ├── database/
-│   ├── schema.sql             (Schema completo)
-│   ├── seed_dados_padrao.sql  (Dados de demonstração opcionais)
-│   └── migrate_to_informatica.sql
+│   ├── schema.sql             (Schema institucional completo — fonte de verdade)
+│   └── migrations/            (Migrações futuras incrementais sobre este schema)
 └── vendor/                    (Composer)
 ```
 
@@ -170,4 +168,4 @@ php validate-project.php        # Validação completa
 
 ---
 
-*Versão: 3.0.2 | Atualizado: 06 de Julho de 2026*
+*Versão: 5.0.0 | Atualizado: 04 de Agosto de 2026*

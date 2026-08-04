@@ -1,28 +1,25 @@
-# Relatório de Análise do Projecto — Assistência Técnica Informática
+# Relatório de Análise do Projeto — Sistema de Gestão de Manutenção de Equipamentos Informáticos (ULA)
 
-## Status: Pronto para Uso — v3.0.1
+## Status: Adaptado ao contexto institucional — v5.0.0
 
 ---
 
-## 1. Resumo da Instalação
+## 1. Resumo da Adaptação
 
-### Dependências Instaladas
-- **PHPMailer v6.12.0** — Envio de e-mails
-- **mPDF v8.3.1** — Geração de PDFs
-- **Composer** — Gestão de dependências
+O sistema deixou de ser uma oficina comercial (mecânica → assistência técnica informática) e passou a ser uma solução **institucional interna** da Universidade Lusíada de Angola: sem clientes externos, vendas, orçamentos comerciais, faturas ou comissões. A arquitetura Cliente-Servidor + MVC foi mantida integralmente.
+
+Ver `RELATORIO_TFC_ADAPTACAO.md` para o detalhe completo da auditoria, correções e justificações; ver `CHANGELOG.md` para o histórico de versões.
 
 ### Verificações Concluídas
-- PHP 8.2 compatível
-- Conexão com BD `manutencao` activa
-- 27 tabelas e 6 views confirmadas
-- Todas as dependências carregadas
-- Permissões de ficheiro OK
+- PHP 8.2 compatível, `php -l` sem erros em todos os ficheiros
+- Base de dados `manutencao` reconstruída de raiz (schema institucional único)
+- Fluxo Ocorrência → Diagnóstico → Execução → Conclusão → Histórico testado ponta-a-ponta
+- Controlo de acesso por papel (Gerente/Técnico) testado e confirmado
+- Zero avisos/erros PHP nas rotas testadas (ver relatório final)
 
 ---
 
-## 2. Configuração de Ambiente
-
-### Ficheiro `.env` — Variáveis Disponíveis
+## 2. Ficheiro `.env` — Variáveis Disponíveis
 
 ```ini
 # Base de Dados
@@ -34,21 +31,15 @@ DB_PASS=
 
 # Aplicação
 APP_URL=http://localhost/oficina-de-informatica/
-APP_NAME=ASSISTÊNCIA TÉCNICA INFORMÁTICA
+APP_NAME=Sistema de Gestão de Manutenção Preventiva e Corretiva de Equipamentos Informáticos da Universidade Lusíada de Angola
 
-# Dados da Oficina
-OFFICE_ADDRESS=Luanda Rua da CTT, Rangel
-OFFICE_EMAIL=josimardasilvaf36@gmail.com
-OFFICE_PHONE=+244 931 950 857
+# Dados Institucionais (Departamento de TI)
+UNIVERSITY_ADDRESS=Luanda, Mutamba Largo do Lumeji, nº 11/12
+IT_DEPT_EMAIL=geral@ula.co.ao
+IT_DEPT_PHONE=+244 930 038 044
 
-# Negócio
+# Stock
 STOCK_LEVEL=5
-DISCOUNT_ORC=SIM
-DISCOUNT_VALUE=0.05
-VALIDATE_QUOTE_DAYS=5
-DELETE_QUOTE_DAYS=15
-TECHNICIAN_COMMISSION=SIM
-COMMISSION_VALUE=0.30
 
 # Debug
 DEBUG=false
@@ -57,8 +48,8 @@ DEBUG=false
 SMTP_HOST=smtp.mailtrap.io
 SMTP_PORT=587
 SMTP_SECURE=tls
-SMTP_USER=3e746e90bec3a6
-SMTP_PASS=f24d1db0161205
+SMTP_USER=
+SMTP_PASS=
 ```
 
 ---
@@ -75,7 +66,7 @@ $config = \Core\Config::load();
 $dbName = $config['DB_NAME']; // 'manutencao'
 
 // Com valor padrão
-$email = \Core\Config::get('OFFICE_EMAIL', 'padrao@exemplo.com');
+$email = \Core\Config::get('IT_DEPT_EMAIL', 'geral@ula.co.ao');
 ```
 
 ---
@@ -84,24 +75,28 @@ $email = \Core\Config::get('OFFICE_EMAIL', 'padrao@exemplo.com');
 
 ### Crítico — Produção
 1. Altere a senha do MySQL no `.env`: `DB_PASS=senha_segura`
-2. Configure a URL real: `APP_URL=https://seu-dominio.ao/`
+2. Configure a URL real: `APP_URL=https://intranet.ula.co.ao/manutencao/`
 3. Defina `DEBUG=false`
 4. Use HTTPS
 5. Não use o utilizador `root` do MySQL em produção
+6. Altere a senha do Gerente (`gerente.ti@ula.co.ao`) imediatamente após o primeiro acesso
 
-### Importante
-- O ficheiro `.env` está protegido no `.gitignore`
-- Credenciais SMTP do Mailtrap são apenas para desenvolvimento — configure servidor SMTP real em produção
+### Já corrigido nesta versão
+- Palavras-passe em `password_hash()`/`password_verify()` (antes: MD5)
+- Auto-seed do utilizador admin removido de cada pedido HTTP (corria em todas as páginas)
+- Fuga de dados por `var_dump()` no login removida
+- `session_destroy()` completo no logout (antes: `unset()` seletivo)
+- Controlo de acesso por papel em `core/Permissao.php` (antes: só validava sessão iniciada, qualquer papel acedia a qualquer rota por URL direta)
+- SQL com `bindParam`/prepared statements consistentes (antes: várias queries com concatenação direta de variáveis)
 
 ---
 
-## 5. Estrutura de Acesso por Nível
+## 5. Estrutura de Acesso por Papel
 
-| Nível (`usuario.nivel`) | Descrição | Módulos |
-|-------------------------|-----------|---------|
-| `adimin` | Administrador | Acesso total |
-| `tecnico` | Técnico | Orçamentos, Serviços, Comissões |
-| `recep` | Recepcionista | Clientes, Equipamentos, Contas, Orçamentos |
+| Papel (`usuario.nivel`) | Descrição | Módulos |
+|--------------------------|-----------|---------|
+| `gerente` | Gerente de TI | Acesso total: cadastros, manutenção, stock, relatórios, configurações |
+| `tecnico` | Técnico de Informática | Ocorrências, Diagnósticos, Execuções, Planeamento, Equipamentos, Histórico, Perfil |
 
 ---
 
@@ -109,55 +104,38 @@ $email = \Core\Config::get('OFFICE_EMAIL', 'padrao@exemplo.com');
 
 | Tabela | Descrição |
 |--------|-----------|
-| `usuario` | Utilizadores do sistema (adimin, tecnico, recep) |
-| `tecnicos` | Técnicos de informática |
-| `recepcionista` | Recepcionistas |
-| `clientes` | Clientes |
+| `usuario` | Contas de acesso (gerente, tecnico) |
+| `tecnicos` | Ficha do técnico |
+| `departamentos` | Departamentos da Universidade |
 | `equipamento` | Equipamentos informáticos |
-| `orcamentos` | Orçamentos e ordens de serviço |
-| `orc_prod` | Produtos associados a orçamentos |
-| `produto` | Produtos / peças |
-| `categoria` | Categorias de produtos |
-| `fornecedor` | Fornecedores |
-| `tipo_servico` | Tipos de serviço técnico |
-| `contas_apagar` | Contas a pagar |
-| `conntas_areceber` | Contas a receber |
-| `movimentacao` | Fluxo de caixa |
+| `categoria_equipamento` | Tipos de equipamento |
+| `equipamentos_abatidos` | Workflow de abatimento |
+| `fornecedor` | Fornecedores de equipamentos/peças/consumíveis |
+| `categoria` / `produto` | Categorias e Peças/Consumíveis (stock interno) |
+| `tipo_manutencao` | Catálogo de tipos de manutenção |
+| `ocorrencias` / `ocorrencia_equipamento` / `ocorrencia_historico` | Ocorrências e auditoria de estado |
+| `diagnostico` | Diagnósticos técnicos |
+| `execucao_manutencao` / `execucao_peca` | Execuções e peças consumidas |
+| `plano_manutencao_preventiva` / `plano_manutencao_lembrete` | Planeamento preventivo |
+| `movimento_estoque` | Ledger de entradas/saídas de stock |
 | `compras` | Compras a fornecedores |
-| `vendas` | Vendas |
-| `comissao` | Comissões dos técnicos |
-| `entrada_equipamento` | Registo de entrada de equipamentos |
 | `reset_senha` | Tokens de recuperação de senha |
+| `control_usuario` | Log de acessos |
 
 ### Views
 | View | Descrição |
 |------|-----------|
-| `dadosorcamento` | Orçamentos com cliente, equipamento e serviço |
-| `dadosOrcamentosCompletoComProdutos` | Orçamentos com peças associadas |
-| `dadosClienteEquipamento` | Clientes com equipamentos |
-| `dadosClienteVeiculo` | Alias de compatibilidade |
-| `dadosProduto` | Produtos com fornecedor e categoria |
-| `compras_contaspagar_dadosproduto` | Compras associadas a contas a pagar |
+| `dadosProduto` | Peças com categoria e fornecedor |
+| `dadosEquipamento` | Equipamentos com departamento, categoria, responsável e fornecedor |
+| `dadosCompras` | Compras com peça e fornecedor |
 
 ---
-
-### Fluxo de negócio implementado
-
-O projecto foi adaptado para funcionar com um modelo de gestão por ocorrências, mantendo o fluxo já existente de orçamentos e serviços, mas acrescentando uma camada de acompanhamento do ciclo de manutenção:
-
-- Cada intervenção começa por uma ocorrência associada ao equipamento.
-- A ocorrência guarda o tipo de manutenção, a descrição, a data prevista, o técnico responsável e o estado atual.
-- O orçamento continua a ser o ponto de entrada para a estimativa e execução do serviço, mas agora fica ligado à ocorrência correspondente.
-- Quando o orçamento é aprovado, editado ou concluído, a ocorrência é atualizada automaticamente.
-- As ocorrências preventivas podem ser visualizadas no dashboard para ajudar o planeamento das intervenções.
-
-Este modelo é mais próximo do processo real de assistência técnica e permite evoluir facilmente para rastreio mais detalhado de diagnósticos, follow-up e histórico de manutenção.
 
 ## 7. Próximos Passos
 
 ### Desenvolvimento
 1. Configure `.env` com as suas credenciais
-2. Execute `php test-config.php` para validar
+2. Importe `database/schema.sql`
 3. Aceda a `http://localhost/oficina-de-informatica/`
 
 ### Produção
@@ -174,11 +152,10 @@ Este modelo é mais próximo do processo real de assistência técnica e permite
 | Componente | Versão |
 |-----------|--------|
 | PHP | 8.2 |
-| MySQL | 8.0+ |
-| PHPMailer | 6.12.0 |
-| mPDF | 8.3.1 |
-| Sistema | 3.0.1 |
+| MySQL/MariaDB | 8.0+ / 10.4+ |
+| PHPMailer | 6.x |
+| Sistema | 5.0.0 |
 
 ---
 
-*Última atualização: 19 de Junho de 2026*
+*Última atualização: 04 de Agosto de 2026*

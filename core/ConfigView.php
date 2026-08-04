@@ -19,7 +19,7 @@ class ConfigView {
     private $dadosAlter;
     private $dadosPaginacao;
 
-    public function __construct($nome, array $dados = null, array $dadosAlter = null, array $dadosPaginacao = null) {
+    public function __construct($nome, ?array $dados = null, ?array $dadosAlter = null, ?array $dadosPaginacao = null) {
         $this->nome = $nome;
         $this->dados = $dados;
         $this->dadosAlter = $dadosAlter;
@@ -97,21 +97,4 @@ class ConfigView {
         }
     }
     
-    public function renderizarchat() {
-        if (file_exists('app/' . $this->nome . '.php')) {
-            include 'app/adms/Views/include/head_chat.php';
-            include 'app/' . $this->nome . '.php';
-            include 'app/adms/Views/include/footer_chat.php';
-        } else {
-            echo '
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Erro:!</strong> Ao Carregar a página.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            ';
-        }
-    }
-
 }

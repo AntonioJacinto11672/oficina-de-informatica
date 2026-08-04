@@ -9,9 +9,9 @@ if (!defined('R4F5CC')) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Sistema de gestão de Assistência técnica</title>
-        <meta content="#Sistema de gestão de Assistência técnica" name="description">
-        <meta content="Oficina,Mecânica,Carros,Motas, Reparação" name="keywords">
+        <title>Sistema de Gestão de Manutenção de Equipamentos Informáticos — Universidade Lusíada de Angola</title>
+        <meta content="Sistema de Gestão de Manutenção Preventiva e Corretiva de Equipamentos Informáticos da Universidade Lusíada de Angola" name="description">
+        <meta content="manutenção, equipamentos informáticos, TI, Universidade Lusíada de Angola" name="keywords">
 
         <!-- Favicons -->
         <link href="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo_novo.png" rel="icon">

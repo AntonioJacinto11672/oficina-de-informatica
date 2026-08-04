@@ -26,11 +26,11 @@ class AdmsPlaneamento extends Conn {
 
     public function dadosPlanos(): array {
         $stmt = $this->conn->prepare("
-            SELECT p.*, e.numero_serie, e.marca, e.modelo, ts.nome AS tipo_servico,
+            SELECT p.*, e.numero_serie, e.marca, e.modelo, tm.nome AS tipo_manutencao,
                    u.nome AS tecnico_nome, u.sobrenome AS tecnico_sobrenome
             FROM plano_manutencao_preventiva p
             INNER JOIN equipamento e ON e.idequipamento = p.id_equipamento
-            LEFT JOIN tipo_servico ts ON ts.idtipo_servico = p.id_tipo_servico
+            LEFT JOIN tipo_manutencao tm ON tm.idtipo_manutencao = p.id_tipo_manutencao
             LEFT JOIN usuario u ON u.idusuario = p.idusuario_tecnico
             ORDER BY p.proxima_execucao ASC
         ");
@@ -49,18 +49,18 @@ class AdmsPlaneamento extends Conn {
 
     public function cdsPlano(array $dados): bool {
         $idEquipamento = (int)$this->limparInput($dados['id_equipamento']);
-        $idTipoServico = !empty($dados['id_tipo_servico']) ? (int)$dados['id_tipo_servico'] : null;
+        $idTipoManutencao = !empty($dados['id_tipo_manutencao']) ? (int)$dados['id_tipo_manutencao'] : null;
         $idTecnico = !empty($dados['idusuario_tecnico']) ? (int)$dados['idusuario_tecnico'] : null;
         $periodicidade = max(1, (int)$this->limparInput($dados['periodicidade_dias']));
         $dataInicio = $this->limparInput($dados['data_inicio']);
         $observacoes = !empty($dados['observacoes']) ? $this->limparInput($dados['observacoes']) : null;
 
         $stmt = $this->conn->prepare("
-            INSERT INTO plano_manutencao_preventiva (id_equipamento, id_tipo_servico, idusuario_tecnico, periodicidade_dias, data_inicio, proxima_execucao, observacoes, created)
-            VALUES (:id_equipamento, :id_tipo_servico, :idusuario_tecnico, :periodicidade_dias, :data_inicio, :data_inicio, :observacoes, NOW())
+            INSERT INTO plano_manutencao_preventiva (id_equipamento, id_tipo_manutencao, idusuario_tecnico, periodicidade_dias, data_inicio, proxima_execucao, observacoes, created)
+            VALUES (:id_equipamento, :id_tipo_manutencao, :idusuario_tecnico, :periodicidade_dias, :data_inicio, :data_inicio, :observacoes, NOW())
         ");
         $stmt->bindParam(':id_equipamento', $idEquipamento, PDO::PARAM_INT);
-        $stmt->bindParam(':id_tipo_servico', $idTipoServico, PDO::PARAM_INT);
+        $stmt->bindParam(':id_tipo_manutencao', $idTipoManutencao, PDO::PARAM_INT);
         $stmt->bindParam(':idusuario_tecnico', $idTecnico, PDO::PARAM_INT);
         $stmt->bindParam(':periodicidade_dias', $periodicidade, PDO::PARAM_INT);
         $stmt->bindParam(':data_inicio', $dataInicio);
@@ -77,7 +77,7 @@ class AdmsPlaneamento extends Conn {
 
     public function editPlano(array $dados): bool {
         $id = (int)$this->limparInput($dados['idplano']);
-        $idTipoServico = !empty($dados['id_tipo_servico']) ? (int)$dados['id_tipo_servico'] : null;
+        $idTipoManutencao = !empty($dados['id_tipo_manutencao']) ? (int)$dados['id_tipo_manutencao'] : null;
         $idTecnico = !empty($dados['idusuario_tecnico']) ? (int)$dados['idusuario_tecnico'] : null;
         $periodicidade = max(1, (int)$this->limparInput($dados['periodicidade_dias']));
         $proximaExecucao = $this->limparInput($dados['proxima_execucao']);
@@ -85,11 +85,11 @@ class AdmsPlaneamento extends Conn {
 
         $stmt = $this->conn->prepare("
             UPDATE plano_manutencao_preventiva
-            SET id_tipo_servico=:id_tipo_servico, idusuario_tecnico=:idusuario_tecnico,
+            SET id_tipo_manutencao=:id_tipo_manutencao, idusuario_tecnico=:idusuario_tecnico,
                 periodicidade_dias=:periodicidade_dias, proxima_execucao=:proxima_execucao, observacoes=:observacoes
             WHERE idplano=:id
         ");
-        $stmt->bindParam(':id_tipo_servico', $idTipoServico, PDO::PARAM_INT);
+        $stmt->bindParam(':id_tipo_manutencao', $idTipoManutencao, PDO::PARAM_INT);
         $stmt->bindParam(':idusuario_tecnico', $idTecnico, PDO::PARAM_INT);
         $stmt->bindParam(':periodicidade_dias', $periodicidade, PDO::PARAM_INT);
         $stmt->bindParam(':proxima_execucao', $proximaExecucao);
@@ -136,7 +136,7 @@ class AdmsPlaneamento extends Conn {
         foreach ($pendentes as $plano) {
             $ocorrenciaModel->criarOcorrenciaPreventiva(
                 (int)$plano['id_equipamento'],
-                $plano['id_tipo_servico'] ? (int)$plano['id_tipo_servico'] : null,
+                $plano['id_tipo_manutencao'] ? (int)$plano['id_tipo_manutencao'] : null,
                 $plano['idusuario_tecnico'] ? (int)$plano['idusuario_tecnico'] : null,
                 'Manutenção preventiva agendada: ' . ($plano['observacoes'] ?? 'sem observações.')
             );

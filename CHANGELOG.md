@@ -1,4 +1,56 @@
-# CHANGELOG — Sistema de Gestão de Assistência Técnica Informática
+# CHANGELOG — Sistema de Gestão de Manutenção Preventiva e Corretiva de Equipamentos Informáticos (Universidade Lusíada de Angola)
+
+---
+
+## Versão 5.0.0 — Adaptação Institucional para a Universidade Lusíada de Angola (TFC)
+
+**Data:** 2026-08-04
+**Autor:** António Jacinto (com assistência de Claude)
+**Descrição:** Transformação completa do sistema, de uma oficina comercial de assistência técnica informática (com clientes, orçamentos, vendas, comissões e contas a pagar/receber) para uma solução **institucional interna** do Departamento de TI da Universidade Lusíada de Angola, mantendo integralmente a arquitetura Cliente-Servidor + MVC. Auditoria completa a todas as áreas do sistema (base de dados, backend, frontend, permissões, sessões, autenticação, DataTables, SQL, rotas, uploads, mensagens, e-mails, relatórios), com correção de todos os erros encontrados. Ver `RELATORIO_TFC_ADAPTACAO.md` para o detalhe completo da auditoria, correções e justificações.
+
+### Base de dados
+
+`database/schema.sql` reescrito de raiz como fonte de verdade única (v5.0.0), substituindo o encadeamento de migrações incrementais das versões anteriores. Removidas por completo as tabelas comerciais: `clientes`, `orcamentos`, `orc_prod`, `vendas`, `comissao`, `comissao_config`, `contas_apagar`, `conntas_areceber`, `movimentacao`, `tipo_servico`, `entrada_equipamento`, `entrada_veiculo`, `veiculo`, `recepcionista`. Novas tabelas: `departamentos`, `tipo_manutencao`. `equipamento` perde `idcliente` e ganha `iddepartamento`, `idresponsavel`, `idfornecedor`, `garantia_ate`; `estado` passa a `ENUM('Disponível','Em Manutenção','Avariado','Abatido')`. `ocorrencias` perde `id_orcamento`, `tecnico` (NIF livre) e a coluna `status` duplicada; ganha `categoria_manutencao` e `id_tipo_manutencao`. `execucao_manutencao` perde `id_orcamento`. `produto` perde `valor_venda`; ganha `estoque_minimo`. `compras` reconstruída sem ligação a `contas_apagar`. `usuario.nivel` passa a `ENUM('gerente','tecnico')`, corrigindo o erro ortográfico persistente `'adimin'`.
+
+### Autenticação, sessões e permissões
+
+- `AdmsLogin.php`: senhas migradas de MD5 para `password_hash()`/`password_verify()`; removido `var_dump()` que expunha os dados do utilizador (incluindo hash da senha) no ecrã de login.
+- `core/ConfigController.php`: removido o auto-seed do utilizador admin que corria em **cada pedido HTTP**; o utilizador Gerente inicial passa a ser criado apenas por `database/schema.sql`.
+- `Sair.php`: logout passa a usar `session_unset()` + `session_destroy()` + limpeza do cookie de sessão (antes: `unset()` seletivo de variáveis).
+- `core/Permissao.php`: acrescentada verificação de acesso por papel — rotas exclusivas do Gerente (Utilizadores, Técnicos, Departamentos, Fornecedores, Peças, Stock, Relatórios, Configurações, etc.) deixam de poder ser acedidas por um Técnico via URL direta (antes só se validava se havia sessão iniciada, sem distinção de papel).
+- `Login.php` (novo `session_regenerate_id(true)` no login bem-sucedido, mitigação de fixação de sessão).
+
+### Módulos comerciais removidos
+
+Controllers, Models e Views eliminados: `Cliente`, `Vendas`, `Comissoes`, `ComissaoConfig`, `ContasPagar`, `ContaReceber`, `Movimentacao`, `Orcamento`, `OrcamentoRecepcao`, `AddProdutoOrcamento`, `Servico`, `TipoServico`, `Recepcionista`, `EntradaEquipamento`, `Dashboard` (relatórios comerciais), `Consultas`, `Chat` (template estático não funcional da AdminLTE), `RelatorioTecnico`, `AdmsRecepcionista` (modelo "deus" que misturava Clientes/Equipamentos/Contas), `AdmsMpdf` (stub morto).
+
+### Novos módulos institucionais
+
+`Utilizador` (gestão de contas), `Departamento`, `TipoManutencao`, `Historico` (ocorrências concluídas/canceladas), além da reconstrução completa de `Equipamento`, `Fornecedor`, `Produto`, `Categoria` e `Compras` com modelos dedicados (`AdmsEquipamento`, `AdmsFornecedor`, `AdmsProduto`, `AdmsCategoria`, `AdmsCompras`, `AdmsDepartamento`, `AdmsTipoManutencao`, `AdmsUtilizador`), substituindo a lógica que antes vivia dispersa em `AdmsTecnico`/`AdmsRecepcionista`.
+
+### Fluxo de manutenção
+
+O fluxo passa a ser exclusivamente `Ocorrência → Diagnóstico → Execução → Conclusão → Histórico`, sem qualquer ligação a orçamentos. Estados de ocorrência simplificados para `Aberta → Em diagnóstico → Aguardando execução → Em execução → Concluída` (ou `Cancelada`). O início/fim de uma execução passa a atualizar automaticamente `equipamento.estado` (`Em Manutenção` / `Disponível`).
+
+### Menus e dashboards
+
+`app/adms/Views/include/dashboard.php` reescrito para dois papéis (Gerente/Técnico), seguindo a estrutura de menu institucional (Cadastros, Manutenção, Stock, Relatórios, Configurações para o Gerente; módulos de manutenção + Perfil para o Técnico). `AdmsHome.php`/`home.php` reescritos com os indicadores institucionais pedidos (Total de Equipamentos, Técnicos, Ocorrências, Diagnósticos, Execuções, Manutenções Preventivas/Corretivas, Equipamentos em Manutenção/Disponíveis, Fornecedores, Compras, Stock Baixo para o Gerente; Ocorrências Atribuídas, Diagnósticos Pendentes, Manutenções em Execução/Concluídas/Pendentes, Planeamentos, Equipamentos em Manutenção para o Técnico) — sem qualquer indicador financeiro. `AdmsGraficos.php` reescrito de gráficos de movimentação de caixa para estatísticas de manutenção (ocorrências por mês, preventiva vs. corretiva, equipamentos por estado, peças mais utilizadas).
+
+### Mensagens e e-mails
+
+Revisão de todas as mensagens do sistema para português correto e vocabulário institucional (sem "Cliente", "Comissão", "Oficina", etc.); corrigido mojibake UTF-8 concentrado nos módulos comerciais entretanto removidos. E-mails (recuperação de senha, credenciais de novo técnico) unificados para usarem sempre `Core\Config` (sem host/credenciais SMTP fixas no código nem remetente pessoal "hardcoded"), com `CharSet = 'UTF-8'` e o nome institucional completo do sistema.
+
+### Relatórios
+
+`Relatorio.php`/`AdmsRelatorio.php` reescritos: Equipamentos, Técnicos, Ocorrências, Diagnósticos, Manutenções, Planeamentos Preventivos, Histórico, Fornecedores, Stock e Compras, com impressão (via browser) e exportação CSV (`fputcsv` nativo, com BOM UTF-8). Removidos os relatórios comerciais (Comissões, Contas a Pagar/Receber, Vendas, Movimentação) e o stub morto de mPDF.
+
+### Correções técnicas transversais
+
+- DataTables: inicialização global com idioma português e extensão *Responsive*; corrigido `colspan` fixo incorreto em `pgAbatimento.php`.
+- SQL: consultas remanescentes com concatenação direta de variáveis substituídas por `bindParam`/placeholders.
+- PHP 8.2: parâmetros `nullable` implícitos tornados explícitos (`?array`, `?int`, `?string`); `Conn.php` passa a declarar `charset=utf8mb4` explicitamente na DSN PDO.
+- Uploads: validação de tipo real do ficheiro (`finfo`) além da extensão, limite de 5 MB, e verificação `is_uploaded_file()`.
+- Testado em runtime (login, CRUD de todos os módulos, fluxo completo Ocorrência→Diagnóstico→Execução→Histórico, controlo de acesso por papel, relatórios e exportação CSV) sem avisos/erros PHP.
 
 ---
 

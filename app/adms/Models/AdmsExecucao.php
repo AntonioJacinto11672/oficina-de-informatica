@@ -10,8 +10,7 @@ if (!defined('R4F5CC')) {
 }
 
 /**
- * Execução da Manutenção (módulo 12) — caminho novo e independente do fluxo
- * legado de "Serviço" em `orcamentos`. Ligado sempre a uma Ocorrência.
+ * Execução da Manutenção — sempre ligada a uma Ocorrência.
  */
 class AdmsExecucao extends Conn {
 
@@ -60,7 +59,7 @@ class AdmsExecucao extends Conn {
 
     public function dadosPecasDaExecucao($idexecucao): array {
         $stmt = $this->conn->prepare("
-            SELECT ep.*, p.nome AS produto_nome, p.valor_venda
+            SELECT ep.*, p.nome AS produto_nome
             FROM execucao_peca ep
             INNER JOIN produto p ON p.idproduto = ep.id_produto
             WHERE ep.id_execucao = :id
@@ -86,11 +85,17 @@ class AdmsExecucao extends Conn {
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            (new AdmsOcorrencia())->alterarEstado([
+            $ocorrenciaModel = new AdmsOcorrencia();
+            $ocorrenciaModel->alterarEstado([
                 'idocorrencia' => $idOcorrencia,
-                'estado' => 'Em manutenção',
+                'estado' => 'Em execução',
                 'observacao' => 'Execução da manutenção iniciada.',
             ]);
+            foreach ($ocorrenciaModel->dadosEquipamentosDaOcorrencia($idOcorrencia) as $eq) {
+                $upd = $this->conn->prepare("UPDATE equipamento SET estado='Em Manutenção' WHERE idequipamento=:id");
+                $upd->bindParam(':id', $eq['idequipamento'], PDO::PARAM_INT);
+                $upd->execute();
+            }
             $_SESSION['msg'] = '<div class="alert alert-success text-center">Execução iniciada com sucesso!</div>';
             return true;
         }
@@ -180,7 +185,7 @@ class AdmsExecucao extends Conn {
             // Actualizar estado dos equipamentos associados (passo 10 do fluxo geral)
             $equipamentos = $ocorrenciaModel->dadosEquipamentosDaOcorrencia($execucao['id_ocorrencia']);
             foreach ($equipamentos as $eq) {
-                $upd = $this->conn->prepare("UPDATE equipamento SET estado='Concluído' WHERE idequipamento=:id");
+                $upd = $this->conn->prepare("UPDATE equipamento SET estado='Disponível' WHERE idequipamento=:id");
                 $upd->bindParam(':id', $eq['idequipamento'], PDO::PARAM_INT);
                 $upd->execute();
             }

@@ -18,26 +18,17 @@ class Perfil {
     private $url;
 
     public function index() {
-        if (!empty(filter_input_array(INPUT_GET, FILTER_DEFAULT))) {
-            $this->dadosForm = filter_input_array(INPUT_GET, FILTER_DEFAULT);
-            //var_dump($this->dadosForm);
+        if (!empty(filter_input_array(INPUT_POST, FILTER_DEFAULT))) {
+            $this->dadosForm = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
             if (isset($this->dadosForm['btnEditPerfil'])) {
-                
                 $editPerfil = new \App\adms\Models\AdmsPerfil();
-                //$editPerfil->editarPerfil($this->dadosForm);
-                
-                if ($editPerfil->editarPerfil($this->dadosForm)) {
-                    $destino = URLADM . "home";
-                    header("Location: $destino");
-                } else {
-                    $destino = URLADM . "tecnico";
-                    header("Location: $destino");
-                }
-                //var_dump($editPerfil);
-                //var_dump($this->dadosForm);
+                $editPerfil->editarPerfil($this->dadosForm);
             }
         }
+
+        $destino = URLADM . "home";
+        header("Location: $destino");
     }
 
 }

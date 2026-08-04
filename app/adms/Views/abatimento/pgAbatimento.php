@@ -5,7 +5,7 @@ if (!defined('R4F5CC')) {
 }
 $lista = $this->dados['lista'] ?? [];
 $equipamentos = $this->dadosAlter['equipamentos'] ?? [];
-$souAdmin = isset($_SESSION['usuario']) && $_SESSION['usuario'] === 'adimin';
+$souAdmin = isset($_SESSION['nivel']) && $_SESSION['nivel'] === 'gerente';
 
 if (!function_exists('abatimento_badge_estado')) {
     function abatimento_badge_estado($estado) {
@@ -97,7 +97,7 @@ if (!function_exists('abatimento_badge_estado')) {
                             </tr>
                         <?php endforeach; ?>
                         <?php if (empty($lista)): ?>
-                            <tr><td colspan="6" class="text-center text-muted">Sem pedidos de abatimento.</td></tr>
+                            <tr><td colspan="<?php echo $souAdmin ? 6 : 5; ?>" class="text-center text-muted">Não existem dados para apresentar.</td></tr>
                         <?php endif; ?>
                     </tbody>
                 </table>

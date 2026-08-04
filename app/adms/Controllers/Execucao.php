@@ -43,7 +43,7 @@ class Execucao {
             $this->dados['ocorrencia'] = $ocorrenciaModel->dadosOcorrencia($idOcorrencia);
             $this->dados['idocorrencia'] = $idOcorrencia;
             $this->dados['lista'] = $model->dadosExecucoesDaOcorrencia($idOcorrencia);
-            $this->dadosAlter['produtos'] = (new \App\adms\Models\AdmsTecnico())->dadosProdutos();
+            $this->dadosAlter['produtos'] = (new \App\adms\Models\AdmsProduto())->dadosProdutos();
 
             $this->dados['pecasPorExecucao'] = [];
             foreach ($this->dados['lista'] as $ex) {

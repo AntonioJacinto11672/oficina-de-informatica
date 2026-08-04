@@ -26,9 +26,9 @@ class Diagnostico {
             } elseif (isset($this->dadosForm['btnEditDiagnostico'])) {
                 $model = new \App\adms\Models\AdmsDiagnostico();
                 $model->editDiagnostico($this->dadosForm);
-            } elseif (isset($this->dadosForm['btnEncaminharOrcamento'])) {
+            } elseif (isset($this->dadosForm['btnEncaminharExecucao'])) {
                 $model = new \App\adms\Models\AdmsDiagnostico();
-                $model->encaminharOrcamento($this->dadosForm);
+                $model->encaminharParaExecucao($this->dadosForm);
             } else {
                 $this->dados['form'] = $this->dadosForm;
             }

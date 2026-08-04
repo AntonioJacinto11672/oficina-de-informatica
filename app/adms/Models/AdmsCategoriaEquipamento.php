@@ -40,10 +40,10 @@ class AdmsCategoriaEquipamento extends Conn {
         $stmt->bindParam(':nome', $nome);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
-            $_SESSION['msg'] = '<div class="alert alert-success text-center"> Categoria Cadastrada Com Sucesso!</div>';
+            $_SESSION['msg'] = '<div class="alert alert-success text-center">Categoria de equipamento registada com sucesso.</div>';
             return true;
         }
-        $_SESSION['msg'] = '<div class="alert alert-danger text-center"> Categoria Cadastrada Sem Sucesso!</div>';
+        $_SESSION['msg'] = '<div class="alert alert-danger text-center">Não foi possível guardar os dados.</div>';
         return false;
     }
 
@@ -55,10 +55,10 @@ class AdmsCategoriaEquipamento extends Conn {
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
-            $_SESSION['msg'] = '<div class="alert alert-success text-center"> Categoria Editada Com Sucesso!</div>';
+            $_SESSION['msg'] = '<div class="alert alert-success text-center">Dados atualizados com sucesso.</div>';
             return true;
         }
-        $_SESSION['msg'] = '<div class="alert alert-danger text-center"> Categoria Editada Sem Sucesso!</div>';
+        $_SESSION['msg'] = '<div class="alert alert-danger text-center">Não foi possível guardar os dados.</div>';
         return false;
     }
 
@@ -68,10 +68,10 @@ class AdmsCategoriaEquipamento extends Conn {
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
-            $_SESSION['msg'] = '<div class="alert alert-success text-center"> Categoria Eliminada Com Sucesso!</div>';
+            $_SESSION['msg'] = '<div class="alert alert-success text-center">Categoria de equipamento eliminada com sucesso.</div>';
             return true;
         }
-        $_SESSION['msg'] = '<div class="alert alert-danger text-center"> Categoria Eliminada Sem Sucesso!</div>';
+        $_SESSION['msg'] = '<div class="alert alert-danger text-center">Não foi possível eliminar a categoria de equipamento.</div>';
         return false;
     }
 }

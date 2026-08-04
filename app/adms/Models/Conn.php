@@ -23,7 +23,7 @@ class Conn
             $dbname = \Core\Config::get('DB_NAME', 'manutencao');
             $user   = \Core\Config::get('DB_USER', 'root');
             $pass   = \Core\Config::get('DB_PASS', '');
-            $this->connect = new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbname, $user, $pass);
+            $this->connect = new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbname . ';charset=utf8mb4', $user, $pass);
             return $this->connect;
         } catch (\Exception $ex) {
             die('Erro: Por favor tente novamente. Caso o problema persista, entre em contato o administrador.');

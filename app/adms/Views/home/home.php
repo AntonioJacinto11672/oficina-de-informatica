@@ -3,494 +3,120 @@ if (!defined('R4F5CC')) {
     header("Location: /");
     die("Erro: Página não encontrada!");
 }
+
+if (!function_exists('home_card')) {
+    function home_card($cor, $titulo, $valor, $icone) { ?>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-<?= $cor ?> shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-<?= $cor ?> text-uppercase mb-1"><?= htmlspecialchars($titulo) ?></div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= (int)$valor ?></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas <?= $icone ?> fa-2x text-<?= $cor ?>"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php }
+}
+
+$d = $this->dados ?? [];
 ?>
-<!--Begin Page Content -->
 <div class="container-fluid">
-    <?php
-    //var_dump($_SESSION);
+    <?php if (isset($_SESSION['msg'])) { echo $_SESSION['msg']; unset($_SESSION['msg']); } ?>
 
-    if (isset($_SESSION['msg'])) {
-        echo $_SESSION['msg'];
-        unset($_SESSION['msg']);
-    }
-
-    if ($_SESSION['usuario'] == 'adimin') {
-        //var_dump($this->dadosAlter);
-    ?>
-        <!-- Page Heading -->
-        <!--<div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800 section-title">Cards</h1>
-        </div>-->
-
-
-        <div class="row">
-
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Orçamentos Concluidos</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['orc_concluidos'])) {
-                                                                                        echo $this->dados['orc_concluidos'];
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-3x text-success"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Orçamentos Pendentes</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['orc_pendentes'])) {
-                                                                                        echo $this->dados['orc_pendentes'];
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-3x text-danger"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Orçamento Aprovados</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['orc_aprovados'])) {
-                                                                                        echo $this->dados['orc_aprovados'];
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-3x text-primary"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Serviço Pendente</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['serv_pendentes'])) {
-                                                                                        echo $this->dados['serv_pendentes'];
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-3x text-danger"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-
+    <?php if ($_SESSION['nivel'] === 'gerente'): ?>
+        <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-3">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard do Gerente</h1>
         </div>
-
-        <?php if (!empty($this->dados['ocorrencias_preventivas'])): ?>
-            <div class="row">
-                <div class="col-12">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Manutenções Preventivas Próximas</h6>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-group">
-                                <?php foreach ($this->dados['ocorrencias_preventivas'] as $ocorrencia): ?>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong><?php echo htmlspecialchars($ocorrencia['numero_serie'] ?? 'Sem número de série'); ?></strong>
-                                            <div class="small text-muted">
-                                                <?php echo htmlspecialchars($ocorrencia['tipo_servico'] ?? 'Serviço'); ?> ·
-                                                <?php echo htmlspecialchars($ocorrencia['tipo_manutencao'] ?? 'Corretiva'); ?>
-                                            </div>
-                                        </div>
-                                        <span class="badge badge-warning text-dark">
-                                            Prevista: <?php echo date('d/m/Y', strtotime($ocorrencia['data_prevista'])); ?>
-                                        </span>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
-
-        <div class="row">
-
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Produtos Cadastrados</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['produto'])) {
-                                                                                        echo $this->dados['produto'];
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-3x text-success"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-         
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Total Técnicos</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['mecanicos'])) {
-                                                                                        echo $this->dados['mecanicos'];
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-3x text-success"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
-        </div>
-
-    <?php } elseif ($_SESSION['usuario'] == 'recep') {
-    ?>
-
-
-        <div class="row">
-
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Orçamentos Concluidos</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['orc_concluidos'])) {
-                                                                                        echo $this->dados['orc_concluidos'];
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-3x text-success"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Orçamentos Pendentes</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['orc_pendentes'])) {
-                                                                                        echo $this->dados['orc_pendentes'];
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-3x text-danger"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Orçamento Aprovados</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['orc_aprovados'])) {
-                                                                                        echo $this->dados['orc_aprovados'];
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-3x text-primary"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Serviço Pendente</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['serv_pendentes'])) {
-                                                                                        echo $this->dados['serv_pendentes'];
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-3x text-danger"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-
-        </div>
-    <?php } elseif ($_SESSION['usuario'] == 'tecnico') {
-    ?>
-        <div class="row">
-
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Serviços Concluídos</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['orc_concluidos'])) {
-                                                                                        echo $this->dados['orc_concluidos'];
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-dollar-sign fa-3x text-success"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Orçamentos Abertos</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['serv_pendentes'])) {
-                                                                                        echo $this->dados['serv_pendentes'];
-                                                                                    }
-                                                                                    ?></div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-dollar-sign fa-3x text-danger"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Comissões Hoje</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['comissao_hoje'])) {
-                                                                                        echo number_format($this->dados['comissao_hoje'], 2, ",", ".");
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?> Kz</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-dollar-sign fa-3x text-success"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Earnings (Annual) Card Example -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Comissões Mês</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php
-                                                                                    if (isset($this->dados['comissao_mes'])) {
-                                                                                        echo number_format($this->dados['comissao_mes'], 2, ",", ".");
-                                                                                    } else {
-                                                                                        echo 0;
-                                                                                    }
-                                                                                    ?> Kz</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-dollar-sign fa-3x text-danger"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-
-        </div>
-
-        <p class="text-muted lead">Serviços Pendentes</p>
-        <hr class="mb-3">
-
         <div class="row">
             <?php
-            if (isset($this->dados['veiculos_atrasado'])) {
-                foreach ($this->dados['veiculos_atrasado'] as $value) {
+            home_card('primary', 'Total de Equipamentos', $d['total_equipamentos'] ?? 0, 'fa-laptop');
+            home_card('info', 'Total de Técnicos', $d['total_tecnicos'] ?? 0, 'fa-user-cog');
+            home_card('success', 'Total de Ocorrências', $d['total_ocorrencias'] ?? 0, 'fa-exclamation-circle');
+            home_card('warning', 'Total de Diagnósticos', $d['total_diagnosticos'] ?? 0, 'fa-stethoscope');
+            home_card('primary', 'Total de Execuções', $d['total_execucoes'] ?? 0, 'fa-tools');
+            home_card('info', 'Manutenções Preventivas', $d['manutencoes_preventivas'] ?? 0, 'fa-calendar-check');
+            home_card('warning', 'Manutenções Corretivas', $d['manutencoes_corretivas'] ?? 0, 'fa-wrench');
+            home_card('danger', 'Equipamentos em Manutenção', $d['equipamentos_em_manutencao'] ?? 0, 'fa-tools');
+            home_card('success', 'Equipamentos Disponíveis', $d['equipamentos_disponiveis'] ?? 0, 'fa-check-circle');
+            home_card('secondary', 'Fornecedores', $d['total_fornecedores'] ?? 0, 'fa-truck');
+            home_card('primary', 'Compras (mês atual)', $d['total_compras'] ?? 0, 'fa-shopping-cart');
+            home_card('danger', 'Stock Baixo', $d['stock_baixo'] ?? 0, 'fa-box-open');
             ?>
-
-                    <!-- Earnings (Annual) Card Example -->
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-danger shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                            <?php echo $value['marca'] . " - " . $value['modelo']; ?>
-                                        </div>
-                                        <small><?php echo $value['tipo_servico']; ?></small>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
-                                    </div>
-                                    <div class="col-auto">
-
-                                        <i class="fas fa-clipboard-list fa-3x text-danger mb-1"></i><br>
-                                        <div><small class="text-center float-left row justify-content-center"><?php echo date("d/m/Y", strtotime($value['data_entrega'])); ?></small></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            <?php
-                }
-            }
-            ?>
-            <!-- Earnings (Annual) Card Example -->
-            <?php
-            if (isset($this->dados['veiculos_adiantados'])) {
-                foreach ($this->dados['veiculos_adiantados'] as $value) {
-            ?>
-
-                    <!-- Earnings (Annual) Card Example -->
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            <?php echo $value['marca'] . " - " . $value['modelo']; ?>
-                                        </div>
-                                        <small><?php echo $value['tipo_servico']; ?></small>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
-                                    </div>
-                                    <div class="col-auto">
-
-                                        <i class="fas fa-clipboard-list fa-3x text-warning mb-1"></i><br>
-                                        <div><small class="text-center float-left row justify-content-center"><?php echo date("d/m/Y", strtotime($value['data_entrega'])); ?></small></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            <?php
-                }
-            }
-            ?>
-
         </div>
 
-
-    <?php
-    } else {
-        $_SESSION['msg'] = '
-             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Erro:!</strong> Tipo De Conta  ' . $this->resultadoBd["nivel"] . '  Não está fazer control dos dados.
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Manutenções Preventivas Próximas (30 dias)</h6>
             </div>
-           ';
-        $destino = URLADM . "sair";
-        header("Location: $destino");
-    }
-    ?>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" width="100%" cellspacing="0">
+                        <thead><tr><th>Data Prevista</th><th>Equipamento</th><th>Tipo</th><th>Origem</th></tr></thead>
+                        <tbody>
+                            <?php foreach (($d['ocorrencias_preventivas'] ?? []) as $p): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($p['data_prevista']) ?></td>
+                                    <td><?= htmlspecialchars(trim(($p['numero_serie'] ?? '') . ' — ' . ($p['marca'] ?? '') . ' ' . ($p['modelo'] ?? ''))) ?></td>
+                                    <td><?= htmlspecialchars($p['tipo_manutencao'] ?? '—') ?></td>
+                                    <td><?= $p['origem'] === 'plano' ? 'Plano de Manutenção' : 'Ocorrência' ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            <?php if (empty($d['ocorrencias_preventivas'])): ?>
+                                <tr><td colspan="4" class="text-center text-muted">Não existem manutenções preventivas previstas para os próximos 30 dias.</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    <?php elseif ($_SESSION['nivel'] === 'tecnico'): ?>
+        <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-3">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard do Técnico</h1>
+        </div>
+        <div class="row">
+            <?php
+            home_card('primary', 'Ocorrências Atribuídas', $d['ocorrencias_atribuidas'] ?? 0, 'fa-exclamation-circle');
+            home_card('warning', 'Diagnósticos Pendentes', $d['diagnosticos_pendentes'] ?? 0, 'fa-stethoscope');
+            home_card('info', 'Manutenções em Execução', $d['manutencoes_em_execucao'] ?? 0, 'fa-tools');
+            home_card('success', 'Manutenções Concluídas (mês)', $d['manutencoes_concluidas'] ?? 0, 'fa-check-circle');
+            home_card('secondary', 'Planeamentos Preventivos', $d['planeamentos_preventivos'] ?? 0, 'fa-calendar-check');
+            home_card('danger', 'Equipamentos em Manutenção', $d['equipamentos_em_manutencao'] ?? 0, 'fa-laptop');
+            home_card('warning', 'Manutenções Pendentes', $d['manutencoes_pendentes'] ?? 0, 'fa-hourglass-half');
+            ?>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">As Minhas Ocorrências em Aberto</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" width="100%" cellspacing="0">
+                        <thead><tr><th>#</th><th>Equipamento</th><th>Prioridade</th><th>Estado</th><th>Prevista</th></tr></thead>
+                        <tbody>
+                            <?php foreach (($d['minhas_ocorrencias'] ?? []) as $o): ?>
+                                <tr>
+                                    <td><a href="<?= URLADM ?>ocorrencia?historico=<?= (int)$o['idocorrencia'] ?>">#<?= (int)$o['idocorrencia'] ?></a></td>
+                                    <td><?= htmlspecialchars(trim(($o['numero_serie'] ?? '') . ' — ' . ($o['marca'] ?? '') . ' ' . ($o['modelo'] ?? ''))) ?></td>
+                                    <td><?= htmlspecialchars($o['prioridade']) ?></td>
+                                    <td><?= htmlspecialchars($o['estado']) ?></td>
+                                    <td><?= htmlspecialchars($o['data_prevista'] ?? '—') ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            <?php if (empty($d['minhas_ocorrencias'])): ?>
+                                <tr><td colspan="5" class="text-center text-muted">Não tem ocorrências em aberto.</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 </div>
-<!-- /.container-fluid -->
