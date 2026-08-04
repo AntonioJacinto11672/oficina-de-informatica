@@ -42,10 +42,15 @@
     font-weight: 700;
 }
 
-/* Evita que rótulos de menu compridos transbordem a barra lateral */
+/* Evita que rótulos de menu compridos transbordem a barra lateral.
+   O tema (sb-admin-2) define white-space:nowrap nos .collapse-item, o que por
+   si só força a largura da caixa a ultrapassar a barra lateral em rótulos
+   compridos ("Abatimento de Equipamentos", "Categorias de Equipamento", etc.)
+   — é preciso anular isso antes de o word-break ter qualquer efeito. */
 .sidebar .nav-item .nav-link span,
 .sidebar .sidebar-heading,
 .sidebar .collapse-item {
+    white-space: normal;
     overflow-wrap: break-word;
     word-break: break-word;
 }

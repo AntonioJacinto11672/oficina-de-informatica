@@ -75,28 +75,30 @@ $equipamentosParaExecucao = $this->dadosAlter['equipamentosParaExecucao'] ?? [];
 
                 <?php if ($idOcorrencia): ?>
                     <h6 class="font-weight-bold">Peças Utilizadas</h6>
-                    <table class="table table-sm table-bordered">
-                        <thead><tr><th>Peça</th><th>Quantidade</th><?php if ($ex['estado'] === 'Em execução'): ?><th>Acção</th><?php endif; ?></tr></thead>
-                        <tbody>
-                            <?php foreach (($pecasPorExecucao[$idExec] ?? []) as $p): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($p['produto_nome']) ?></td>
-                                    <td><?= (int)$p['quantidade'] ?></td>
-                                    <?php if ($ex['estado'] === 'Em execução'): ?>
-                                        <td>
-                                            <form action="" method="post" onsubmit="return confirm('Remover esta peça e repor o stock?');">
-                                                <input type="hidden" name="idexecucao_peca" value="<?= (int)$p['idexecucao_peca'] ?>">
-                                                <button type="submit" class="btn btn-link p-0 text-danger" name="btnRemoverPeca"><i class="icofont icofont-trash"></i></button>
-                                            </form>
-                                        </td>
-                                    <?php endif; ?>
-                                </tr>
-                            <?php endforeach; ?>
-                            <?php if (empty($pecasPorExecucao[$idExec])): ?>
-                                <tr><td colspan="<?= $ex['estado'] === 'Em execução' ? 3 : 2 ?>" class="text-center text-muted">Sem peças registadas.</td></tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead><tr><th>Peça</th><th>Quantidade</th><?php if ($ex['estado'] === 'Em execução'): ?><th>Acção</th><?php endif; ?></tr></thead>
+                            <tbody>
+                                <?php foreach (($pecasPorExecucao[$idExec] ?? []) as $p): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($p['produto_nome']) ?></td>
+                                        <td><?= (int)$p['quantidade'] ?></td>
+                                        <?php if ($ex['estado'] === 'Em execução'): ?>
+                                            <td>
+                                                <form action="" method="post" onsubmit="return confirm('Remover esta peça e repor o stock?');">
+                                                    <input type="hidden" name="idexecucao_peca" value="<?= (int)$p['idexecucao_peca'] ?>">
+                                                    <button type="submit" class="btn btn-link p-0 text-danger" name="btnRemoverPeca"><i class="icofont icofont-trash"></i></button>
+                                                </form>
+                                            </td>
+                                        <?php endif; ?>
+                                    </tr>
+                                <?php endforeach; ?>
+                                <?php if (empty($pecasPorExecucao[$idExec])): ?>
+                                    <tr><td colspan="<?= $ex['estado'] === 'Em execução' ? 3 : 2 ?>" class="text-center text-muted">Sem peças registadas.</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
 
                     <?php if ($ex['estado'] === 'Em execução'): ?>
                         <form action="" method="post" class="form-inline">

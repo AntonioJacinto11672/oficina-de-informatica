@@ -201,14 +201,14 @@ $ehActiva = function (array $rotas) use ($rotaAtual): bool {
         <div id="content">
 
             <!-- Topbar -->
-            <nav class="navbar navbar-expand navbar-light bg-white topbar p-5 mb-4 static-top shadow">
+            <nav class="navbar navbar-expand navbar-light bg-white topbar p-3 p-md-5 mb-4 static-top shadow">
 
                 <!-- Sidebar Toggle (Topbar) -->
                 <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                     <i class="fa fa-bars"></i>
                 </button>
 
-                <img src="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo_novo.png" width="150" height="55" alt="Universidade Lusíada de Angola" />
+                <img src="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo_novo.png" class="img-fluid" style="max-width:150px;height:auto;" alt="Universidade Lusíada de Angola" />
 
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
