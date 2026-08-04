@@ -23,5 +23,29 @@
     padding-top: 80px;
     padding-bottom: 80px;
     margin-bottom: 0rem !important;
-    border-radius: 0rem;    
+    border-radius: 0rem;
+}
+
+/* Realce visual do item de menu da página actual (sidebar) */
+.sidebar .nav-item.active > .nav-link {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #fff !important;
+    border-left: 4px solid #fff;
+    padding-left: calc(1rem - 4px);
+}
+.sidebar .nav-item.active > .nav-link i {
+    color: #fff !important;
+}
+.sidebar .collapse-item.active {
+    background-color: #eaecf4;
+    color: #4e73df !important;
+    font-weight: 700;
+}
+
+/* Evita que rótulos de menu compridos transbordem a barra lateral */
+.sidebar .nav-item .nav-link span,
+.sidebar .sidebar-heading,
+.sidebar .collapse-item {
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
