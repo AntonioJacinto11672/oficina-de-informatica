@@ -16,7 +16,7 @@ class AdmsExecucao extends Conn {
 
     private $conn;
 
-    public const ESTADOS = ['Em execução', 'Concluída', 'Cancelada'];
+    public const ESTADOS = ['Em execução', 'Pausada', 'Concluída', 'Cancelada'];
 
     public function __construct() {
         $this->conn = $this->connect();
@@ -86,7 +86,7 @@ class AdmsExecucao extends Conn {
         if (!empty($this->dadosEquipamentosParaExecucao($idOcorrencia))) {
             return false;
         }
-        $stmt = $this->conn->prepare("SELECT COUNT(*) FROM execucao_manutencao WHERE id_ocorrencia = :id AND estado = 'Em execução'");
+        $stmt = $this->conn->prepare("SELECT COUNT(*) FROM execucao_manutencao WHERE id_ocorrencia = :id AND estado IN ('Em execução', 'Pausada')");
         $stmt->bindParam(':id', $idOcorrencia, PDO::PARAM_INT);
         $stmt->execute();
         return (int)$stmt->fetchColumn() === 0;
@@ -205,10 +205,49 @@ class AdmsExecucao extends Conn {
         return false;
     }
 
+    /**
+     * Interrompe uma execução em curso (o trabalho pode ficar parado dias ou
+     * meses, consoante a manutenção). Não altera o estado da ocorrência nem
+     * do equipamento — continuam "Em execução"/"Em Manutenção" até retomar
+     * ou encerrar.
+     */
+    public function pausarExecucao(array $dados): bool {
+        $idExecucao = (int)$this->limparInput($dados['idexecucao']);
+        $execucao = $this->dadosExecucao($idExecucao);
+        if (!$execucao || $execucao['estado'] !== 'Em execução') {
+            $_SESSION['msg'] = '<div class="alert alert-danger text-center">Só é possível interromper uma execução que esteja em curso.</div>';
+            return false;
+        }
+
+        $stmt = $this->conn->prepare("UPDATE execucao_manutencao SET estado='Pausada' WHERE idexecucao=:id");
+        $stmt->bindParam(':id', $idExecucao, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $_SESSION['msg'] = '<div class="alert alert-success text-center">Execução interrompida. Pode retomá-la mais tarde.</div>';
+        return true;
+    }
+
+    public function retomarExecucao(array $dados): bool {
+        $idExecucao = (int)$this->limparInput($dados['idexecucao']);
+        $execucao = $this->dadosExecucao($idExecucao);
+        if (!$execucao || $execucao['estado'] !== 'Pausada') {
+            $_SESSION['msg'] = '<div class="alert alert-danger text-center">Só é possível retomar uma execução que esteja interrompida.</div>';
+            return false;
+        }
+
+        $stmt = $this->conn->prepare("UPDATE execucao_manutencao SET estado='Em execução' WHERE idexecucao=:id");
+        $stmt->bindParam(':id', $idExecucao, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $_SESSION['msg'] = '<div class="alert alert-success text-center">Execução retomada.</div>';
+        return true;
+    }
+
     public function encerrarExecucao(array $dados): bool {
         $idExecucao = (int)$this->limparInput($dados['idexecucao']);
         $execucao = $this->dadosExecucao($idExecucao);
-        if (!$execucao) {
+        if (!$execucao || !in_array($execucao['estado'], ['Em execução', 'Pausada'], true)) {
+            $_SESSION['msg'] = '<div class="alert alert-danger text-center">Esta execução já não pode ser encerrada.</div>';
             return false;
         }
 

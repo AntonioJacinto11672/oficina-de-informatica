@@ -31,8 +31,16 @@ class Relatorio {
             return;
         }
 
-        $carregarView = new \Core\ConfigView("adms/Views/relatorio/pgRelatorio", $relatorio);
-        $carregarView->renderizaRelatorio();
+        if (filter_input(INPUT_GET, 'imprimir', FILTER_VALIDATE_INT)) {
+            $carregarView = new \Core\ConfigView("adms/Views/relatorio/pgRelatorio", $relatorio);
+            $carregarView->renderizaRelatorio();
+            return;
+        }
+
+        // Vista intermédia: tabela com filtros, antes de imprimir ou exportar.
+        $relatorio['tipo'] = $tipo;
+        $carregarView = new \Core\ConfigView("adms/Views/relatorio/pgRelatorioTabela", $relatorio);
+        $carregarView->renderizar();
     }
 
     private function exportarCsv(array $relatorio): void {

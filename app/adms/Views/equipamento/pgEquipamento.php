@@ -105,7 +105,7 @@ function equipamento_campos_form($eq, $departamentos, $categorias, $fornecedores
     <div class="row">
         <div class="col-md-6 mb-3">
             <label>Data de Aquisição</label>
-            <input type="date" class="form-control" name="data_aquisicao" value="<?= htmlspecialchars($eq['data_aquisicao'] ?? '') ?>">
+            <input type="date" class="form-control" name="data_aquisicao" max="<?= date('Y-m-d') ?>" value="<?= htmlspecialchars($eq['data_aquisicao'] ?? '') ?>">
         </div>
         <div class="col-md-6 mb-3">
             <label>Garantia Até</label>

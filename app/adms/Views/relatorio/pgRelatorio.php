@@ -32,8 +32,9 @@ $tipo = filter_input(INPUT_GET, 'tipo', FILTER_DEFAULT);
                                 <div class="col-12">
                                     <h4>
                                         <span class="text-muted p-5"><?php echo htmlspecialchars($titulo); ?></span>
-                                        <small class="float-right">Data: <?php echo date("d/m/Y"); ?></small><br>
+                                        <small class="float-right">Data: <?php echo date("d/m/Y H:i"); ?></small><br>
                                     </h4>
+                                    <p class="text-muted mb-0">Total de registos: <strong><?php echo count($linhas); ?></strong></p>
                                     <hr>
                                 </div>
                             </div>
@@ -62,11 +63,15 @@ $tipo = filter_input(INPUT_GET, 'tipo', FILTER_DEFAULT);
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="col-12 text-muted text-right" style="font-size: 12px;">
+                                    Gerado por <?php echo htmlspecialchars(trim(($_SESSION['nome'] ?? '') . ' ' . ($_SESSION['sobrenome'] ?? '')) ?: 'utilizador'); ?>
+                                    em <?php echo date('d/m/Y H:i'); ?> — <?php echo NOME_INSTITUICAO; ?>
+                                </div>
                             </div>
 
                             <div class="row no-print">
                                 <div class="col-12">
-                                    <a href="<?php echo URLADM; ?>relatorio" class="btn btn-default border"><i class="fas fa-arrow-left"></i> Voltar aos Relatórios</a>
+                                    <a href="<?php echo URLADM; ?>relatorio?tipo=<?php echo htmlspecialchars($tipo); ?>" class="btn btn-default border"><i class="fas fa-arrow-left"></i> Voltar ao Relatório</a>
                                     <button type="button" onclick="window.print();" class="btn btn-primary float-right ml-2"><i class="fas fa-print"></i> Imprimir</button>
                                     <a href="<?php echo URLADM; ?>relatorio?tipo=<?php echo htmlspecialchars($tipo); ?>&export=csv" class="btn btn-success float-right"><i class="fas fa-file-csv"></i> Exportar CSV</a>
                                 </div>

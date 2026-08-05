@@ -29,6 +29,12 @@ class Execucao {
             } elseif (isset($this->dadosForm['btnRemoverPeca'])) {
                 $model = new \App\adms\Models\AdmsExecucao();
                 $model->removerPeca($this->dadosForm);
+            } elseif (isset($this->dadosForm['btnPausarExecucao'])) {
+                $model = new \App\adms\Models\AdmsExecucao();
+                $model->pausarExecucao($this->dadosForm);
+            } elseif (isset($this->dadosForm['btnRetomarExecucao'])) {
+                $model = new \App\adms\Models\AdmsExecucao();
+                $model->retomarExecucao($this->dadosForm);
             } elseif (isset($this->dadosForm['btnEncerrarExecucao'])) {
                 $model = new \App\adms\Models\AdmsExecucao();
                 $model->encerrarExecucao($this->dadosForm);

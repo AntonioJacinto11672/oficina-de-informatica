@@ -77,7 +77,9 @@ class Ocorrencia {
         $this->dados['ocorrencia'] = $model->dadosOcorrencia($idocorrencia);
         $this->dados['historico'] = $model->dadosHistoricoOcorrencia($idocorrencia);
         $this->dados['equipamentos'] = $model->dadosEquipamentosDaOcorrencia($idocorrencia);
-        $carregarView = new \Core\ConfigView("adms/Views/ocorrencia/pgHistoricoOcorrencia", $this->dados);
+        $this->dadosAlter['tecnicos'] = $model->dadosTecnicos();
+        $this->dadosAlter['estadosCancelaveis'] = \App\adms\Models\AdmsOcorrencia::ESTADOS_CANCELAVEIS;
+        $carregarView = new \Core\ConfigView("adms/Views/ocorrencia/pgHistoricoOcorrencia", $this->dados, $this->dadosAlter);
         $carregarView->renderizar();
     }
 }

@@ -63,11 +63,24 @@ $equipamentosParaExecucao = $this->dadosAlter['equipamentosParaExecucao'] ?? [];
                         &nbsp;|&nbsp; Técnico: <?= htmlspecialchars(trim(($ex['tecnico_nome'] ?? '') . ' ' . ($ex['tecnico_sobrenome'] ?? '')) ?: '—') ?>
                     </small>
                 </h6>
-                <?php if ($idOcorrencia && $ex['estado'] === 'Em execução'): ?>
-                    <form action="" method="post" onsubmit="return confirm('Encerrar esta execução e a ocorrência associada?');">
-                        <input type="hidden" name="idexecucao" value="<?= $idExec ?>">
-                        <button type="submit" class="btn btn-success btn-sm" name="btnEncerrarExecucao"><i class="fas fa-check mr-1"></i>Encerrar</button>
-                    </form>
+                <?php if ($idOcorrencia && in_array($ex['estado'], ['Em execução', 'Pausada'], true)): ?>
+                    <div>
+                        <?php if ($ex['estado'] === 'Em execução'): ?>
+                            <form action="" method="post" style="display:inline">
+                                <input type="hidden" name="idexecucao" value="<?= $idExec ?>">
+                                <button type="submit" class="btn btn-warning btn-sm" name="btnPausarExecucao"><i class="fas fa-pause mr-1"></i>Interromper</button>
+                            </form>
+                        <?php else: ?>
+                            <form action="" method="post" style="display:inline">
+                                <input type="hidden" name="idexecucao" value="<?= $idExec ?>">
+                                <button type="submit" class="btn btn-info btn-sm text-white" name="btnRetomarExecucao"><i class="fas fa-play mr-1"></i>Retomar</button>
+                            </form>
+                        <?php endif; ?>
+                        <form action="" method="post" style="display:inline" onsubmit="return confirm('Encerrar esta execução? Só faça isto quando o trabalho estiver mesmo concluído.');">
+                            <input type="hidden" name="idexecucao" value="<?= $idExec ?>">
+                            <button type="submit" class="btn btn-success btn-sm" name="btnEncerrarExecucao"><i class="fas fa-check mr-1"></i>Encerrar</button>
+                        </form>
+                    </div>
                 <?php endif; ?>
             </div>
             <div class="card-body">

@@ -126,7 +126,26 @@ class AdmsTecnico extends Conn {
         return true;
     }
 
+    /**
+     * Bilhete de Identidade: 9 dígitos + 2 letras + 3 dígitos (14 caracteres,
+     * ex: 123456789LA123). Telefone: 9 dígitos, começando por 9 (rede móvel).
+     */
+    private function formatosValidos(): bool {
+        if (!preg_match('/^\d{9}[A-Za-z]{2}\d{3}$/', $this->dados['nbi'])) {
+            $_SESSION['msg'] = '<div class="alert alert-danger text-center">Número de BI inválido — deve ter 14 caracteres: 9 números, 2 letras e 3 números (ex: 123456789LA123).</div>';
+            return false;
+        }
+        if (!preg_match('/^9\d{8}$/', $this->dados['telefone'])) {
+            $_SESSION['msg'] = '<div class="alert alert-danger text-center">Número de telefone inválido — deve ter 9 dígitos e começar por 9.</div>';
+            return false;
+        }
+        return true;
+    }
+
     private function valTecnicos(): bool {
+        if (!$this->formatosValidos()) {
+            return false;
+        }
         $stmt = $this->conn->prepare("SELECT nbi FROM usuario WHERE nbi = :nbi");
         $stmt->bindParam(':nbi', $this->dados['nbi']);
         $stmt->execute();
@@ -155,6 +174,9 @@ class AdmsTecnico extends Conn {
     }
 
     private function valEditTecnicos(): bool {
+        if (!$this->formatosValidos()) {
+            return false;
+        }
         $this->idUsuario();
         $stmt = $this->conn->prepare("SELECT nbi FROM usuario WHERE nbi = :nbi AND idusuario <> :idusuario");
         $stmt->bindParam(':nbi', $this->dados['nbi']);

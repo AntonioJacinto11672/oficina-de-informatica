@@ -112,6 +112,10 @@ class AdmsEquipamento extends Conn {
         $garantiaAte = !empty($dados['garantia_ate']) ? $this->limparInput($dados['garantia_ate']) : null;
         $observacoes = $this->limparInput($dados['observacoes'] ?? '') ?: null;
 
+        if (!$this->datasValidas($dataAquisicao, $garantiaAte)) {
+            return false;
+        }
+
         $stmt = $this->conn->prepare("
             INSERT INTO equipamento (codigo, patrimonio, nome, iddepartamento, idresponsavel, localizacao, numero_serie,
                                       idcategoria_equipamento, marca, modelo, estado, idfornecedor, data_aquisicao, garantia_ate,
@@ -169,6 +173,10 @@ class AdmsEquipamento extends Conn {
         $garantiaAte = !empty($dados['garantia_ate']) ? $this->limparInput($dados['garantia_ate']) : null;
         $observacoes = $this->limparInput($dados['observacoes'] ?? '') ?: null;
 
+        if (!$this->datasValidas($dataAquisicao, $garantiaAte)) {
+            return false;
+        }
+
         $stmt = $this->conn->prepare("
             UPDATE equipamento SET codigo=:codigo, patrimonio=:patrimonio, nome=:nome, iddepartamento=:iddepartamento,
                 idresponsavel=:idresponsavel, localizacao=:localizacao, numero_serie=:numero_serie,
@@ -214,6 +222,39 @@ class AdmsEquipamento extends Conn {
         }
         $_SESSION['msg'] = '<div class="alert alert-danger text-center">Não foi possível eliminar o equipamento. Verifique se existem ocorrências associadas.</div>';
         return false;
+    }
+
+    /**
+     * Data de Aquisição não pode ser futura (o equipamento já tem de existir
+     * fisicamente para ser registado) e tem de ser anterior ou igual à Data
+     * de Garantia Até. A garantia em si pode já estar expirada (equipamento
+     * antigo), por isso não é validada contra a data actual.
+     */
+    private function datasValidas(?string $dataAquisicao, ?string $garantiaAte): bool {
+        $hoje = date('Y-m-d');
+
+        if ($dataAquisicao !== null) {
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dataAquisicao)) {
+                $_SESSION['msg'] = '<div class="alert alert-danger text-center">Data de Aquisição inválida.</div>';
+                return false;
+            }
+            if ($dataAquisicao > $hoje) {
+                $_SESSION['msg'] = '<div class="alert alert-danger text-center">Data de Aquisição não pode ser posterior à data actual.</div>';
+                return false;
+            }
+        }
+
+        if ($garantiaAte !== null && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $garantiaAte)) {
+            $_SESSION['msg'] = '<div class="alert alert-danger text-center">Data de Garantia Até inválida.</div>';
+            return false;
+        }
+
+        if ($dataAquisicao !== null && $garantiaAte !== null && $dataAquisicao > $garantiaAte) {
+            $_SESSION['msg'] = '<div class="alert alert-danger text-center">A Data de Aquisição deve ser anterior ou igual à Data de Garantia Até.</div>';
+            return false;
+        }
+
+        return true;
     }
 
     private function numeroSerieDisponivel(string $numeroSerie, ?int $idIgnorar = null): bool {

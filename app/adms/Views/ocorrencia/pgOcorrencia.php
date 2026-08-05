@@ -94,7 +94,7 @@ if (!function_exists('ocorrencia_badge_estado')) {
                         </div>
                         <div class="form-group col-md-6">
                             <label for="data_prevista">Data Prevista</label>
-                            <input type="date" class="form-control" id="data_prevista" name="data_prevista">
+                            <input type="date" class="form-control" id="data_prevista" name="data_prevista" min="<?= date('Y-m-d') ?>" value="<?= date('Y-m-d') ?>">
                         </div>
                     </div>
                     <div class="form-group">
@@ -152,15 +152,16 @@ if (!function_exists('ocorrencia_badge_estado')) {
                                 <td><?= htmlspecialchars(trim(($o['tecnico_nome'] ?? '') . ' ' . ($o['tecnico_sobrenome'] ?? '')) ?: 'Por atribuir') ?></td>
                                 <td><?= $o['data_prevista'] ? htmlspecialchars($o['data_prevista']) : '—' ?></td>
                                 <td>
-                                    <a href="<?= URLADM ?>ocorrencia?historico=<?= $id ?>" title="Histórico"><i class="icofont icofont-history px-2"></i></a>
-                                    <a href="<?= URLADM ?>diagnostico?ocorrencia=<?= $id ?>" title="Diagnóstico"><i class="icofont icofont-stethoscope px-2"></i></a>
-                                    <a href="<?= URLADM ?>execucao?ocorrencia=<?= $id ?>" title="Execução"><i class="icofont icofont-tools px-2"></i></a>
-                                    <a href="<?= $id ?>" data-toggle="modal" data-target="#edit<?= $id ?>" title="Editar"><i class="icofont icofont-edit px-2"></i></a>
-                                    <a href="<?= $id ?>" data-toggle="modal" data-target="#tecnico<?= $id ?>" title="Atribuir Técnico"><i class="icofont icofont-user px-2"></i></a>
-                                    <?php if (in_array($o['estado'], $estadosCancelaveis, true)): ?>
+                                    <?php if ($o['estado'] === 'Aberta'): ?>
+                                        <a href="<?= URLADM ?>ocorrencia?historico=<?= $id ?>" title="Histórico"><i class="icofont icofont-history px-2"></i></a>
+                                        <a href="<?= URLADM ?>diagnostico?ocorrencia=<?= $id ?>" title="Diagnóstico / Enviar para Execução"><i class="icofont icofont-stethoscope px-2"></i></a>
+                                        <a href="<?= $id ?>" data-toggle="modal" data-target="#edit<?= $id ?>" title="Editar"><i class="icofont icofont-edit px-2"></i></a>
+                                        <a href="<?= $id ?>" data-toggle="modal" data-target="#tecnico<?= $id ?>" title="Atribuir Técnico"><i class="icofont icofont-user px-2"></i></a>
                                         <a href="<?= $id ?>" data-toggle="modal" data-target="#cancelar<?= $id ?>" title="Cancelar Ocorrência"><i class="icofont icofont-close-circled text-warning px-2"></i></a>
+                                        <a href="<?= $id ?>" data-toggle="modal" data-target="#delete<?= $id ?>" title="Eliminar"><i class="icofont icofont-trash text-danger"></i></a>
+                                    <?php else: ?>
+                                        <a href="<?= URLADM ?>ocorrencia?historico=<?= $id ?>" title="Histórico / Gerir Ocorrência"><i class="icofont icofont-history px-2"></i></a>
                                     <?php endif; ?>
-                                    <a href="<?= $id ?>" data-toggle="modal" data-target="#delete<?= $id ?>" title="Eliminar"><i class="icofont icofont-trash text-danger"></i></a>
                                 </td>
                             </tr>
 
@@ -206,7 +207,7 @@ if (!function_exists('ocorrencia_badge_estado')) {
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Data Prevista</label>
-                                                    <input type="date" class="form-control" name="data_prevista" value="<?= htmlspecialchars($o['data_prevista'] ?? '') ?>">
+                                                    <input type="date" class="form-control" name="data_prevista" min="<?= date('Y-m-d') ?>" value="<?= htmlspecialchars($o['data_prevista'] ?? '') ?>">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Descrição</label>

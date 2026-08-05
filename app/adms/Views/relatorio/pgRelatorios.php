@@ -19,7 +19,7 @@ $tipos = $this->dados['tipos'] ?? [];
                             <div class="card-body d-flex justify-content-between align-items-center">
                                 <span><?= htmlspecialchars($nome) ?></span>
                                 <div>
-                                    <a class="btn btn-sm btn-primary text-white" href="<?= URLADM ?>relatorio?tipo=<?= $chave ?>" target="_blank" title="Ver / Imprimir"><i class="fas fa-print"></i></a>
+                                    <a class="btn btn-sm btn-primary text-white" href="<?= URLADM ?>relatorio?tipo=<?= $chave ?>" title="Ver Relatório (com filtros)"><i class="fas fa-table"></i></a>
                                     <a class="btn btn-sm btn-outline-secondary" href="<?= URLADM ?>relatorio?tipo=<?= $chave ?>&export=csv" title="Exportar CSV"><i class="fas fa-file-csv"></i></a>
                                 </div>
                             </div>

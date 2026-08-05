@@ -239,6 +239,10 @@ class AdmsOcorrencia extends Conn {
             $_SESSION['msg'] = '<div class="alert alert-danger text-center">Selecione pelo menos um equipamento.</div>';
             return false;
         }
+        if ($dataPrevista !== null && $dataPrevista < date('Y-m-d')) {
+            $_SESSION['msg'] = '<div class="alert alert-danger text-center">A Data Prevista não pode ser anterior à data actual.</div>';
+            return false;
+        }
 
         $query = "INSERT INTO ocorrencias
                     (id_equipamento, id_tipo_manutencao, idtecnico_responsavel, categoria_manutencao, prioridade, descricao, estado, data_abertura, data_prevista, created)

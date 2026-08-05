@@ -46,11 +46,25 @@
    O tema (sb-admin-2) define white-space:nowrap nos .collapse-item, o que por
    si só força a largura da caixa a ultrapassar a barra lateral em rótulos
    compridos ("Abatimento de Equipamentos", "Categorias de Equipamento", etc.)
-   — é preciso anular isso antes de o word-break ter qualquer efeito. */
+   — é preciso anular isso antes de o word-break ter qualquer efeito.
+   !important porque o seletor do tema (.sidebar .nav-item .collapse
+   .collapse-inner .collapse-item) é mais específico do que qualquer seletor
+   equivalente definido aqui, pelo que uma sobreposição "normal" não chega. */
 .sidebar .nav-item .nav-link span,
 .sidebar .sidebar-heading,
-.sidebar .collapse-item {
-    white-space: normal;
-    overflow-wrap: break-word;
-    word-break: break-word;
+.sidebar .collapse-item,
+.sidebar .nav-item .collapse .collapse-inner .collapse-item,
+.sidebar .nav-item .collapsing .collapse-inner .collapse-item {
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+}
+
+/* A caixa branca (.collapse-inner) tem min-width:10rem no tema mas nenhuma
+   largura máxima — sem isto, ao quebrar o texto ela podia crescer para além
+   da barra lateral. Garante que fica sempre contida na largura da sidebar. */
+.sidebar .nav-item .collapse .collapse-inner,
+.sidebar .nav-item .collapsing .collapse-inner {
+    max-width: 100%;
+    box-sizing: border-box;
 }
