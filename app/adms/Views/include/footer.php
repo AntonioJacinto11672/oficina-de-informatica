@@ -48,24 +48,24 @@ if (!defined('R4F5CC')) {
     </div>
 </div>
 
-<!-- jQuery (obrigatório primeiro) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<!-- Bootstrap 4 Bundle (inclui Popper.js) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- jQuery Easing -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
-<!-- jQuery Sticky -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.sticky/1.0.4/jquery.sticky.min.js"></script>
-<!-- Waypoints -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
-<!-- Counter-Up -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js"></script>
-<!-- OWL Carousel -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-<!-- Isotope -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"></script>
-<!-- AOS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<!-- jQuery (obrigatório primeiro, local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 Bundle (inclui Popper.js, local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery Easing (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- jQuery Sticky (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/jquery-sticky/jquery.sticky.min.js"></script>
+<!-- Waypoints (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/waypoints/jquery.waypoints.min.js"></script>
+<!-- Counter-Up (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/counterup/jquery.counterup.min.js"></script>
+<!-- OWL Carousel (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/owlcarousel/js/owl.carousel.min.js"></script>
+<!-- Isotope (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/isotope/isotope.pkgd.min.js"></script>
+<!-- AOS (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/aos/aos.js"></script>
 
 <!-- JS Local -->
 <script src="<?php echo URLADM; ?>app/adms/assets/js/main.js"></script>
@@ -73,24 +73,24 @@ if (!defined('R4F5CC')) {
 <script src="<?php echo URLADM; ?>app/adms/assets/js/sb-admin-2.min.js"></script>
 <script src="<?php echo URLADM; ?>app/adms/assets/js/personalizado.js"></script>
 
-<!-- DataTables -->
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
+<!-- DataTables (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/datatables/js/jquery.dataTables.min.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/datatables/js/dataTables.bootstrap4.min.js"></script>
 <script src="<?php echo URLADM; ?>app/adms/assets/js/datatables-demo.js"></script>
 
-<!-- Chart.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<!-- Chart.js (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/plugins/chart.js/Chart.min.js"></script>
 <script src="<?php echo URLADM; ?>app/adms/assets/js/demo/chart-area-demo.js"></script>
 <script src="<?php echo URLADM; ?>app/adms/assets/js/demo/chart-pie-demo.js"></script>
 <script src="<?php echo URLADM; ?>app/adms/assets/js/demo/chart-bar-demo.js"></script>
 
-<!-- Highcharts -->
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>
-<script src="https://code.highcharts.com/modules/data.js"></script>
-<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+<!-- Highcharts (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/highcharts/highcharts.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/highcharts/modules/exporting.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/highcharts/modules/export-data.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/highcharts/modules/accessibility.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/highcharts/modules/data.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/highcharts/modules/drilldown.js"></script>
 
 </body>
 </html>

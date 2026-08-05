@@ -58,7 +58,7 @@ $ehActiva = function (array $rotas) use ($rotaAtual): bool {
                         <a class="collapse-item<?php echo $ehActiva(['fornecedor']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>fornecedor"><i class="icon icofont-truck mr-1"></i> Fornecedores</a>
                         <a class="collapse-item<?php echo $ehActiva(['tipoManutencao']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>tipoManutencao"><i class="icon icofont-settings-alt mr-1"></i> Tipos de Manutenção</a>
                         <div class="dropdown-divider"></div>
-                        <a class="collapse-item<?php echo $ehActiva(['categoriaEquipamento']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>categoriaEquipamento">Categorias de Equipamento</a>
+                        <a class="collapse-item<?php echo $ehActiva(['categoriaEquipamento']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>categoriaEquipamento">Categorias de <br>Equipamento</a>
                         <a class="collapse-item<?php echo $ehActiva(['categoria']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>categoria">Categorias de Peças</a>
                         <a class="collapse-item<?php echo $ehActiva(['produto']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>produto">Peças e Consumíveis</a>
                     </div>
@@ -78,9 +78,9 @@ $ehActiva = function (array $rotas) use ($rotaAtual): bool {
                         <a class="collapse-item<?php echo $ehActiva(['ocorrencia']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>ocorrencia"><i class="icon icofont-exclamation-circle mr-1"></i> Ocorrências</a>
                         <a class="collapse-item<?php echo $ehActiva(['diagnostico']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>diagnostico"><i class="icon icofont-stethoscope mr-1"></i> Diagnósticos</a>
                         <a class="collapse-item<?php echo $ehActiva(['execucao']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>execucao"><i class="icon icofont-ui-settings mr-1"></i> Execuções</a>
-                        <a class="collapse-item<?php echo $ehActiva(['planeamento']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>planeamento"><i class="icon icofont-calendar mr-1"></i> Planeamento Preventivo</a>
+                        <a class="collapse-item<?php echo $ehActiva(['planeamento']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>planeamento"><i class="icon icofont-calendar mr-1"></i> Planeamento <br>s Preventivo</a>
                         <a class="collapse-item<?php echo $ehActiva(['historico']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>historico"><i class="icon icofont-history mr-1"></i> Histórico</a>
-                        <a class="collapse-item<?php echo $ehActiva(['abatimento']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>abatimento"><i class="icon icofont-archive mr-1"></i> Abatimento de Equipamentos</a>
+                        <a class="collapse-item<?php echo $ehActiva(['abatimento']) ? ' active' : ''; ?>" href="<?php echo URLADM; ?>abatimento"><i class="icon icofont-archive mr-1"></i> Abatimento de <br> Equipamentos</a>
                     </div>
                 </div>
             </li>

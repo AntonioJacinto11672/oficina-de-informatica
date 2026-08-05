@@ -43,71 +43,71 @@ if (!defined('R4F5CC')) {
     </div>
 </div>
 
-<!-- jQuery (obrigatório primeiro) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<!-- Bootstrap 4 Bundle (inclui Popper.js) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- jQuery Easing -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
-<!-- jQuery Sticky -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.sticky/1.0.4/jquery.sticky.min.js"></script>
-<!-- Waypoints -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
-<!-- OWL Carousel -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-<!-- Isotope -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"></script>
-<!-- AOS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<!-- jQuery (obrigatório primeiro, local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 Bundle (inclui Popper.js, local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery Easing (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- jQuery Sticky (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/jquery-sticky/jquery.sticky.min.js"></script>
+<!-- Waypoints (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/waypoints/jquery.waypoints.min.js"></script>
+<!-- OWL Carousel (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/owlcarousel/js/owl.carousel.min.js"></script>
+<!-- Isotope (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/isotope/isotope.pkgd.min.js"></script>
+<!-- AOS (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/aos/aos.js"></script>
 
 <!-- JS Local -->
 <script src="<?php echo URLADM; ?>app/adms/assets/js/main.js"></script>
 <script src="<?php echo URLADM; ?>app/adms/assets/js/personalizado.js"></script>
 <script src="<?php echo URLADM; ?>app/adms/assets/js/form-validation.js"></script>
 
-<!-- jQuery UI -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+<!-- jQuery UI (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/jquery-ui/jquery-ui.min.js"></script>
 <script>
     if (typeof $.widget !== 'undefined' && typeof $.ui !== 'undefined') {
         $.widget.bridge('uibutton', $.ui.button);
     }
 </script>
 
-<!-- OverlayScrollbars -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.3/js/jquery.overlayScrollbars.min.js"></script>
+<!-- OverlayScrollbars (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/overlayscrollbars/js/jquery.overlayScrollbars.min.js"></script>
 
 <!-- AdminLTE dist JS (local) -->
 <script src="<?php echo URLADM; ?>app/adms/assets/dist/js/adminlte.js"></script>
 <script src="<?php echo URLADM; ?>app/adms/assets/dist/js/demo.js"></script>
 
-<!-- Chart.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<!-- Chart.js (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/plugins/chart.js/Chart.min.js"></script>
 
-<!-- Moment.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-<!-- Daterange picker -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.js"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"></script>
-<!-- Summernote -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.js"></script>
+<!-- Moment.js (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/moment/moment.min.js"></script>
+<!-- Daterange picker (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/daterangepicker/daterangepicker.js"></script>
+<!-- Tempusdominus Bootstrap 4 (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- Summernote (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/summernote/summernote-bs4.min.js"></script>
 
-<!-- DataTables -->
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
+<!-- DataTables (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/datatables/js/jquery.dataTables.min.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/datatables/js/dataTables.bootstrap4.min.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/jszip/jszip.min.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/pdfmake/pdfmake.min.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/pdfmake/vfs_fonts.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="<?php echo URLADM; ?>app/adms/assets/vendor/datatables-buttons/js/buttons.colVis.min.js"></script>
 
-<!-- BS-Stepper -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bs-stepper/1.7.0/js/bs-stepper.min.js"></script>
+<!-- BS-Stepper (local) -->
+<script src="<?php echo URLADM; ?>app/adms/assets/plugins/bs-stepper/js/bs-stepper.min.js"></script>
 
 <!-- Page specific scripts -->
 <script>

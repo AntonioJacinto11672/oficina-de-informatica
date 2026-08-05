@@ -16,30 +16,30 @@ if (!defined('R4F5CC')) {
         <!-- Favicons -->
         <link href="<?php echo URLADM; ?>app/adms/assets/imagens/login/logo_novo.png" rel="icon">
 
-        <!-- Font Awesome 5 Free -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+        <!-- Font Awesome 5 Free (local) -->
+        <link href="<?php echo URLADM; ?>app/adms/assets/vendor/font-awesome/css/all.min.css" rel="stylesheet">
 
-        <!-- Bootstrap 4 -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Bootstrap 4 (local) -->
+        <link href="<?php echo URLADM; ?>app/adms/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-        <!-- Icon Fonts -->
-        <link href="https://cdn.jsdelivr.net/npm/icofont/dist/icofont.min.css" rel="stylesheet">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
+        <!-- Icon Fonts (local) -->
+        <link href="<?php echo URLADM; ?>app/adms/assets/vendor/icofont/css/icofont.min.css" rel="stylesheet">
+        <link href="<?php echo URLADM; ?>app/adms/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
 
-        <!-- Animate.css -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+        <!-- Animate.css (local) -->
+        <link href="<?php echo URLADM; ?>app/adms/assets/vendor/animate/animate.min.css" rel="stylesheet">
 
-        <!-- OWL Carousel -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" rel="stylesheet">
+        <!-- OWL Carousel (local) -->
+        <link href="<?php echo URLADM; ?>app/adms/assets/vendor/owlcarousel/css/owl.carousel.min.css" rel="stylesheet">
 
-        <!-- AOS -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+        <!-- AOS (local) -->
+        <link href="<?php echo URLADM; ?>app/adms/assets/vendor/aos/aos.css" rel="stylesheet">
 
-        <!-- W3.css -->
-        <link href="https://www.w3schools.com/lib/w3.css" rel="stylesheet">
+        <!-- W3.css (local) -->
+        <link href="<?php echo URLADM; ?>app/adms/assets/vendor/w3/w3.css" rel="stylesheet">
 
-        <!-- DataTables -->
-        <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+        <!-- DataTables (local) -->
+        <link href="<?php echo URLADM; ?>app/adms/assets/vendor/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 
         <!-- Local CSS -->
         <link href="<?php echo URLADM; ?>app/adms/assets/css/adminlte.min.css" rel="stylesheet">
